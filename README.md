@@ -1,2 +1,3 @@
-# frontendBoilerplate
-A Nav, EmptyHero and Footer template for quick-starting Tellor Frontends
+# dataFeed
+
+A frontend interface for viewing all data reports currently happening inside the Tellor ecosystem.
