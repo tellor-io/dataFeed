@@ -1,0 +1,22 @@
+.App {
+  width: 100%;
+  max-height: 100%;
+  min-height: 100vh;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #262626;
+  color: #ffffff;
+  font-family: 'Inconsolata', monospace;
+  position: relative;
+}
+.HeroContainer {
+  width: 92%;
+  height: 500px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid red;
+  background-color: #262626;
+}
