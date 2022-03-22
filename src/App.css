@@ -9,14 +9,14 @@
   background-color: #262626;
   color: #ffffff;
   font-family: 'Inconsolata', monospace;
-  position: relative;
 }
 .HeroContainer {
   width: 92%;
-  height: 500px;
+  height: 600px;
   display: flex;
   justify-content: center;
   align-items: center;
   border: 1px solid red;
   background-color: #262626;
+  margin-bottom: 100px;
 }
