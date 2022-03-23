@@ -1,9 +1,12 @@
 import React from 'react'
+import '../styles/AllFeeds.css'
+import Table from './Table'
 
 function AllFeeds() {
   return (
     <div>
-      <h1>AllFeeds</h1>
+      <Table />
+      <button className="AllFeeds__Button">load more</button>
     </div>
   )
 }

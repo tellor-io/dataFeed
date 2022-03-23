@@ -1,0 +1,11 @@
+.MyFeeds__Button {
+  width: fit-content;
+  border: 2px solid #ffffff;
+  background: transparent;
+  margin: 20px 0px;
+  padding: 8px 12px;
+  font-family: 'Inconsolata', monospace;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 16px;
+}
