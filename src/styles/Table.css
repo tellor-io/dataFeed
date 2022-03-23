@@ -1,0 +1,53 @@
+.Table {
+  display: flex;
+  flex-direction: column;
+}
+.TH__Header {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  text-align: left;
+}
+.TH__Header > th {
+  flex: 0.2;
+  display: flex;
+  align-items: center;
+  margin: 20px 0px;
+}
+.TH__Header > th > h1 {
+  font-size: 12px;
+  font-weight: 300;
+}
+.TH__Header > th > svg {
+  width: 14px;
+  height: 14px;
+}
+.TableBody {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  text-align: left;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ffffff;
+}
+.TB__Symbols {
+  flex: 0.2;
+}
+.TB__Value {
+  flex: 0.2;
+}
+.TB__Chain {
+  flex: 0.2;
+}
+.TB__Reporter {
+  flex: 0.2;
+  display: flex;
+}
+.Table__Jazzicon {
+  width: 18px;
+  height: 18px;
+  margin-right: 10px;
+}
+.TB__DateTime {
+  flex: 0.2;
+}
