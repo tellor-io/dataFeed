@@ -1,9 +1,44 @@
 import minABI from './minimumABI.json'
+import Web3 from 'web3'
+import { queryDataParsers } from './queryDataParsers'
 //Globals
+const web3 = new Web3()
 const tellorAddressMainnet = '0x88dF592F8eb5D7Bd38bFeF7dEb0fBc02cf3778a0'
 const tellorAddressPolygon = '0xE3322702BEdaaEd36CdDAb233360B939775ae5f1'
 const tellorAddressMumbai = '0x45cAF1aae42BA5565EC92362896cc8e0d55a2126'
 const tellorAddressGoerli = '0x002E861910D7f87BAa832A22Ac436F25FB66FA24'
+
+const getDate = (timestamp) => {
+  const months = {
+    Jan: '01',
+    Feb: '02',
+    Mar: '03',
+    Apr: '04',
+    May: '05',
+    Jun: '06',
+    Jul: '07',
+    Aug: '08',
+    Sep: '09',
+    Oct: '10',
+    Nov: '11',
+    Dec: '12',
+  }
+  const date = new Date(timestamp * 1000).toString()
+  const dateArr = date.split(' ')
+  const finalDate = `${dateArr[2]}/${months[dateArr[1]]}/${dateArr[3]}, ${
+    dateArr[4]
+  }`
+  return finalDate
+}
+
+const hex2a = (hexx) => {
+  let hex = hexx.toString() //force conversion
+  let str = ''
+  for (let i = 0; i < hex.length; i += 2)
+    str += String.fromCharCode(parseInt(hex.substr(i, 2), 16))
+
+  return str.substring(1)
+}
 
 export const truncateAddr = (addr) => {
   return addr.slice(0, 6) + '...' + addr.slice(-4)
@@ -112,5 +147,57 @@ export const sortDataByProperty = (prop, arr) => {
 }
 
 export const decodingMiddleware = (reportEvents) => {
-  console.log(reportEvents)
+  let decoded = reportEvents.map((event) => {
+    event.decodedTime = getDate(event._time)
+    event.decodedReporter = web3.utils.toChecksumAddress(event._reporter)
+    event.decodedValue = parseInt(Number(event._value), 10)
+    event.queryId = parseInt(Number(event._queryId), 10)
+
+    switch (event.chain) {
+      case 'Ethereum Mainnet':
+        console.log('Mainnet_queryData length', event._queryData.length)
+        console.log('Mainnet', event._queryData)
+        if (event._queryData && event._queryData.length <= 104) {
+          console.log('Mainnet tester:::', JSON.parse(hex2a(event._queryData)))
+        }
+        // queryDataParsers[
+        //   clone.newQueryData?.type || clone.newQueryData?.Type || 'Default'
+        // ](clone)
+        return event
+      case 'Rinkeby Testnet':
+        console.log('Rinkeby_queryData length', event._queryData.length)
+        console.log('Rinkeby', event._queryData)
+        if (event._queryData && event._queryData.length <= 104) {
+          console.log('Rinkeby tester:::', JSON.parse(hex2a(event._queryData)))
+        }
+        return event
+      case 'Polygon Mainnet':
+        console.log('Polygon_queryData length', event._queryData.length)
+        console.log('Polygon', event._queryData)
+        if (event._queryData && event._queryData.length <= 104) {
+          console.log('Polygon tester:::', JSON.parse(hex2a(event._queryData)))
+        }
+        return event
+      case 'Mumbai Testnet':
+        console.log('Mumbai_queryData length', event._queryData.length)
+        console.log('Mumbai', event._queryData)
+        if (event._queryData && event._queryData.length <= 104) {
+          console.log('Polygon tester:::', JSON.parse(hex2a(event._queryData)))
+        }
+        return event
+      default:
+        return event
+    }
+    // if (event._queryData && event._queryData.length <= 104) {
+    //   //COME BACK TO THIS LATER!!!
+    //   event.decodedQueryData = event._queryData
+    // } else if (event._queryData && event._queryData.length > 104) {
+    //   event.decodedQueryData = web3.eth.abi.decodeParameters(
+    //     ['string', 'bytes'],
+    //     event._queryData
+    //   )
+    // }
+  })
+  console.log(decoded)
+  return decoded
 }

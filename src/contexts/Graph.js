@@ -127,19 +127,19 @@ const Graph = ({ children }) => {
 
     let eventsArray = []
     graphMainnetData.data.newReportEntities.forEach((event) => {
-      event.chain = 'mainnet'
+      event.chain = 'Ethereum Mainnet'
       eventsArray.push(event)
     })
     graphRinkebyData.data.newReportEntities.forEach((event) => {
-      event.chain = 'rinkeby'
+      event.chain = 'Rinkeby Testnet'
       eventsArray.push(event)
     })
     graphMaticData.data.newReportEntities.forEach((event) => {
-      event.chain = 'matic'
+      event.chain = 'Polygon Mainnet'
       eventsArray.push(event)
     })
     graphMumbaiData.data.newReportEntities.forEach((event) => {
-      event.chain = 'mumbai'
+      event.chain = 'Mumbai Testnet'
       eventsArray.push(event)
     })
     let sorted = sortDataByProperty('_time', eventsArray)
