@@ -10,50 +10,60 @@ export const queryDataParsers = {
         event.decodedValue = new Intl.NumberFormat('en-EN', {
           style: 'currency',
           currency: 'USD',
-        }).format(event.value / 1000000)
+        }).format(event._value / 1000000)
         return event
       case 2:
         event.decodedValueName = psrLookup[event.queryId].name
         event.decodedValue = new Intl.NumberFormat('en-EN', {
           style: 'currency',
           currency: 'USD',
-        }).format(event.value / 1000000)
+        }).format(event._value / 1000000)
+        return event
+      case 3:
+        event.decodedValueName = psrLookup[event.queryId].name
+        event.decodedValue =
+          event._value === '0x'
+            ? '0'
+            : new Intl.NumberFormat('en-EN', {
+                style: 'currency',
+                currency: 'USD',
+              }).format(event._value / 1000000)
         return event
       case 10:
         event.decodedValueName = psrLookup[event.queryId].name
         event.decodedValue =
-          event.value.toString().length > 17
+          event._value.toString().length > 17
             ? new Intl.NumberFormat('en-EN', {
                 style: 'currency',
                 currency: 'USD',
-              }).format(event.value / eighteenDecimals)
+              }).format(event._value / eighteenDecimals)
             : new Intl.NumberFormat('en-EN', {
                 style: 'currency',
                 currency: 'USD',
-              }).format(event.value / 1000000)
+              }).format(event._value / 1000000)
         return event
       case 41:
         event.decodedValueName = psrLookup[event.queryId].name
         event.decodedValue =
-          event.value.toString().length > 18
-            ? (event.value / eighteenDecimals).toString()
-            : event.value.toString().length > 6
-            ? '*' + (event.value / 1000000).toString()
-            : '*' + event.value.toString()
+          event._value.toString().length > 18
+            ? (event._value / eighteenDecimals).toString()
+            : event._value.toString().length > 6
+            ? '*' + (event._value / 1000000).toString()
+            : '*' + event._value.toString()
         return event
       case 50:
         event.decodedValueName = psrLookup[event.queryId].name
         event.decodedValue = new Intl.NumberFormat('en-EN', {
           style: 'currency',
           currency: 'USD',
-        }).format(event.value / 1000000)
+        }).format(event._value / 1000000)
         return event
       case 59:
         event.decodedValueName = psrLookup[event.queryId].name
         event.decodedValue = new Intl.NumberFormat('en-EN', {
           style: 'currency',
           currency: 'JPY',
-        }).format(event.value / 1000000)
+        }).format(event._value / 1000000)
         return event
       default:
         event.decodedValueName = 'New Legacy Type'
@@ -61,57 +71,50 @@ export const queryDataParsers = {
         return event
     }
   },
-  CoinPrice: (event) => {
-    switch (event.newQueryData.coin) {
-      case 'btc':
-        event.decodedValueName = `${
-          event.newQueryData.price_type
-            ? event.newQueryData.price_type.charAt(0).toUpperCase() +
-              event.newQueryData.price_type.slice(1)
-            : ''
-        } ${
-          event.newQueryData.coin ? event.newQueryData.coin.toUpperCase() : ''
-        }/${
-          event.newQueryData.currency
-            ? event.newQueryData.currency.toUpperCase()
-            : ''
-        }`
-        event.decodedValue = new Intl.NumberFormat('en-EN', {
-          style: 'currency',
-          currency: 'USD',
-        }).format(event.value / 1000000)
+  SpotPrice: (event) => {
+    switch (event.queryId) {
+      case 5:
+        event.decodedValueName = `${event.queryDataObj.asset}/${event.queryDataObj.currency}`
+        event.decodedValue = parseInt(Number(event._value), 10)
         return event
       default:
-        event.decodedValueName = 'New CoinPrice Type'
+        event.decodedValueName = 'New SpotPrice Type'
         event.decodedValue = '0'
         return event
     }
   },
-  SpotPrice: (event) => {
-    switch (event.newQueryData.asset) {
-      case 'wampl':
-        event.decodedValueName = `${
-          event.newQueryData.type
-            ? event.newQueryData.type
-            : 'No queryData type'
-        } ${
-          event.newQueryData.asset
-            ? event.newQueryData.asset.toUpperCase()
-            : 'No queryData asset'
-        }/${
-          event.newQueryData.currency
-            ? event.newQueryData.currency.toUpperCase()
-            : ''
-        }`
-        event.decodedValue = event.value
-          ? new Intl.NumberFormat('en-EN', {
-              style: 'currency',
-              currency: 'USD',
-            }).format(event.value / eighteenDecimals)
-          : 'No Value'
+  SpotPriceProper: (event) => {
+    switch (event.queryDataObj[0]) {
+      case 'ohm':
+        event.decodedValueName = `${event.queryDataObj[0].toUpperCase()}/${event.queryDataObj[1].toUpperCase()}`
+        event.decodedValue = new Intl.NumberFormat('en-EN', {
+          style: 'currency',
+          currency: 'USD',
+        }).format(parseInt(Number(event._value), 10) / eighteenDecimals)
+        return event
+      case 'dai':
+        event.decodedValueName = `${event.queryDataObj[0].toUpperCase()}/${event.queryDataObj[1].toUpperCase()}`
+
+        event.decodedValue = (
+          parseInt(Number(event._value), 10) / eighteenDecimals
+        ).toString()
+        return event
+      case 'ric':
+        event.decodedValueName = `${event.queryDataObj[0].toUpperCase()}/${event.queryDataObj[1].toUpperCase()}`
+        event.decodedValue = new Intl.NumberFormat('en-EN', {
+          style: 'currency',
+          currency: 'USD',
+        }).format(parseInt(Number(event._value), 10) / eighteenDecimals)
+        return event
+      case 'bct':
+        event.decodedValueName = `${event.queryDataObj[0].toUpperCase()}/${event.queryDataObj[1].toUpperCase()}`
+        event.decodedValue = new Intl.NumberFormat('en-EN', {
+          style: 'currency',
+          currency: 'USD',
+        }).format(parseInt(Number(event._value), 10) / eighteenDecimals)
         return event
       default:
-        event.decodedValueName = 'New SpotPrice Type'
+        event.decodedValueName = 'New SpotPriceProper Type'
         event.decodedValue = '0'
         return event
     }

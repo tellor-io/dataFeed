@@ -148,56 +148,36 @@ export const sortDataByProperty = (prop, arr) => {
 
 export const decodingMiddleware = (reportEvents) => {
   let decoded = reportEvents.map((event) => {
+    let queryData
+    let queryDataPartial
+    let finalQueryData
     event.decodedTime = getDate(event._time)
     event.decodedReporter = web3.utils.toChecksumAddress(event._reporter)
-    event.decodedValue = parseInt(Number(event._value), 10)
     event.queryId = parseInt(Number(event._queryId), 10)
 
-    switch (event.chain) {
-      case 'Ethereum Mainnet':
-        console.log('Mainnet_queryData length', event._queryData.length)
-        console.log('Mainnet', event._queryData)
-        if (event._queryData && event._queryData.length <= 104) {
-          console.log('Mainnet tester:::', JSON.parse(hex2a(event._queryData)))
-        }
-        // queryDataParsers[
-        //   clone.newQueryData?.type || clone.newQueryData?.Type || 'Default'
-        // ](clone)
-        return event
-      case 'Rinkeby Testnet':
-        console.log('Rinkeby_queryData length', event._queryData.length)
-        console.log('Rinkeby', event._queryData)
-        if (event._queryData && event._queryData.length <= 104) {
-          console.log('Rinkeby tester:::', JSON.parse(hex2a(event._queryData)))
-        }
-        return event
-      case 'Polygon Mainnet':
-        console.log('Polygon_queryData length', event._queryData.length)
-        console.log('Polygon', event._queryData)
-        if (event._queryData && event._queryData.length <= 104) {
-          console.log('Polygon tester:::', JSON.parse(hex2a(event._queryData)))
-        }
-        return event
-      case 'Mumbai Testnet':
-        console.log('Mumbai_queryData length', event._queryData.length)
-        console.log('Mumbai', event._queryData)
-        if (event._queryData && event._queryData.length <= 104) {
-          console.log('Polygon tester:::', JSON.parse(hex2a(event._queryData)))
-        }
-        return event
-      default:
-        return event
+    if (event._queryData && event._queryData.length <= 104) {
+      queryData = JSON.parse(hex2a(event._queryData))
+      event.queryDataObj = queryData
+      queryDataParsers[queryData?.type || queryData?.Type || 'Default'](event)
+    } else if (event._queryData && event._queryData.length > 104) {
+      queryDataPartial = web3.eth.abi.decodeParameters(
+        ['string', 'bytes'],
+        event._queryData
+      )
+      if (queryDataPartial[0] === 'LegacyRequest') {
+        event.queryId = parseInt(Number(queryDataPartial[1]), 10)
+        queryDataParsers[queryDataPartial[0] || 'Default'](event)
+      } else if (queryDataPartial[0] === 'SpotPrice') {
+        finalQueryData = queryDataPartial = web3.eth.abi.decodeParameters(
+          ['string', 'string'],
+          queryDataPartial[1]
+        )
+        event.queryDataObj = finalQueryData
+        queryDataParsers['SpotPriceProper' || 'Default'](event)
+      }
     }
-    // if (event._queryData && event._queryData.length <= 104) {
-    //   //COME BACK TO THIS LATER!!!
-    //   event.decodedQueryData = event._queryData
-    // } else if (event._queryData && event._queryData.length > 104) {
-    //   event.decodedQueryData = web3.eth.abi.decodeParameters(
-    //     ['string', 'bytes'],
-    //     event._queryData
-    //   )
-    // }
+    return event
   })
-  console.log(decoded)
+  // console.log(decoded)
   return decoded
 }

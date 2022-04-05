@@ -152,10 +152,16 @@ const Graph = ({ children }) => {
 
   useEffect(() => {
     if (!allGraphData) return
-    decodingMiddleware(allGraphData)
+    setDecodedData(decodingMiddleware(allGraphData))
+
+    return () => {
+      setDecodedData(null)
+    }
   }, [allGraphData])
 
-  const GraphContextObj = {}
+  const GraphContextObj = {
+    decodedData: decodedData,
+  }
 
   return (
     <GraphContext.Provider value={GraphContextObj}>
