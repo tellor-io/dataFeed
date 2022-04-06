@@ -1,33 +1,167 @@
 import React, { useState, createContext, useEffect } from 'react'
 //The Graph
-import { useQuery } from '@apollo/client'
+import { ApolloClient, InMemoryCache, useQuery } from '@apollo/client'
 //Utils
-// import { appQuery } from '../utils/queries'
+import { reporterQuery } from '../utils/queries'
+import { decodingMiddleware, sortDataByProperty } from '../utils/helpers'
 
 export const GraphContext = createContext()
 
+//ApolloClients
+const clientMainnet = new ApolloClient({
+  uri: 'https://api.thegraph.com/subgraphs/name/joshuasamaniego/tellorx-mh-oracle',
+  cache: new InMemoryCache(),
+})
+const clientRinkeby = new ApolloClient({
+  uri: 'https://api.thegraph.com/subgraphs/name/joshuasamaniego/tellorx-rh-oracle',
+  cache: new InMemoryCache(),
+})
+const clientMatic = new ApolloClient({
+  uri: 'https://api.thegraph.com/subgraphs/name/joshuasamaniego/tellor-flex-polyh-oracle',
+  cache: new InMemoryCache(),
+})
+const clientMumbai = new ApolloClient({
+  uri: 'https://api.thegraph.com/subgraphs/name/joshuasamaniego/tellor-flex-mumh-oracle',
+  cache: new InMemoryCache(),
+})
+
 const Graph = ({ children }) => {
   //Component State
-  const [graphData, setGraphData] = useState({})
-  //Graph Querying every 5 seconds
-  //   const { loading, error, data } = useQuery(appQuery, {
-  //     fetchPolicy: 'network-only',
-  //     pollInterval: 5000,
-  //   })
+  const [graphMainnetData, setGraphMainnetData] = useState({})
+  const [graphRinkebyData, setGraphRinkebyData] = useState({})
+  const [graphMaticData, setGraphMaticData] = useState({})
+  const [graphMumbaiData, setGraphMumbaiData] = useState({})
+  const [allGraphData, setAllGraphData] = useState(null)
+  const [decodedData, setDecodedData] = useState(null)
 
-  //   useEffect(() => {
-  //     if (!data) return
-  //     setGraphData({
-  //       data: data,
-  //       loading: loading,
-  //       error: error,
-  //     })
-  //   }, [data, loading, error])
+  //Graph Querying every 5 seconds
+  //Mainnet
+  const mainnet = useQuery(reporterQuery, {
+    client: clientMainnet,
+    fetchPolicy: 'network-only',
+    pollInterval: 5000,
+  })
+  //Rinkeby
+  const rinkeby = useQuery(reporterQuery, {
+    client: clientRinkeby,
+    fetchPolicy: 'network-only',
+    pollInterval: 5000,
+  })
+  //Matic
+  const matic = useQuery(reporterQuery, {
+    client: clientMatic,
+    fetchPolicy: 'network-only',
+    pollInterval: 5000,
+  })
+  //Mumbai
+  const mumbai = useQuery(reporterQuery, {
+    client: clientMumbai,
+    fetchPolicy: 'network-only',
+    pollInterval: 5000,
+  })
+
+  //useEffects for listening to reponses
+  //from ApolloClient queries
+  //Mainnet
+  useEffect(() => {
+    if (!mainnet) return
+    setGraphMainnetData({
+      data: mainnet.data,
+      loading: mainnet.loading,
+      error: mainnet.error,
+    })
+
+    return () => {
+      setGraphMainnetData({})
+    }
+  }, [mainnet.data, mainnet.loading, mainnet.error]) //eslint-disable-line
+  //Rinkeby
+  useEffect(() => {
+    if (!rinkeby) return
+    setGraphRinkebyData({
+      data: rinkeby.data,
+      loading: rinkeby.loading,
+      error: rinkeby.error,
+    })
+
+    return () => {
+      setGraphRinkebyData({})
+    }
+  }, [rinkeby.data, rinkeby.loading, rinkeby.error]) //eslint-disable-line
+  //Matic
+  useEffect(() => {
+    if (!matic) return
+    setGraphMaticData({
+      data: matic.data,
+      loading: matic.loading,
+      error: matic.error,
+    })
+
+    return () => {
+      setGraphMaticData({})
+    }
+  }, [matic.data, matic.loading, matic.error]) //eslint-disable-line
+  //Mumbai
+  useEffect(() => {
+    if (!mumbai) return
+    setGraphMumbaiData({
+      data: mumbai.data,
+      loading: mumbai.loading,
+      error: mumbai.error,
+    })
+
+    return () => {
+      setGraphMumbaiData({})
+    }
+  }, [mumbai.data, mumbai.loading, mumbai.error]) //eslint-disable-line
+
+  //For conglomerating data
+  useEffect(() => {
+    if (
+      !graphMainnetData.data ||
+      !graphRinkebyData.data ||
+      !graphMaticData.data ||
+      !graphMumbaiData.data
+    )
+      return
+
+    let eventsArray = []
+    graphMainnetData.data.newReportEntities.forEach((event) => {
+      event.chain = 'Ethereum Mainnet'
+      eventsArray.push(event)
+    })
+    graphRinkebyData.data.newReportEntities.forEach((event) => {
+      event.chain = 'Rinkeby Testnet'
+      eventsArray.push(event)
+    })
+    graphMaticData.data.newReportEntities.forEach((event) => {
+      event.chain = 'Polygon Mainnet'
+      eventsArray.push(event)
+    })
+    graphMumbaiData.data.newReportEntities.forEach((event) => {
+      event.chain = 'Mumbai Testnet'
+      eventsArray.push(event)
+    })
+    let sorted = sortDataByProperty('_time', eventsArray)
+    setAllGraphData(sorted)
+
+    return () => {
+      setAllGraphData(null)
+    }
+  }, [graphMainnetData, graphRinkebyData, graphMaticData, graphMumbaiData])
+
+  useEffect(() => {
+    if (!allGraphData) return
+    setDecodedData(decodingMiddleware(allGraphData))
+
+    return () => {
+      setDecodedData(null)
+    }
+  }, [allGraphData])
 
   const GraphContextObj = {
-    graphData: graphData,
+    decodedData: decodedData,
   }
-  console.log('graphData', graphData)
 
   return (
     <GraphContext.Provider value={GraphContextObj}>

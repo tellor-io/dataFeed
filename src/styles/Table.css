@@ -12,7 +12,7 @@
   flex: 0.2;
   display: flex;
   align-items: center;
-  margin: 20px 0px;
+  margin-top: 20px;
 }
 .TH__Header > th > h1 {
   font-size: 12px;
@@ -27,14 +27,18 @@
   display: flex;
   flex-direction: row;
   text-align: left;
-  padding-bottom: 10px;
+  padding: 14px 0px 10px 0px;
   border-bottom: 1px solid #ffffff;
 }
 .TB__Symbols {
   flex: 0.2;
+  font-size: 20px;
+  font-weight: 900;
 }
 .TB__Value {
   flex: 0.2;
+  font-size: 20px;
+  font-weight: 900;
 }
 .TB__Chain {
   flex: 0.2;
