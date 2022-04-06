@@ -45,7 +45,11 @@ function Hero() {
         <br />
         Ethereum Mainnet
         <br />
+        Rinkeby Testnet
+        <br />
         Polygon Mainnet
+        <br />
+        Mumbai Testnet
       </p>
       <Graph>
         <Router>

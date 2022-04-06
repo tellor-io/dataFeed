@@ -3,8 +3,11 @@ import '../styles/Table.css'
 import { ReactComponent as FilterIcon } from '../assets/filter_icon.svg'
 //Icons
 import { Jazzicon } from '@ukstv/jazzicon-react'
+//Utils
+import { truncateAddr } from '../utils/helpers'
 
-function Table() {
+function Table({ data }) {
+  console.log(data)
   return (
     <table className="Table">
       <thead className="TableHeaders">
@@ -32,19 +35,22 @@ function Table() {
         </tr>
       </thead>
       <tbody>
-        <tr className="TableBody">
-          <td className="TB__Symbols">BTC/USD</td>
-          <td className="TB__Value">45,239.45</td>
-          <td className="TB__Chain">Ethereum Mainnet</td>
-          <td className="TB__Reporter">
-            <Jazzicon
-              address="0xfeDD097584e25114e6dd23778329a2520F418800"
-              className="Table__Jazzicon"
-            />
-            <p>0xfeDD...8800</p>
-          </td>
-          <td className="TB__DateTime">DD/MM/YYYY, HH:MM:SS</td>
-        </tr>
+        {data &&
+          data.map((event) => (
+            <tr key={event.id} className="TableBody">
+              <td className="TB__Symbols">{event.decodedValueName}</td>
+              <td className="TB__Value">{event.decodedValue}</td>
+              <td className="TB__Chain">{event.chain}</td>
+              <td className="TB__Reporter">
+                <Jazzicon
+                  address={event.decodedReporter}
+                  className="Table__Jazzicon"
+                />
+                <p>{truncateAddr(event.decodedReporter)}</p>
+              </td>
+              <td className="TB__DateTime">{event.decodedTime}</td>
+            </tr>
+          ))}
       </tbody>
     </table>
   )

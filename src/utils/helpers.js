@@ -151,6 +151,7 @@ export const decodingMiddleware = (reportEvents) => {
     let queryData
     let queryDataPartial
     let finalQueryData
+    event.id = event.id + event._nonce + event.chain.split(' ')[0]
     event.decodedTime = getDate(event._time)
     event.decodedReporter = web3.utils.toChecksumAddress(event._reporter)
     event.queryId = parseInt(Number(event._queryId), 10)
