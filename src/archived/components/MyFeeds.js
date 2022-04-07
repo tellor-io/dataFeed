@@ -1,9 +1,9 @@
 import React, { useContext, useEffect } from 'react'
 import '../styles/MyFeeds.css'
 //Context
-import { UserContext } from '../contexts/User'
+import { UserContext } from '../../contexts/User'
 //Components
-import Table from '../components/Table'
+import Table from '../../components/Table'
 
 function MyFeeds() {
   const user = useContext(UserContext)
@@ -27,7 +27,7 @@ function MyFeeds() {
     }
   }
   return (
-    <div>
+    <div className="MyFeedsContainer">
       {user && user.currentUser ? (
         <Table />
       ) : (

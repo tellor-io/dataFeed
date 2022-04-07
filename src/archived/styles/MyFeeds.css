@@ -1,3 +1,6 @@
+.MyFeedsContainer {
+  height: 40vh;
+}
 .MyFeeds__Button {
   width: fit-content;
   border: 2px solid #ffffff;
