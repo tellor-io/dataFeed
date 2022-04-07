@@ -13,9 +13,9 @@
 .HeroContainer {
   width: 92%;
   height: 100%;
-  overflow: auto;
   display: flex;
   flex-direction: column;
   background-color: #262626;
   border: 1px solid red;
+  margin-bottom: 100px;
 }

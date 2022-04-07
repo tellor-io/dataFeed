@@ -1,18 +1,17 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect } from 'react'
 //ReactRouterDom
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 //Styles
 import '../styles/Hero.css'
 //Components
 import AllFeeds from '../components/AllFeeds.js'
-import MyFeeds from '../components/MyFeeds.js'
 //Contexts
 import Graph from '../contexts/Graph'
 
 function Hero() {
   //Component State
   const [active, setActive] = useState(true)
-  const [inactive, setInactive] = useState(true)
+  const [inactive, setInactive] = useState(true) //eslint-disable-line
 
   //useEffect for routing
   useEffect(() => {
@@ -34,7 +33,7 @@ function Hero() {
 
   return (
     <div className="HeroInnerContainer">
-      <h1 className="HeroHeader">your oracle at work</h1>
+      <h1 className="HeroHeader">Your Oracle at Work</h1>
       <p className="HeroMainText">
         <strong>Tellor status:</strong>
         <br />
@@ -61,18 +60,10 @@ function Hero() {
             >
               All Feeds
             </Link>
-            <Link
-              to="/myfeeds"
-              className={inactive ? 'InactiveLink' : 'ActiveLink'}
-              onClick={() => activeHelper('MyFeeds')}
-            >
-              My Feed(s)
-            </Link>
           </div>
           <div className="HeroSection">
             <Routes>
               <Route exact path="/" element={<AllFeeds />} />
-              <Route exact path="/myfeeds" element={<MyFeeds />} />
             </Routes>
           </div>
         </Router>

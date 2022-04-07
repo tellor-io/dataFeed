@@ -34,6 +34,7 @@ function AllFeeds() {
   }, [clippedData]) //eslint-disable-line
 
   const handleLoadMore = () => {
+    if (!loadMoreButton) return
     setLoadMoreClicks(loadMoreClicks + 1)
     let loads = Math.ceil((clippedData.length - 6) / 6)
     let loadAmount = 6 + 6 * loadMoreClicks
