@@ -17,10 +17,25 @@
 .TH__Header > th > h1 {
   font-size: 12px;
   font-weight: 300;
+  padding-right: 8px;
+}
+.FilterIcon {
+  cursor: pointer;
 }
 .TH__Header > th > svg {
   width: 14px;
   height: 14px;
+}
+.TableFilterDropdown {
+  display: none;
+  width: 200px;
+  height: 100px;
+  background-color: #262626;
+  border: 2px solid #ffffff;
+  z-index: 10;
+  position: absolute;
+  margin-top: 100px;
+  margin-left: 100px;
 }
 .TableBody {
   width: 100%;
@@ -54,4 +69,9 @@
 }
 .TB__DateTime {
   flex: 0.2;
+}
+
+/* TABLE GLOBAL CLASSES */
+.display {
+  display: flex !important;
 }
