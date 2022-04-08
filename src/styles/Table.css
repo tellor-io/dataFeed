@@ -1,7 +1,6 @@
 .Table {
   display: flex;
   flex-direction: column;
-  transition: 0.3s;
 }
 .TH__Header {
   width: 100%;
@@ -160,6 +159,7 @@
   text-align: left;
   padding: 14px 0px 10px 0px;
   border-bottom: 1px solid #ffffff;
+  animation: fadeIn 1.5s forwards;
 }
 .TableBodyDark {
   width: 100%;
@@ -168,6 +168,7 @@
   text-align: left;
   padding: 14px 0px 10px 0px;
   border-bottom: 1px solid #262626;
+  animation: fadeIn 1.5s forwards;
 }
 .TB__Symbols {
   flex: 0.2;
@@ -198,4 +199,14 @@
 /* TABLE GLOBAL CLASSES */
 .display {
   display: flex !important;
+}
+
+/* KeyFrames */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }

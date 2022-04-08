@@ -10,7 +10,7 @@ import { truncateAddr } from '../utils/helpers'
 //Contexts
 import { ModeContext } from '../contexts/Mode'
 
-function Table({ data, filterByItem, allData }) {
+function Table({ data, filterByItem, allData, setFiltering }) {
   //Component State
   const [tableData, setTableData] = useState([])
   //
@@ -157,6 +157,7 @@ function Table({ data, filterByItem, allData }) {
   }
   const handleFilterApply = (filterType, cleared) => {
     let filteredData = []
+    let typesOfFilters = []
 
     if (cleared) {
       if (cleared.length > 0) {
@@ -172,8 +173,10 @@ function Table({ data, filterByItem, allData }) {
           })
         })
         setTableData(filteredData)
+        setFiltering(true)
       } else {
         setTableData(data)
+        setFiltering(false)
       }
     } else {
       if (allFilters.length > 0) {
@@ -189,8 +192,10 @@ function Table({ data, filterByItem, allData }) {
           })
         })
         setTableData(filteredData)
+        setFiltering(true)
       } else {
         setTableData(data)
+        setFiltering(false)
       }
     }
 
@@ -239,7 +244,8 @@ function Table({ data, filterByItem, allData }) {
         return
     }
   }
-  console.log('allFilters', allFilters)
+
+  console.log(allFilters)
 
   return (
     <table className="Table">

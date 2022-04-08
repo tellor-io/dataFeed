@@ -6,6 +6,7 @@ import { GraphContext } from '../contexts/Graph'
 import { ModeContext } from '../contexts/Mode'
 //Components
 import LinearIndeterminate from './LinearIndeterminate'
+import { flexbox } from '@mui/system'
 
 function AllFeeds() {
   //Context State
@@ -16,6 +17,7 @@ function AllFeeds() {
   const [loadMoreClicks, setLoadMoreClicks] = useState(1)
   const [viewing, setViewing] = useState(null)
   const [loadMoreButton, setLoadMoreButton] = useState(true)
+  const [filtering, setFiltering] = useState(false)
 
   useEffect(() => {
     if (!graphData.decodedData) return
@@ -69,13 +71,17 @@ function AllFeeds() {
             data={viewing}
             filterByItem={filterByItem}
             allData={graphData}
+            setFiltering={setFiltering}
           />
           <button
             className={
               mode.mode === 'dark' ? 'AllFeeds__Button' : 'AllFeeds__ButtonDark'
             }
             onClick={handleLoadMore}
-            style={{ cursor: loadMoreButton ? 'pointer' : 'not-allowed' }}
+            style={{
+              cursor: loadMoreButton ? 'pointer' : 'not-allowed',
+              display: filtering ? 'none' : 'flex',
+            }}
           >
             {loadMoreButton ? 'load more' : 'viewing last 50 reports'}
           </button>
