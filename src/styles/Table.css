@@ -1,6 +1,7 @@
 .Table {
   display: flex;
   flex-direction: column;
+  user-select: none;
 }
 .TH__Header {
   width: 100%;
@@ -159,6 +160,7 @@
   text-align: left;
   padding: 14px 0px 10px 0px;
   border-bottom: 1px solid #ffffff;
+  transition: 0.2s;
   animation: fadeIn 1.5s forwards;
 }
 .TableBodyDark {
@@ -168,6 +170,7 @@
   text-align: left;
   padding: 14px 0px 10px 0px;
   border-bottom: 1px solid #262626;
+  transition: 0.2s;
   animation: fadeIn 1.5s forwards;
 }
 .TableBodyNoMatches {
