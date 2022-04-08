@@ -8,7 +8,7 @@ import LinearIndeterminate from './LinearIndeterminate'
 
 function AllFeeds() {
   //Context State
-  const data = useContext(GraphContext)
+  const graphData = useContext(GraphContext)
   //Component State
   const [clippedData, setClippedData] = useState(null)
   const [loadMoreClicks, setLoadMoreClicks] = useState(1)
@@ -16,13 +16,13 @@ function AllFeeds() {
   const [loadMoreButton, setLoadMoreButton] = useState(true)
 
   useEffect(() => {
-    if (!data.decodedData) return
-    setClippedData(data.decodedData.slice(0, 50))
+    if (!graphData.decodedData) return
+    setClippedData(graphData.decodedData.slice(0, 50))
 
     return () => {
       setClippedData(null)
     }
-  }, [data.decodedData])
+  }, [graphData.decodedData])
 
   useEffect(() => {
     if (!clippedData) return
@@ -46,11 +46,28 @@ function AllFeeds() {
     }
   }
 
+  const filterByItem = (column, data) => {
+    switch (column) {
+      case 'symbol':
+        break
+      case 'chain':
+        break
+      case 'reporter':
+        break
+      default:
+        return
+    }
+  }
+
   return (
     <>
-      {data && data.decodedData ? (
+      {graphData && graphData.decodedData ? (
         <div className="AllFeedsView">
-          <Table data={viewing} />
+          <Table
+            data={viewing}
+            filterByItem={filterByItem}
+            allData={graphData}
+          />
           <button
             className="AllFeeds__Button"
             onClick={handleLoadMore}
