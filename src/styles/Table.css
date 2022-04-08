@@ -14,10 +14,29 @@
   align-items: center;
   margin-top: 20px;
 }
+.TH__HeaderSpecial {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start !important;
+}
+.TH__HeaderDiv {
+  flex: 0.2;
+  display: flex;
+  align-items: center;
+}
 .TH__Header > th > h1 {
   font-size: 12px;
   font-weight: 300;
   padding-right: 8px;
+}
+.TH__HeaderDiv > h1 {
+  font-size: 12px;
+  font-weight: 300;
+  padding-right: 8px;
+}
+.TH__HeaderDiv > svg {
+  width: 14px;
+  height: 14px;
 }
 .FilterIcon {
   cursor: pointer;
@@ -28,14 +47,53 @@
 }
 .TableFilterDropdown {
   display: none;
-  width: 200px;
-  height: 100px;
-  background-color: #262626;
-  border: 2px solid #ffffff;
+  flex-direction: column;
+  padding: 8px;
+  width: fit-content;
+  height: 180px;
+  background: #fafafa;
+  border-bottom: 2px solid #20f092;
+  color: #262626;
   z-index: 10;
   position: absolute;
-  margin-top: 100px;
-  margin-left: 100px;
+  margin-top: 20px;
+  margin-left: 3rem;
+}
+.TableFilterDropdown > h3 {
+  margin-bottom: 10px;
+}
+.DropdownResults {
+  overflow: auto;
+  height: 100%;
+}
+.DropdownDataRow {
+  display: flex;
+  align-items: center;
+  width: 160px;
+  height: 25px;
+  justify-content: space-between;
+  border-bottom: 1px solid #262626;
+  cursor: pointer;
+}
+.DropdownButtons {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  padding-top: 8px;
+}
+.DropdownButtons > button {
+  flex: 0.45;
+  height: 1.5rem;
+  font-family: 'Inconsolata';
+  cursor: pointer;
+}
+.DropdownApply {
+  background-color: #20f092;
+  border: 1px solid #20f092;
+}
+.DropdownClear {
+  background-color: transparent;
+  border: 1px solid #20f092;
 }
 .TableBody {
   width: 100%;

@@ -1,7 +1,6 @@
 .HeroInnerContainer {
   margin: 0px 100px;
   height: fit-content;
-  border: 1px solid blue;
 }
 .HeroHeader {
   font-family: 'Montserrat', sans-serif;
