@@ -3,12 +3,14 @@ import '../styles/AllFeeds.css'
 import Table from './Table'
 //Context
 import { GraphContext } from '../contexts/Graph'
+import { ModeContext } from '../contexts/Mode'
 //Components
 import LinearIndeterminate from './LinearIndeterminate'
 
 function AllFeeds() {
   //Context State
   const graphData = useContext(GraphContext)
+  const mode = useContext(ModeContext)
   //Component State
   const [clippedData, setClippedData] = useState(null)
   const [loadMoreClicks, setLoadMoreClicks] = useState(1)
@@ -69,7 +71,9 @@ function AllFeeds() {
             allData={graphData}
           />
           <button
-            className="AllFeeds__Button"
+            className={
+              mode.mode === 'dark' ? 'AllFeeds__Button' : 'AllFeeds__ButtonDark'
+            }
             onClick={handleLoadMore}
             style={{ cursor: loadMoreButton ? 'pointer' : 'not-allowed' }}
           >

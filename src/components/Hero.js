@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 //ReactRouterDom
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 //Styles
@@ -7,11 +7,14 @@ import '../styles/Hero.css'
 import AllFeeds from '../components/AllFeeds.js'
 //Contexts
 import Graph from '../contexts/Graph'
+import { ModeContext } from '../contexts/Mode'
 
 function Hero() {
   //Component State
   const [active, setActive] = useState(true)
   const [inactive, setInactive] = useState(true) //eslint-disable-line
+  //
+  const mode = useContext(ModeContext)
 
   //useEffect for routing
   useEffect(() => {
@@ -34,32 +37,22 @@ function Hero() {
   return (
     <div className="HeroInnerContainer">
       <h1 className="HeroHeader">Your Oracle at Work</h1>
-      <p className="HeroMainText">
-        <strong>Tellor status:</strong>
-        <br />
-        100% of funded data feeds are currently reporting
-      </p>
-      <p className="HeroMainText">
-        <strong>Chains:</strong>
-        <br />
-        Ethereum Mainnet
-        <br />
-        Rinkeby Testnet
-        <br />
-        Polygon Mainnet
-        <br />
-        Mumbai Testnet
-      </p>
       <Graph>
         <Router>
-          <div className="HeroNavLinks">
-            <Link
+          <div
+            className={
+              mode && mode.mode === 'dark'
+                ? 'HeroNavLinks'
+                : 'HeroNavLinksLight'
+            }
+          >
+            {/* <Link
               to="/"
               className={active ? 'ActiveLink' : 'InactiveLink'}
               onClick={() => activeHelper('AllFeeds')}
             >
               All Feeds
-            </Link>
+            </Link> */}
           </div>
           <div className="HeroSection">
             <Routes>

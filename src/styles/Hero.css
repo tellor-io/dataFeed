@@ -18,10 +18,22 @@
 .HeroNavLinks {
   display: flex;
   line-height: 28px;
+  transition: 0.3s;
+}
+.HeroNavLinksLight {
+  display: flex;
+  line-height: 28px;
+  transition: 0.3s;
 }
 .HeroNavLinks > a {
   color: #ffffff;
   margin-right: 35px;
+  transition: 0.3s;
+}
+.HeroNavLinksLight > a {
+  color: #262626;
+  margin-right: 35px;
+  transition: 0.3s;
 }
 .ActiveLink {
   padding-bottom: 3px;
