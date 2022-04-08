@@ -10,7 +10,7 @@ import { truncateAddr } from '../utils/helpers'
 //Contexts
 import { ModeContext } from '../contexts/Mode'
 
-function Table({ data, filterByItem, allData }) {
+function Table({ data, filterByItem, allData, setFiltering }) {
   //Component State
   const [tableData, setTableData] = useState([])
   //
@@ -157,40 +157,250 @@ function Table({ data, filterByItem, allData }) {
   }
   const handleFilterApply = (filterType, cleared) => {
     let filteredData = []
+    let symbolFilter = false
+    let symbols = []
+    let chainFilter = false
+    let chains = []
+    let reporterFilter = false
+    let reporters = []
+    //
+    let makesTheCut = []
 
     if (cleared) {
       if (cleared.length > 0) {
         allData.decodedData.forEach((event) => {
           cleared.forEach((filter) => {
-            if (
-              filter.filterValue === event.decodedValueName ||
-              filter.filterValue === event.chain ||
-              filter.filterValue === event.decodedReporter
-            ) {
-              filteredData.push(event)
+            if (filter.filterType === 'symbol') {
+              symbolFilter = true
+              if (!symbols.includes(filter.filterValue)) {
+                symbols.push(filter.filterValue)
+              }
+            } else if (filter.filterType === 'chain') {
+              chainFilter = true
+              if (!chains.includes(filter.filterValue)) {
+                chains.push(filter.filterValue)
+              }
+            } else if (filter.filterType === 'reporter') {
+              reporterFilter = true
+              if (!reporters.includes(filter.filterValue)) {
+                reporters.push(filter.filterValue)
+              }
+            }
+
+            switch (true) {
+              //For all 3 filterTypes
+              case symbolFilter && chainFilter && reporterFilter:
+                symbols.forEach((symbol) => {
+                  chains.forEach((chain) => {
+                    reporters.forEach((reporter) => {
+                      if (
+                        event.decodedValueName === symbol &&
+                        event.chain === chain &&
+                        event.decodedReporter === reporter
+                      ) {
+                        if (makesTheCut.includes(event)) {
+                        } else {
+                          makesTheCut.push(event)
+                        }
+                      }
+                    })
+                  })
+                })
+                break
+              //For 2 filterTypes
+              case symbolFilter && chainFilter:
+                symbols.forEach((symbol) => {
+                  chains.forEach((chain) => {
+                    if (
+                      event.decodedValueName === symbol &&
+                      event.chain === chain
+                    ) {
+                      if (makesTheCut.includes(event)) {
+                      } else {
+                        makesTheCut.push(event)
+                      }
+                    }
+                  })
+                })
+                break
+              case symbolFilter && reporterFilter:
+                symbols.forEach((symbol) => {
+                  reporters.forEach((reporter) => {
+                    if (
+                      event.decodedValueName === symbol &&
+                      event.decodedReporter === reporter
+                    ) {
+                      if (makesTheCut.includes(event)) {
+                      } else {
+                        makesTheCut.push(event)
+                      }
+                    }
+                  })
+                })
+                break
+              case chainFilter && reporterFilter:
+                chains.forEach((chain) => {
+                  reporters.forEach((reporter) => {
+                    if (
+                      event.chain === chain &&
+                      event.decodedReporter === reporter
+                    ) {
+                      if (makesTheCut.includes(event)) {
+                      } else {
+                        makesTheCut.push(event)
+                      }
+                    }
+                  })
+                })
+                break
+              //For single category filterTypes
+              case symbolFilter:
+                if (filter.filterValue === event.decodedValueName) {
+                  filteredData.push(event)
+                }
+                break
+              case chainFilter:
+                if (filter.filterValue === event.chain) {
+                  filteredData.push(event)
+                }
+                break
+              case reporterFilter:
+                if (filter.filterValue === event.decodedReporter) {
+                  filteredData.push(event)
+                }
+                break
+              default:
+                return
             }
           })
         })
-        setTableData(filteredData)
+        if (makesTheCut.length > 0) {
+          setTableData(makesTheCut)
+        } else {
+          setTableData(filteredData)
+        }
+        setFiltering(true)
       } else {
         setTableData(data)
+        setFiltering(false)
       }
     } else {
       if (allFilters.length > 0) {
         allData.decodedData.forEach((event) => {
           allFilters.forEach((filter) => {
-            if (
-              filter.filterValue === event.decodedValueName ||
-              filter.filterValue === event.chain ||
-              filter.filterValue === event.decodedReporter
-            ) {
-              filteredData.push(event)
+            if (filter.filterType === 'symbol') {
+              symbolFilter = true
+              if (!symbols.includes(filter.filterValue)) {
+                symbols.push(filter.filterValue)
+              }
+            } else if (filter.filterType === 'chain') {
+              chainFilter = true
+              if (!chains.includes(filter.filterValue)) {
+                chains.push(filter.filterValue)
+              }
+            } else if (filter.filterType === 'reporter') {
+              reporterFilter = true
+              if (!reporters.includes(filter.filterValue)) {
+                reporters.push(filter.filterValue)
+              }
+            }
+
+            switch (true) {
+              //For all 3 filterTypes
+              case symbolFilter && chainFilter && reporterFilter:
+                symbols.forEach((symbol) => {
+                  chains.forEach((chain) => {
+                    reporters.forEach((reporter) => {
+                      if (
+                        event.decodedValueName === symbol &&
+                        event.chain === chain &&
+                        event.decodedReporter === reporter
+                      ) {
+                        if (makesTheCut.includes(event)) {
+                        } else {
+                          makesTheCut.push(event)
+                        }
+                      }
+                    })
+                  })
+                })
+                break
+              //For 2 filterTypes
+              case symbolFilter && chainFilter:
+                symbols.forEach((symbol) => {
+                  chains.forEach((chain) => {
+                    if (
+                      event.decodedValueName === symbol &&
+                      event.chain === chain
+                    ) {
+                      if (makesTheCut.includes(event)) {
+                      } else {
+                        makesTheCut.push(event)
+                      }
+                    }
+                  })
+                })
+                break
+              case symbolFilter && reporterFilter:
+                symbols.forEach((symbol) => {
+                  reporters.forEach((reporter) => {
+                    if (
+                      event.decodedValueName === symbol &&
+                      event.decodedReporter === reporter
+                    ) {
+                      if (makesTheCut.includes(event)) {
+                      } else {
+                        makesTheCut.push(event)
+                      }
+                    }
+                  })
+                })
+                break
+              case chainFilter && reporterFilter:
+                chains.forEach((chain) => {
+                  reporters.forEach((reporter) => {
+                    if (
+                      event.chain === chain &&
+                      event.decodedReporter === reporter
+                    ) {
+                      if (makesTheCut.includes(event)) {
+                      } else {
+                        makesTheCut.push(event)
+                      }
+                    }
+                  })
+                })
+                break
+              //For single category filterTypes
+              case symbolFilter:
+                if (filter.filterValue === event.decodedValueName) {
+                  filteredData.push(event)
+                }
+                break
+              case chainFilter:
+                if (filter.filterValue === event.chain) {
+                  filteredData.push(event)
+                }
+                break
+              case reporterFilter:
+                if (filter.filterValue === event.decodedReporter) {
+                  filteredData.push(event)
+                }
+                break
+              default:
+                return
             }
           })
         })
-        setTableData(filteredData)
+        if (makesTheCut.length > 0) {
+          setTableData(makesTheCut)
+        } else {
+          setTableData(filteredData)
+        }
+        setFiltering(true)
       } else {
         setTableData(data)
+        setFiltering(false)
       }
     }
 
@@ -239,7 +449,6 @@ function Table({ data, filterByItem, allData }) {
         return
     }
   }
-  console.log('allFilters', allFilters)
 
   return (
     <table className="Table">
@@ -491,7 +700,7 @@ function Table({ data, filterByItem, allData }) {
         </tr>
       </thead>
       <tbody>
-        {tableData &&
+        {tableData && tableData.length > 0 ? (
           tableData.map((event) => (
             <tr
               key={event.id}
@@ -509,7 +718,12 @@ function Table({ data, filterByItem, allData }) {
               </td>
               <td className="TB__DateTime">{event.decodedTime}</td>
             </tr>
-          ))}
+          ))
+        ) : (
+          <tr className="TableBodyNoMatches">
+            <td>Data Doesn't Match Entries</td>
+          </tr>
+        )}
       </tbody>
     </table>
   )
