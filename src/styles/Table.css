@@ -170,6 +170,15 @@
   border-bottom: 1px solid #262626;
   animation: fadeIn 1.5s forwards;
 }
+.TableBodyNoMatches {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin-top: 40px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid #20f092;
+}
 .TB__Symbols {
   flex: 0.2;
   font-size: 20px;
