@@ -9,12 +9,40 @@
   background-color: #262626;
   color: #ffffff;
   font-family: 'Inconsolata', monospace;
+  transition: 0.3s;
 }
 .HeroContainer {
   width: 92%;
-  height: 100%;
+  min-height: 60vh;
+  max-height: 100%;
   display: flex;
   flex-direction: column;
   background-color: #262626;
   margin-bottom: 100px;
+  transition: 0.3s;
+}
+
+/* LIGHT MODE STYLES */
+.AppLight {
+  width: 100%;
+  max-height: 100%;
+  min-height: 100vh;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #fafafa;
+  color: #262626;
+  font-family: 'Inconsolata', monospace;
+  transition: 0.3s;
+}
+.HeroContainerLight {
+  width: 92%;
+  min-height: 60vh;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: #fafafa;
+  margin-bottom: 100px;
+  transition: 0.3s;
 }

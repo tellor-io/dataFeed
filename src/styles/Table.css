@@ -1,6 +1,7 @@
 .Table {
   display: flex;
   flex-direction: column;
+  transition: 0.3s;
 }
 .TH__Header {
   width: 100%;
@@ -41,6 +42,17 @@
 .FilterIcon {
   cursor: pointer;
 }
+.FilterIcon > path {
+  fill: #ffffff;
+  transition: 0.3s;
+}
+.FilterIconDark {
+  cursor: pointer;
+}
+.FilterIconDark > path {
+  fill: #262626;
+  transition: 0.3s;
+}
 .TH__Header > th > svg {
   width: 14px;
   height: 14px;
@@ -59,7 +71,24 @@
   margin-top: 20px;
   margin-left: 3rem;
 }
+.TableFilterDropdownDark {
+  display: none;
+  flex-direction: column;
+  padding: 8px;
+  width: fit-content;
+  height: 180px;
+  background: #262626;
+  border-bottom: 2px solid #20f092;
+  color: #fafafa;
+  z-index: 10;
+  position: absolute;
+  margin-top: 20px;
+  margin-left: 3rem;
+}
 .TableFilterDropdown > h3 {
+  margin-bottom: 10px;
+}
+.TableFilterDropdownDark > h3 {
   margin-bottom: 10px;
 }
 .DropdownResults {
@@ -75,13 +104,37 @@
   border-bottom: 1px solid #262626;
   cursor: pointer;
 }
+.DropdownDataRowDark {
+  display: flex;
+  align-items: center;
+  width: 160px;
+  height: 25px;
+  justify-content: space-between;
+  border-bottom: 1px solid #fafafa;
+  cursor: pointer;
+}
+.DropdownCheckDark > path {
+  fill: #fafafa;
+}
 .DropdownButtons {
   width: 100%;
   display: flex;
   justify-content: space-around;
   padding-top: 8px;
 }
+.DropdownButtonsDark {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  padding-top: 8px;
+}
 .DropdownButtons > button {
+  flex: 0.45;
+  height: 1.5rem;
+  font-family: 'Inconsolata';
+  cursor: pointer;
+}
+.DropdownButtonsDark > button {
   flex: 0.45;
   height: 1.5rem;
   font-family: 'Inconsolata';
@@ -95,6 +148,11 @@
   background-color: transparent;
   border: 1px solid #20f092;
 }
+.DropdownClearDark {
+  background-color: transparent;
+  border: 1px solid #20f092;
+  color: #fafafa;
+}
 .TableBody {
   width: 100%;
   display: flex;
@@ -102,6 +160,14 @@
   text-align: left;
   padding: 14px 0px 10px 0px;
   border-bottom: 1px solid #ffffff;
+}
+.TableBodyDark {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  text-align: left;
+  padding: 14px 0px 10px 0px;
+  border-bottom: 1px solid #262626;
 }
 .TB__Symbols {
   flex: 0.2;

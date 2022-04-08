@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState, useContext } from 'react'
 import '../styles/Table.css'
 import { ReactComponent as FilterIcon } from '../assets/filter_outline.svg'
 import { ReactComponent as FilterIconFilled } from '../assets/filter.svg'
@@ -7,6 +7,8 @@ import { ReactComponent as Checked } from '../assets/done.svg'
 import { Jazzicon } from '@ukstv/jazzicon-react'
 //Utils
 import { truncateAddr } from '../utils/helpers'
+//Contexts
+import { ModeContext } from '../contexts/Mode'
 
 function Table({ data, filterByItem, allData }) {
   //Component State
@@ -28,6 +30,8 @@ function Table({ data, filterByItem, allData }) {
   const symbolRef = useRef()
   const chainRef = useRef()
   const reporterRef = useRef()
+  //Contexts
+  const mode = useContext(ModeContext)
 
   // console.log(data)
   //useEffect for tableData
@@ -246,30 +250,49 @@ function Table({ data, filterByItem, allData }) {
               <h1>SYMBOLS</h1>
               {symbolClicked ? (
                 <FilterIconFilled
-                  className="FilterIcon"
+                  className={
+                    mode.mode === 'dark' ? 'FilterIcon' : 'FilterIconDark'
+                  }
                   onClick={() => handleClose('symbol')}
                 />
               ) : (
                 <FilterIcon
-                  className="FilterIcon"
+                  className={
+                    mode.mode === 'dark' ? 'FilterIcon' : 'FilterIconDark'
+                  }
                   onClick={() => handleClick('symbol')}
                 />
               )}
             </div>
-            <div className="TableFilterDropdown" ref={symbolRef}>
+            <div
+              className={
+                mode.mode === 'dark'
+                  ? 'TableFilterDropdown'
+                  : 'TableFilterDropdownDark'
+              }
+              ref={symbolRef}
+            >
               <h3>filter by symbol</h3>
               <div className="DropdownResults">
                 {reportedSymbols &&
                   reportedSymbols.map((symbol) => (
                     <div
                       key={symbol}
-                      className="DropdownDataRow"
+                      className={
+                        mode.mode === 'dark'
+                          ? 'DropdownDataRow'
+                          : 'DropdownDataRowDark'
+                      }
                       onClick={() => handleFilter('symbol', symbol)}
                     >
                       {symbolFilters.includes(symbol) ? (
                         <>
                           <p>{symbol}</p>
-                          <Checked />
+                          <Checked
+                            className={
+                              mode.mode === 'dark' ? '' : 'DropdownCheckDark'
+                            }
+                          />
                         </>
                       ) : (
                         <p>{symbol}</p>
@@ -277,7 +300,13 @@ function Table({ data, filterByItem, allData }) {
                     </div>
                   ))}
               </div>
-              <div className="DropdownButtons">
+              <div
+                className={
+                  mode.mode === 'dark'
+                    ? 'DropdownButtons'
+                    : 'DropdownButtonsDark'
+                }
+              >
                 <button
                   className="DropdownApply"
                   onClick={() => handleFilterApply('symbol')}
@@ -285,7 +314,9 @@ function Table({ data, filterByItem, allData }) {
                   Apply
                 </button>
                 <button
-                  className="DropdownClear"
+                  className={
+                    mode.mode === 'dark' ? 'DropdownClear' : 'DropdownClearDark'
+                  }
                   onClick={() => handleFilterClear('symbol')}
                 >
                   Clear
@@ -301,30 +332,49 @@ function Table({ data, filterByItem, allData }) {
               <h1>CHAIN</h1>
               {chainClicked ? (
                 <FilterIconFilled
-                  className="FilterIcon"
+                  className={
+                    mode.mode === 'dark' ? 'FilterIcon' : 'FilterIconDark'
+                  }
                   onClick={() => handleClose('chain')}
                 />
               ) : (
                 <FilterIcon
-                  className="FilterIcon"
+                  className={
+                    mode.mode === 'dark' ? 'FilterIcon' : 'FilterIconDark'
+                  }
                   onClick={() => handleClick('chain')}
                 />
               )}
             </div>
-            <div className="TableFilterDropdown" ref={chainRef}>
+            <div
+              className={
+                mode.mode === 'dark'
+                  ? 'TableFilterDropdown'
+                  : 'TableFilterDropdownDark'
+              }
+              ref={chainRef}
+            >
               <h3>filter by chain</h3>
               <div className="DropdownResults">
                 {reportedChains &&
                   reportedChains.map((chain) => (
                     <div
                       key={chain}
-                      className="DropdownDataRow"
+                      className={
+                        mode.mode === 'dark'
+                          ? 'DropdownDataRow'
+                          : 'DropdownDataRowDark'
+                      }
                       onClick={() => handleFilter('chain', chain)}
                     >
                       {chainFilters.includes(chain) ? (
                         <>
                           <p>{chain}</p>
-                          <Checked />
+                          <Checked
+                            className={
+                              mode.mode === 'dark' ? '' : 'DropdownCheckDark'
+                            }
+                          />
                         </>
                       ) : (
                         <p>{chain}</p>
@@ -332,7 +382,13 @@ function Table({ data, filterByItem, allData }) {
                     </div>
                   ))}
               </div>
-              <div className="DropdownButtons">
+              <div
+                className={
+                  mode.mode === 'dark'
+                    ? 'DropdownButtons'
+                    : 'DropdownButtonsDark'
+                }
+              >
                 <button
                   className="DropdownApply"
                   onClick={() => handleFilterApply('chain')}
@@ -340,7 +396,9 @@ function Table({ data, filterByItem, allData }) {
                   Apply
                 </button>
                 <button
-                  className="DropdownClear"
+                  className={
+                    mode.mode === 'dark' ? 'DropdownClear' : 'DropdownClearDark'
+                  }
                   onClick={() => handleFilterClear('chain')}
                 >
                   Clear
@@ -353,30 +411,49 @@ function Table({ data, filterByItem, allData }) {
               <h1>REPORTER</h1>
               {reporterClicked ? (
                 <FilterIconFilled
-                  className="FilterIcon"
+                  className={
+                    mode.mode === 'dark' ? 'FilterIcon' : 'FilterIconDark'
+                  }
                   onClick={() => handleClose('reporter')}
                 />
               ) : (
                 <FilterIcon
-                  className="FilterIcon"
+                  className={
+                    mode.mode === 'dark' ? 'FilterIcon' : 'FilterIconDark'
+                  }
                   onClick={() => handleClick('reporter')}
                 />
               )}
             </div>
-            <div className="TableFilterDropdown" ref={reporterRef}>
+            <div
+              className={
+                mode.mode === 'dark'
+                  ? 'TableFilterDropdown'
+                  : 'TableFilterDropdownDark'
+              }
+              ref={reporterRef}
+            >
               <h3>filter by reporter</h3>
               <div className="DropdownResults">
                 {reportedReporters &&
                   reportedReporters.map((reporter) => (
                     <div
                       key={reporter}
-                      className="DropdownDataRow"
+                      className={
+                        mode.mode === 'dark'
+                          ? 'DropdownDataRow'
+                          : 'DropdownDataRowDark'
+                      }
                       onClick={() => handleFilter('reporter', reporter)}
                     >
                       {reporterFilters.includes(reporter) ? (
                         <>
                           <p>{truncateAddr(reporter)}</p>
-                          <Checked />
+                          <Checked
+                            className={
+                              mode.mode === 'dark' ? '' : 'DropdownCheckDark'
+                            }
+                          />
                         </>
                       ) : (
                         <p>{truncateAddr(reporter)}</p>
@@ -384,7 +461,13 @@ function Table({ data, filterByItem, allData }) {
                     </div>
                   ))}
               </div>
-              <div className="DropdownButtons">
+              <div
+                className={
+                  mode.mode === 'dark'
+                    ? 'DropdownButtons'
+                    : 'DropdownButtonsDark'
+                }
+              >
                 <button
                   className="DropdownApply"
                   onClick={() => handleFilterApply('reporter')}
@@ -392,7 +475,9 @@ function Table({ data, filterByItem, allData }) {
                   Apply
                 </button>
                 <button
-                  className="DropdownClear"
+                  className={
+                    mode.mode === 'dark' ? 'DropdownClear' : 'DropdownClearDark'
+                  }
                   onClick={() => handleFilterClear('reporter')}
                 >
                   Clear
@@ -408,7 +493,10 @@ function Table({ data, filterByItem, allData }) {
       <tbody>
         {tableData &&
           tableData.map((event) => (
-            <tr key={event.id} className="TableBody">
+            <tr
+              key={event.id}
+              className={mode.mode === 'dark' ? 'TableBody' : 'TableBodyDark'}
+            >
               <td className="TB__Symbols">{event.decodedValueName}</td>
               <td className="TB__Value">{event.decodedValue}</td>
               <td className="TB__Chain">{event.chain}</td>
