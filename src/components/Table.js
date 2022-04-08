@@ -62,12 +62,10 @@ function Table({ data, filterByItem, allData }) {
       setReportedChains(null)
       setReportedReporters(null)
     }
-  }, [allData && allData.decodedData])
+  }, [allData])
 
   //Handlers
   const handleClick = (iconType) => {
-    let dropdown
-
     switch (iconType) {
       case 'symbol':
         setSymbolClicked(true)
@@ -106,13 +104,18 @@ function Table({ data, filterByItem, allData }) {
   }
   const handleFilter = (filterType, filterValue) => {
     let temp
+    let allFiltersTemp
     let allFiltersObj = { filterType: filterType, filterValue: filterValue }
+
     switch (filterType) {
       case 'symbol':
         if (symbolFilters.includes(filterValue)) {
           temp = symbolFilters.filter((filters) => filters !== filterValue)
+          allFiltersTemp = allFilters.filter(
+            (filters) => filters.filterValue !== filterValue
+          )
           setSymbolFilters(temp)
-          setAllFilters([...allFilters, allFiltersObj])
+          setAllFilters(allFiltersTemp)
         } else {
           setSymbolFilters([...symbolFilters, filterValue])
           setAllFilters([...allFilters, allFiltersObj])
@@ -121,8 +124,11 @@ function Table({ data, filterByItem, allData }) {
       case 'chain':
         if (chainFilters.includes(filterValue)) {
           temp = chainFilters.filter((filters) => filters !== filterValue)
+          allFiltersTemp = allFilters.filter(
+            (filters) => filters.filterValue !== filterValue
+          )
           setChainFilters(temp)
-          setAllFilters([...allFilters, allFiltersObj])
+          setAllFilters(allFiltersTemp)
         } else {
           setChainFilters([...chainFilters, filterValue])
           setAllFilters([...allFilters, allFiltersObj])
@@ -131,8 +137,11 @@ function Table({ data, filterByItem, allData }) {
       case 'reporter':
         if (reporterFilters.includes(filterValue)) {
           temp = reporterFilters.filter((filters) => filters !== filterValue)
+          allFiltersTemp = allFilters.filter(
+            (filters) => filters.filterValue !== filterValue
+          )
           setReporterFilters(temp)
-          setAllFilters([...allFilters, allFiltersObj])
+          setAllFilters(allFiltersTemp)
         } else {
           setReporterFilters([...reporterFilters, filterValue])
           setAllFilters([...allFilters, allFiltersObj])
@@ -142,22 +151,43 @@ function Table({ data, filterByItem, allData }) {
         return
     }
   }
-  const handleFilterApply = (filterType) => {
+  const handleFilterApply = (filterType, cleared) => {
     let filteredData = []
-    if (allFilters.length > 0) {
-      allData.decodedData.forEach((event) => {
-        allFilters.forEach((filter) => {
-          if (
-            filter.filterValue === event.decodedValueName ||
-            filter.filterValue === event.chain ||
-            filter.filterValue === event.decodedReporter
-          ) {
-            filteredData.push(event)
-          }
+
+    if (cleared) {
+      if (cleared.length > 0) {
+        allData.decodedData.forEach((event) => {
+          cleared.forEach((filter) => {
+            if (
+              filter.filterValue === event.decodedValueName ||
+              filter.filterValue === event.chain ||
+              filter.filterValue === event.decodedReporter
+            ) {
+              filteredData.push(event)
+            }
+          })
         })
-      })
+        setTableData(filteredData)
+      } else {
+        setTableData(data)
+      }
     } else {
-      setTableData(data)
+      if (allFilters.length > 0) {
+        allData.decodedData.forEach((event) => {
+          allFilters.forEach((filter) => {
+            if (
+              filter.filterValue === event.decodedValueName ||
+              filter.filterValue === event.chain ||
+              filter.filterValue === event.decodedReporter
+            ) {
+              filteredData.push(event)
+            }
+          })
+        })
+        setTableData(filteredData)
+      } else {
+        setTableData(data)
+      }
     }
 
     switch (filterType) {
@@ -173,44 +203,39 @@ function Table({ data, filterByItem, allData }) {
       default:
         return
     }
-    setTableData(filteredData)
   }
   const handleFilterClear = (filterType) => {
+    let cleared
     switch (filterType) {
       case 'symbol':
-        handleClose('symbol')
-        allFilters.forEach((filter) => {
-          if (filter.filterType === 'symbol') {
-            allFilters.pop()
-          }
-        })
-        handleFilterApply()
+        cleared = allFilters.filter(
+          (filters) => filters.filterType !== filterType
+        )
+        setAllFilters(cleared)
+        handleFilterApply('symbol', cleared)
         setSymbolFilters([])
         break
       case 'chain':
-        handleClose('chain')
-        allFilters.forEach((filter) => {
-          if (filter.filterType === 'chain') {
-            allFilters.pop()
-          }
-        })
+        cleared = allFilters.filter(
+          (filters) => filters.filterType !== filterType
+        )
+        setAllFilters(cleared)
+        handleFilterApply('chain', cleared)
         setChainFilters([])
         break
       case 'reporter':
-        handleClose('reporter')
-        allFilters.forEach((filter) => {
-          if (filter.filterType === 'reporter') {
-            allFilters.pop()
-          }
-        })
+        cleared = allFilters.filter(
+          (filters) => filters.filterType !== filterType
+        )
+        setAllFilters(cleared)
+        handleFilterApply('reporter', cleared)
         setReporterFilters([])
         break
       default:
         return
     }
   }
-
-  console.log(allFilters)
+  console.log('allFilters', allFilters)
 
   return (
     <table className="Table">

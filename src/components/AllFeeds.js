@@ -14,10 +14,6 @@ function AllFeeds() {
   const [loadMoreClicks, setLoadMoreClicks] = useState(1)
   const [viewing, setViewing] = useState(null)
   const [loadMoreButton, setLoadMoreButton] = useState(true)
-  //Table Filtering
-  const [symbol, setSymbol] = useState([])
-  const [chain, setChain] = useState([])
-  const [reporter, setReporter] = useState([])
 
   useEffect(() => {
     if (!graphData.decodedData) return
