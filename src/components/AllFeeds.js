@@ -49,26 +49,12 @@ function AllFeeds() {
     }
   }
 
-  const filterByItem = (column, data) => {
-    switch (column) {
-      case 'symbol':
-        break
-      case 'chain':
-        break
-      case 'reporter':
-        break
-      default:
-        return
-    }
-  }
-
   return (
     <>
       {graphData && graphData.decodedData ? (
         <div className="AllFeedsView">
           <Table
             data={viewing}
-            filterByItem={filterByItem}
             allData={graphData}
             setFiltering={setFiltering}
           />

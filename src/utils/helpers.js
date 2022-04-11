@@ -151,6 +151,7 @@ export const decodingMiddleware = (reportEvents) => {
     let queryData
     let queryDataPartial
     let finalQueryData
+    let temp
     event.id = event.id + event._nonce + event.chain.split(' ')[0]
     event.decodedTime = getDate(event._time)
     event.decodedReporter = web3.utils.toChecksumAddress(event._reporter)
@@ -165,16 +166,35 @@ export const decodingMiddleware = (reportEvents) => {
         ['string', 'bytes'],
         event._queryData
       )
-      if (queryDataPartial[0] === 'LegacyRequest') {
-        event.queryId = parseInt(Number(queryDataPartial[1]), 10)
-        queryDataParsers[queryDataPartial[0] || 'Default'](event)
-      } else if (queryDataPartial[0] === 'SpotPrice') {
-        finalQueryData = queryDataPartial = web3.eth.abi.decodeParameters(
-          ['string', 'string'],
-          queryDataPartial[1]
-        )
-        event.queryDataObj = finalQueryData
-        queryDataParsers['SpotPriceProper' || 'Default'](event)
+      switch (queryDataPartial[0]) {
+        case 'LegacyRequest':
+          event.queryId = parseInt(Number(queryDataPartial[1]), 10)
+          queryDataParsers[queryDataPartial[0] || 'Default'](event)
+          break
+        case 'SpotPrice':
+          finalQueryData = web3.eth.abi.decodeParameters(
+            ['string', 'string'],
+            queryDataPartial[1]
+          )
+          event.queryDataObj = finalQueryData
+          queryDataParsers['SpotPriceProper' || 'Default'](event)
+          break
+        case 'Snapshot':
+          finalQueryData = web3.eth.abi.decodeParameters(
+            ['string'],
+            queryDataPartial[1]
+          )
+          event.snapshotProposalId = finalQueryData[0]
+          temp = web3.eth.abi.decodeParameters(
+            ['uint256', 'uint256'],
+            event._value
+          )
+          event.tempValues = temp
+          queryDataParsers['Snapshot' || 'Default'](event)
+          break
+        default:
+          queryDataParsers['Default'](event)
+          return event
       }
     }
     return event
