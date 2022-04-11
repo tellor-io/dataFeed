@@ -10,7 +10,7 @@ import { truncateAddr } from '../utils/helpers'
 //Contexts
 import { ModeContext } from '../contexts/Mode'
 
-function Table({ data, filterByItem, allData, setFiltering }) {
+function Table({ data, allData, setFiltering }) {
   //Component State
   const [tableData, setTableData] = useState([])
   //
@@ -86,7 +86,6 @@ function Table({ data, filterByItem, allData, setFiltering }) {
       default:
         return
     }
-    filterByItem('symbol', allData)
   }
   const handleClose = (iconType) => {
     switch (iconType) {
