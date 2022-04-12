@@ -118,18 +118,18 @@ export const queryDataParsers = {
         return event
     }
   },
-  Snapshot: (event) => {
-    switch (event.snapshotProposalId) {
-      case '1':
-        event.decodedValueName = `SPID: ${event.snapshotProposalId}`
-        event.decodedValue = `[${event.tempValues[0]}, ${event.tempValues[1]}]`
-        return event
-      default:
-        event.decodedValueName = 'New Snapshot Type'
-        event.decodedValue = '0'
-        return event
-    }
-  },
+  // Snapshot: (event) => {
+  //   switch (event) {
+  //     case '1':
+  //       event.decodedValueName = `SPID: ${event.snapshotProposalId}`
+  //       event.decodedValue = `[${event.tempValues[0]}, ${event.tempValues[1]}]`
+  //       return event
+  //     default:
+  //       event.decodedValueName = 'New Snapshot Type'
+  //       event.decodedValue = '0'
+  //       return event
+  //   }
+  // },
   Default: (event) => {
     switch (event.queryId) {
       case 8:

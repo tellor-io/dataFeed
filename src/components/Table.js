@@ -48,7 +48,11 @@ function Table({ data, allData, setFiltering }) {
     let reporters = []
     allData.decodedData.forEach((event) => {
       if (!symbols.includes(event.decodedValueName) && event.decodedValueName) {
-        symbols.push(event.decodedValueName)
+        if (event.feedType === 'Snapshot' && !symbols.includes('Snapshot')) {
+          symbols.push('Snapshot')
+        } else if (!event.feedType) {
+          symbols.push(event.decodedValueName)
+        }
       }
       if (!chains.includes(event.chain)) {
         chains.push(event.chain)
@@ -193,7 +197,8 @@ function Table({ data, allData, setFiltering }) {
                   chains.forEach((chain) => {
                     reporters.forEach((reporter) => {
                       if (
-                        event.decodedValueName === symbol &&
+                        (filter.filterValue === event.decodedValueName ||
+                          filter.filterValue === event.feedType) &&
                         event.chain === chain &&
                         event.decodedReporter === reporter
                       ) {
@@ -211,7 +216,8 @@ function Table({ data, allData, setFiltering }) {
                 symbols.forEach((symbol) => {
                   chains.forEach((chain) => {
                     if (
-                      event.decodedValueName === symbol &&
+                      (filter.filterValue === event.decodedValueName ||
+                        filter.filterValue === event.feedType) &&
                       event.chain === chain
                     ) {
                       if (makesTheCut.includes(event)) {
@@ -226,7 +232,8 @@ function Table({ data, allData, setFiltering }) {
                 symbols.forEach((symbol) => {
                   reporters.forEach((reporter) => {
                     if (
-                      event.decodedValueName === symbol &&
+                      (filter.filterValue === event.decodedValueName ||
+                        filter.filterValue === event.feedType) &&
                       event.decodedReporter === reporter
                     ) {
                       if (makesTheCut.includes(event)) {
@@ -254,7 +261,10 @@ function Table({ data, allData, setFiltering }) {
                 break
               //For single category filterTypes
               case symbolFilter:
-                if (filter.filterValue === event.decodedValueName) {
+                if (
+                  filter.filterValue === event.decodedValueName ||
+                  filter.filterValue === event.feedType
+                ) {
                   filteredData.push(event)
                 }
                 break
@@ -311,7 +321,8 @@ function Table({ data, allData, setFiltering }) {
                   chains.forEach((chain) => {
                     reporters.forEach((reporter) => {
                       if (
-                        event.decodedValueName === symbol &&
+                        (event.decodedValueName === symbol ||
+                          event.feedType === symbol) &&
                         event.chain === chain &&
                         event.decodedReporter === reporter
                       ) {
@@ -329,7 +340,8 @@ function Table({ data, allData, setFiltering }) {
                 symbols.forEach((symbol) => {
                   chains.forEach((chain) => {
                     if (
-                      event.decodedValueName === symbol &&
+                      (event.decodedValueName === symbol ||
+                        event.feedType === symbol) &&
                       event.chain === chain
                     ) {
                       if (makesTheCut.includes(event)) {
@@ -344,7 +356,8 @@ function Table({ data, allData, setFiltering }) {
                 symbols.forEach((symbol) => {
                   reporters.forEach((reporter) => {
                     if (
-                      event.decodedValueName === symbol &&
+                      (event.decodedValueName === symbol ||
+                        event.feedType === symbol) &&
                       event.decodedReporter === reporter
                     ) {
                       if (makesTheCut.includes(event)) {
@@ -372,7 +385,10 @@ function Table({ data, allData, setFiltering }) {
                 break
               //For single category filterTypes
               case symbolFilter:
-                if (filter.filterValue === event.decodedValueName) {
+                if (
+                  filter.filterValue === event.decodedValueName ||
+                  filter.filterValue === event.feedType
+                ) {
                   filteredData.push(event)
                 }
                 break
