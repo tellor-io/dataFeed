@@ -28,12 +28,16 @@ function Footer() {
       <p className="FooterText">&copy; 2022 Tellor, Inc.</p>
       <div className="ModeSwitcher">
         <p className="ModeSwitcherText">
-          {mode.mode === 'dark'
+          {mode && mode.mode === 'dark'
             ? 'Switch to Light Mode'
             : 'Switch to Dark Mode'}
         </p>
         <ThemeProvider theme={theme}>
-          <CustomSwitch {...label} defaultChecked onClick={mode.changeMode} />
+          <CustomSwitch
+            {...label}
+            checked={mode && mode.mode === 'dark' ? true : false}
+            onClick={mode.changeMode}
+          />
         </ThemeProvider>
       </div>
     </div>
