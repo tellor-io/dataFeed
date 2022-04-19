@@ -112,6 +112,20 @@ export const queryDataParsers = {
           currency: 'USD',
         }).format(parseInt(Number(event._value), 10) / eighteenDecimals)
         return event
+      case 'mkr':
+        event.decodedValueName = `${event.queryDataObj[0].toUpperCase()}/${event.queryDataObj[1].toUpperCase()}`
+        event.decodedValue = new Intl.NumberFormat('en-EN', {
+          style: 'currency',
+          currency: 'USD',
+        }).format(parseInt(Number(event._value), 10))
+        return event
+      case 'usdc':
+        event.decodedValueName = `${event.queryDataObj[0].toUpperCase()}/${event.queryDataObj[1].toUpperCase()}`
+        event.decodedValue = new Intl.NumberFormat('en-EN', {
+          style: 'currency',
+          currency: 'USD',
+        }).format(parseInt(Number(event._value), 10) / eighteenDecimals)
+        return event
       default:
         event.decodedValueName = 'New SpotPriceProper Type'
         event.decodedValue = '0'
