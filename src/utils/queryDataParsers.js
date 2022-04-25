@@ -93,7 +93,6 @@ export const queryDataParsers = {
         return event
       case 'dai':
         event.decodedValueName = `${event.queryDataObj[0].toUpperCase()}/${event.queryDataObj[1].toUpperCase()}`
-
         event.decodedValue = (
           parseInt(Number(event._value), 10) / eighteenDecimals
         ).toString()
@@ -120,6 +119,34 @@ export const queryDataParsers = {
         }).format(parseInt(Number(event._value), 10))
         return event
       case 'usdc':
+        event.decodedValueName = `${event.queryDataObj[0].toUpperCase()}/${event.queryDataObj[1].toUpperCase()}`
+        event.decodedValue = new Intl.NumberFormat('en-EN', {
+          style: 'currency',
+          currency: 'USD',
+        }).format(parseInt(Number(event._value), 10) / eighteenDecimals)
+        return event
+      case 'vsq':
+        event.decodedValueName = `${event.queryDataObj[0].toUpperCase()}/${event.queryDataObj[1].toUpperCase()}`
+        event.decodedValue = new Intl.NumberFormat('en-EN', {
+          style: 'currency',
+          currency: 'USD',
+        }).format(parseInt(Number(event._value), 10) / eighteenDecimals)
+        return event
+      case 'idle':
+        event.decodedValueName = `${event.queryDataObj[0].toUpperCase()}/${event.queryDataObj[1].toUpperCase()}`
+        event.decodedValue = new Intl.NumberFormat('en-EN', {
+          style: 'currency',
+          currency: 'USD',
+        }).format(parseInt(Number(event._value), 10) / eighteenDecimals)
+        return event
+      case 'sushi':
+        event.decodedValueName = `${event.queryDataObj[0].toUpperCase()}/${event.queryDataObj[1].toUpperCase()}`
+        event.decodedValue = new Intl.NumberFormat('en-EN', {
+          style: 'currency',
+          currency: 'USD',
+        }).format(parseInt(Number(event._value), 10) / eighteenDecimals)
+        return event
+      case 'matic':
         event.decodedValueName = `${event.queryDataObj[0].toUpperCase()}/${event.queryDataObj[1].toUpperCase()}`
         event.decodedValue = new Intl.NumberFormat('en-EN', {
           style: 'currency',
