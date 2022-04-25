@@ -93,9 +93,9 @@ export const queryDataParsers = {
         return event
       case 'dai':
         event.decodedValueName = `${event.queryDataObj[0].toUpperCase()}/${event.queryDataObj[1].toUpperCase()}`
-        event.decodedValue = (
+        event.decodedValue = `$${(
           parseInt(Number(event._value), 10) / eighteenDecimals
-        ).toString()
+        ).toString()}`
         return event
       case 'ric':
         event.decodedValueName = `${event.queryDataObj[0].toUpperCase()}/${event.queryDataObj[1].toUpperCase()}`
@@ -116,7 +116,7 @@ export const queryDataParsers = {
         event.decodedValue = new Intl.NumberFormat('en-EN', {
           style: 'currency',
           currency: 'USD',
-        }).format(parseInt(Number(event._value), 10))
+        }).format(parseInt(event._value) / eighteenDecimals)
         return event
       case 'usdc':
         event.decodedValueName = `${event.queryDataObj[0].toUpperCase()}/${event.queryDataObj[1].toUpperCase()}`

@@ -163,7 +163,7 @@ const Graph = ({ children }) => {
     decodedData: decodedData,
   }
 
-  console.log('graphMumbaiData', graphMumbaiData)
+  //console.log('graphRinkebyData', graphRinkebyData)
 
   return (
     <GraphContext.Provider value={GraphContextObj}>
