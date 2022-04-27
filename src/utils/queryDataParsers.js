@@ -87,7 +87,7 @@ export const queryDataParsers = {
     switch (event.queryDataObj[0]) {
       case 'ohm':
         event.decodedValueName = `${event.queryDataObj[0].toUpperCase()}/${event.queryDataObj[1].toUpperCase()}`
-        event.decodedValue = `$${
+        event.decodedValue = `${
           parseInt(Number(event._value), 10) / eighteenDecimals
         }`
         return event

@@ -128,18 +128,22 @@ const Graph = ({ children }) => {
     let eventsArray = []
     graphMainnetData.data.newReportEntities.forEach((event) => {
       event.chain = 'Ethereum Mainnet'
+      event.txnLink = `https://etherscan.io/tx/${event.txnHash}`
       eventsArray.push(event)
     })
     graphRinkebyData.data.newReportEntities.forEach((event) => {
       event.chain = 'Rinkeby Testnet'
+      event.txnLink = `https://rinkeby.etherscan.io/tx/${event.txnHash}`
       eventsArray.push(event)
     })
     graphMaticData.data.newReportEntities.forEach((event) => {
       event.chain = 'Polygon Mainnet'
+      event.txnLink = `https://polygonscan.com/tx/${event.txnHash}`
       eventsArray.push(event)
     })
     graphMumbaiData.data.newReportEntities.forEach((event) => {
       event.chain = 'Mumbai Testnet'
+      event.txnLink = `https://mumbai.polygonscan.com/tx/${event.txnHash}`
       eventsArray.push(event)
     })
     let sorted = sortDataByProperty('_time', eventsArray)
@@ -163,7 +167,7 @@ const Graph = ({ children }) => {
     decodedData: decodedData,
   }
 
-  //console.log('graphRinkebyData', graphRinkebyData)
+  // console.log('graphMainnetData', graphMainnetData)
 
   return (
     <GraphContext.Provider value={GraphContextObj}>
