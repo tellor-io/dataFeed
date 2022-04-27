@@ -464,6 +464,9 @@ function Table({ data, allData, setFiltering }) {
         return
     }
   }
+  const handleRowClick = (txnLink) => {
+    window.open(txnLink, '_blank').focus()
+  }
 
   return (
     <table className="Table">
@@ -720,6 +723,7 @@ function Table({ data, allData, setFiltering }) {
             <tr
               key={event.id}
               className={mode.mode === 'dark' ? 'TableBody' : 'TableBodyDark'}
+              onClick={() => handleRowClick(event.txnLink)}
             >
               <td className="TB__Symbols">{event.decodedValueName}</td>
               <td className="TB__Value">{event.decodedValue}</td>

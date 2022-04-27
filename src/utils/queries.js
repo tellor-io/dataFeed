@@ -10,6 +10,7 @@ export const reporterQuery = gql`
       _time
       _value
       _reporter
+      txnHash
     }
   }
 `
@@ -25,6 +26,7 @@ export const reporterWRewardQuery = gql`
       _time
       _value
       _reporter
+      txnHash
     }
   }
 `

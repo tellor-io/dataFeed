@@ -163,6 +163,10 @@
   transition: 0.2s;
   animation: fadeIn 1.5s forwards;
 }
+.TableBody:hover {
+  background-color: #363636;
+  cursor: pointer;
+}
 .TableBodyDark {
   width: 100%;
   display: flex;
@@ -172,6 +176,10 @@
   border-bottom: 1px solid #262626;
   transition: 0.2s;
   animation: fadeIn 1.5s forwards;
+}
+.TableBodyDark:hover {
+  background-color: #ececec;
+  cursor: pointer;
 }
 .TableBodyNoMatches {
   width: 100%;
