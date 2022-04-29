@@ -37,7 +37,7 @@
   <h2 align="center">Tellor Data Feed</h2>
 
   <p align="center">
-    The Tellor Data Feed gives users one place to go for everything Tellor related. Click on one of the transactions to see more. 
+    The Tellor Data Feed gathers the reporter activity on every supported chain to show the aliveness of the Tellor Oracle! 
     <br />
     <br />
     <a href="https://github.com/tellor-io/dataFeed/issues">Report Bug</a>
@@ -65,7 +65,6 @@
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
-    <li><a href="#usage">Usage</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
@@ -81,17 +80,11 @@
 
 [![Product Name Screen Shot][screenshot]](https://github.com/tellor-io/dataFeed)
 
-The idea behind the frontend boilerplate is to cut down development time, by creating a reusable module that contains helpful, necessary and reoccurring web3 frontend capabilities. This includes, but is not limited to: 
-
-* MetaMask/WalletConnect connectivity
-* Light/Dark Mode
-* Consistent Navbar and Footer
-
-A .prettierrc.js file is included so that if you use the prettier extension, you can set your settings in your text editor to only format on save if this file is present. This way you can keep your formatting preferences unique to your local machine and only affect repos that contain a file like this. This keeps other projects in Tellor.io with whatever formatting is unique to the developers working on them. 
-
 ### Built With
 
 * [React](https://reactjs.org/)
+* [The Graph](https://thegraph.com/docs/en/)
+* [Apollo](https://www.apollographql.com/docs/react/)
 * [web3](https://web3js.readthedocs.io/en/v1.7.3/)
 * [ethers.js](https://docs.ethers.io/v5/)
 * [jazzicon-react](https://www.npmjs.com/package/@ukstv/jazzicon-react)
@@ -140,18 +133,6 @@ To get a local copy up and running follow these simple steps.
    ```sh
    npm start
    ```
-
-
-<!-- USAGE EXAMPLES -->
-## Usage
-
-Use this project to quickly spin up new Tellor frontends! Below are some examples of Tellor apps that use this template: 
-
-<div>
-  <img src="https://user-images.githubusercontent.com/21370350/165304994-7ee7a9cc-0ac3-459b-afc0-b533c8de4240.png" alt="Project example" width="30%" height="100%">
-  <img src="https://user-images.githubusercontent.com/21370350/165304921-9366d525-4443-4b2b-81e5-7e6923d92956.png" alt="Project example" width="30%" height="100%">
-  <img src="https://user-images.githubusercontent.com/21370350/165305095-9c6f2d3d-2d23-4a81-a146-ac10c6b19848.png" alt="Project example" width="30%" height="100%">
-</div>
 
 <!-- ROADMAP -->
 ## Roadmap
