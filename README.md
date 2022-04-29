@@ -37,7 +37,7 @@
   <h2 align="center">Tellor Data Feed</h2>
 
   <p align="center">
-    This project is a GitHub template used to quickly start up Tellor Frontends. To add more features so all Tellor web3 apps can share the functionality, click on 'Request Feature' below and be sure to detail your specs. 
+    The Tellor Data Feed gives users one place to go for everything Tellor related. Click on one of the transactions to see more. 
     <br />
     <br />
     <a href="https://github.com/tellor-io/dataFeed/issues">Report Bug</a>
@@ -202,4 +202,4 @@ Tellor.io
 [issues-url]: https://github.com/tellor-io/dataFeed/issues
 [license-shield]: https://img.shields.io/github/license/tellor-io/dataFeed.svg?style=for-the-badge
 [license-url]: https://github.com/tellor-io/dataFeed/blob/main/LICENSE.txt
-[screenshot]: https://user-images.githubusercontent.com/21370350/165333548-16d1b97c-4c16-435e-9349-c70716c394b5.png
+[screenshot]: https://user-images.githubusercontent.com/21370350/165868096-5e8a5a6e-b010-4c62-a99d-6e1b8261fa96.png
