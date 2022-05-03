@@ -9,19 +9,19 @@ export const GraphContext = createContext()
 
 //ApolloClients
 const clientMainnet = new ApolloClient({
-  uri: 'https://api.thegraph.com/subgraphs/name/joshuasamaniego/tellorx-mh-oracle',
+  uri: 'https://api.thegraph.com/subgraphs/name/tellor-io/tellorxoraclemainhgraph',
   cache: new InMemoryCache(),
 })
 const clientRinkeby = new ApolloClient({
-  uri: 'https://api.thegraph.com/subgraphs/name/joshuasamaniego/tellorx-rh-oracle',
+  uri: 'https://api.thegraph.com/subgraphs/name/tellor-io/tellorxoraclerinkhgraph',
   cache: new InMemoryCache(),
 })
 const clientMatic = new ApolloClient({
-  uri: 'https://api.thegraph.com/subgraphs/name/joshuasamaniego/tellor-flex-polyh-oracle',
+  uri: 'https://api.thegraph.com/subgraphs/name/tellor-io/tellorflexoraclematichgraph',
   cache: new InMemoryCache(),
 })
 const clientMumbai = new ApolloClient({
-  uri: 'https://api.thegraph.com/subgraphs/name/joshuasamaniego/tellor-flex-mumh-oracle',
+  uri: 'https://api.thegraph.com/subgraphs/name/tellor-io/tellorflexoraclemumbaihgraph',
   cache: new InMemoryCache(),
 })
 
