@@ -186,12 +186,12 @@ export const decodingMiddleware = (reportEvents) => {
           )
           event.snapshotProposalId = parseInt(finalQueryData[0])
           temp = web3.eth.abi.decodeParameters(
-            ['uint256', 'uint256'],
+            ['bool'],
             event._value
           )
           event.feedType = 'Snapshot'
           event.decodedValueName = `Snap: ${event.snapshotProposalId}`
-          event.decodedValue = `[${temp[0]}, ${temp[1]}]`
+          event.decodedValue = `[${temp[0]}]`
           return event
         // queryDataParsers['Snapshot' || 'Default'](event)
         // break
