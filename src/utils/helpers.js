@@ -179,6 +179,21 @@ export const decodingMiddleware = (reportEvents) => {
           event.queryDataObj = finalQueryData
           queryDataParsers['SpotPriceProper' || 'Default'](event)
           break
+        case 'TellorRNG':
+          finalQueryData = web3.eth.abi.decodeParameters(
+            ['uint'],
+            queryDataPartial[1]
+          )
+          temp = web3.eth.abi.decodeParameters(
+            ['uint256'],
+            event._value
+          )
+          event.feedType = 'TellorRNG'
+          event.decodedValueName = `TellorRNG`
+          let t1  = `[${temp[0]}]`
+          console.log(t1)
+          event.decodedValue = t1.slice(1,7) + "..."
+          return event
         case 'Snapshot':
           finalQueryData = web3.eth.abi.decodeParameters(
             ['string'],
