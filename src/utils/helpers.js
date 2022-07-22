@@ -5,7 +5,7 @@ import { queryDataParsers } from './queryDataParsers'
 const web3 = new Web3(window.ethereum)
 const tellorAddressMainnet = '0x88dF592F8eb5D7Bd38bFeF7dEb0fBc02cf3778a0'
 const tellorAddressPolygon = '0xE3322702BEdaaEd36CdDAb233360B939775ae5f1'
-const tellorAddressMumbai = '0x45cAF1aae42BA5565EC92362896cc8e0d55a2126'
+const tellorAddressMumbai = '0xce4e32fe9d894f8185271aa990d2db425df3e6be'
 const tellorAddressGoerli = '0x002E861910D7f87BAa832A22Ac436F25FB66FA24'
 
 const getDate = (timestamp) => {
@@ -158,9 +158,12 @@ export const decodingMiddleware = (reportEvents) => {
     event.queryId = parseInt(Number(event._queryId), 10)
 
     if (event._queryData && event._queryData.length <= 104) {
-      queryData = JSON.parse(hex2a(event._queryData))
+      try {queryData = JSON.parse(hex2a(event._queryData))
       event.queryDataObj = queryData
       queryDataParsers[queryData?.type || queryData?.Type || 'Default'](event)
+      } catch {
+        event.queryDataObj='0x'
+      }
     } else if (event._queryData && event._queryData.length > 104) {
       queryDataPartial = web3.eth.abi.decodeParameters(
         ['string', 'bytes'],
