@@ -158,9 +158,12 @@ export const decodingMiddleware = (reportEvents) => {
     event.queryId = parseInt(Number(event._queryId), 10)
 
     if (event._queryData && event._queryData.length <= 104) {
-      queryData = JSON.parse(hex2a(event._queryData))
+      try {queryData = JSON.parse(hex2a(event._queryData))
       event.queryDataObj = queryData
       queryDataParsers[queryData?.type || queryData?.Type || 'Default'](event)
+      } catch {
+        event.queryDataObj='0x'
+      }
     } else if (event._queryData && event._queryData.length > 104) {
       queryDataPartial = web3.eth.abi.decodeParameters(
         ['string', 'bytes'],
