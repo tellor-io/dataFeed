@@ -182,6 +182,14 @@ export const decodingMiddleware = (reportEvents) => {
           event.queryDataObj = finalQueryData
           queryDataParsers['SpotPriceProper' || 'Default'](event)
           break
+        case 'CurrencyExchangeRate':
+            finalQueryData = web3.eth.abi.decodeParameters(
+              ['string', 'string'],
+              queryDataPartial[1]
+            )
+            event.queryDataObj = finalQueryData
+            queryDataParsers['EUR/USD' || 'Default'](event)
+            break
         case 'TellorRNG':
           finalQueryData = web3.eth.abi.decodeParameters(
             ['uint'],
