@@ -14,10 +14,13 @@ export const queryDataParsers = {
         return event
       case 2:
         event.decodedValueName = psrLookup[event.queryId].name
-        event.decodedValue = new Intl.NumberFormat('en-EN', {
+        try {event.decodedValue = new Intl.NumberFormat('en-EN', {
           style: 'currency',
           currency: 'USD',
         }).format(event._value / 1000000)
+      } catch {
+        event.decodedValue='disputed'
+      }
         return event
       case 3:
         event.decodedValueName = psrLookup[event.queryId].name
@@ -153,6 +156,13 @@ export const queryDataParsers = {
           currency: 'USD',
         }).format(parseInt(Number(event._value), 10) / eighteenDecimals)
         return event
+      case 'eur':
+          event.decodedValueName = `${event.queryDataObj[0].toUpperCase()}/${event.queryDataObj[1].toUpperCase()}`
+          event.decodedValue = new Intl.NumberFormat('en-EN', {
+            style: 'currency',
+            currency: 'USD',
+          }).format(parseInt(Number(event._value), 10) / eighteenDecimals)
+          return event
       default:
         event.decodedValueName = 'New SpotPriceProper Type'
         event.decodedValue = '0'
