@@ -24,6 +24,10 @@ const clientMumbai = new ApolloClient({
   uri: 'https://api.thegraph.com/subgraphs/name/tellor-io/tellorflexoraclemumbaihgraph',
   cache: new InMemoryCache(),
 })
+const clientOptkov = new ApolloClient({
+  uri: 'https://api.thegraph.com/subgraphs/name/raynharr/tellorflexoracleoptimismkovanhgraph',
+  cache: new InMemoryCache(),
+})
 
 const Graph = ({ children }) => {
   //Component State
@@ -31,6 +35,7 @@ const Graph = ({ children }) => {
   const [graphRinkebyData, setGraphRinkebyData] = useState({})
   const [graphMaticData, setGraphMaticData] = useState({})
   const [graphMumbaiData, setGraphMumbaiData] = useState({})
+  const [graphOptkovData, setGraphOptkovData] = useState({})
   const [allGraphData, setAllGraphData] = useState(null)
   const [decodedData, setDecodedData] = useState(null)
 
@@ -56,6 +61,12 @@ const Graph = ({ children }) => {
   //Mumbai
   const mumbai = useQuery(reporterQuery, {
     client: clientMumbai,
+    fetchPolicy: 'network-only',
+    pollInterval: 5000,
+  })
+  //optimism(kovan)
+  const optkov = useQuery(reporterQuery, {
+    client: clientOptkov,
     fetchPolicy: 'network-only',
     pollInterval: 5000,
   })
@@ -114,6 +125,19 @@ const Graph = ({ children }) => {
       setGraphMumbaiData({})
     }
   }, [mumbai.data, mumbai.loading, mumbai.error]) //eslint-disable-line
+  //Optkov
+  useEffect(() => {
+    if (!optkov) return
+    setGraphOptkovData({
+      data: optkov.data,
+      loading: optkov.loading,
+      error: optkov.error,
+    })
+
+    return () => {
+      setGraphOptkovData({})
+    }
+  }, [optkov.data, optkov.loading, optkov.error]) //eslint-disable-line
 
   //For conglomerating data
   useEffect(() => {
@@ -121,7 +145,8 @@ const Graph = ({ children }) => {
       !graphMainnetData.data ||
       !graphRinkebyData.data ||
       !graphMaticData.data ||
-      !graphMumbaiData.data
+      !graphMumbaiData.data ||
+      !graphOptkovData.data
     )
       return
 
@@ -146,13 +171,18 @@ const Graph = ({ children }) => {
       event.txnLink = `https://mumbai.polygonscan.com/tx/${event.txnHash}`
       eventsArray.push(event)
     })
+    graphOptkovData.data.newReportEntities.forEach((event) => {
+      event.chain = 'Optimism Testnet'
+      event.txnLink = `https://kovan-optimistic.etherscan.io/tx/${event.txnHash}`
+      eventsArray.push(event)
+    })
     let sorted = sortDataByProperty('_time', eventsArray)
     setAllGraphData(sorted)
 
     return () => {
       setAllGraphData(null)
     }
-  }, [graphMainnetData, graphRinkebyData, graphMaticData, graphMumbaiData])
+  }, [graphMainnetData, graphRinkebyData, graphMaticData, graphMumbaiData, graphOptkovData])
 
   useEffect(() => {
     if (!allGraphData) return
