@@ -2,7 +2,7 @@ import React, { useState, createContext, useEffect } from 'react'
 //The Graph
 import { ApolloClient, InMemoryCache, useQuery } from '@apollo/client'
 //Utils
-import { reporterQuery } from '../utils/queries'
+import { reporterQuery, autopayQuery } from '../utils/queries'
 import { decodingMiddleware, sortDataByProperty } from '../utils/helpers'
 
 export const GraphContext = createContext()
@@ -46,6 +46,11 @@ const Graph = ({ children }) => {
     fetchPolicy: 'network-only',
     pollInterval: 5000,
   })
+  const mainPay = useQuery(autopayQuery, {
+    client: clientMainnet,
+    fetchPolicy: 'network-only',
+    pollInterval: 5000,
+  })
   //Rinkeby
   const rinkeby = useQuery(reporterQuery, {
     client: clientRinkeby,
@@ -71,6 +76,7 @@ const Graph = ({ children }) => {
     pollInterval: 5000,
   })
 
+  console.log(mainPay, 'mainnet')
   //useEffects for listening to reponses
   //from ApolloClient queries
   //Mainnet

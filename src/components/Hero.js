@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import '../styles/Hero.css'
 //Components
 import AllFeeds from '../components/AllFeeds.js'
+import AllTips from './AllTips'
 //Contexts
 import Graph from '../contexts/Graph'
 import { ModeContext } from '../contexts/Mode'
@@ -58,6 +59,7 @@ function Hero() {
             <Routes>
               <Route exact path="/" element={<AllFeeds />} />
             </Routes>
+            <AllTips />
           </div>
         </Router>
       </Graph>

@@ -2,14 +2,12 @@ import React, { useContext, useEffect, useState } from 'react'
 import '../styles/AllFeeds.css'
 import Table from './Table'
 //Context
-import { GraphContext } from '../contexts/Graph'
 import { ModeContext } from '../contexts/Mode'
 //Components
 import LinearIndeterminate from './LinearIndeterminate'
 
-function AllFeeds() {
+function AllTips() {
   //Context State
-  const graphData = useContext(GraphContext)
   const mode = useContext(ModeContext)
   //Component State
   const [clippedData, setClippedData] = useState(null)
@@ -18,14 +16,6 @@ function AllFeeds() {
   const [loadMoreButton, setLoadMoreButton] = useState(true)
   const [filtering, setFiltering] = useState(false)
 
-  useEffect(() => {
-    if (!graphData.decodedData) return
-    setClippedData(graphData.decodedData.slice(0, 50))
-
-    return () => {
-      setClippedData(null)
-    }
-  }, [graphData.decodedData])
 
   useEffect(() => {
     if (!clippedData) return
@@ -49,15 +39,13 @@ function AllFeeds() {
     }
   }
 
-  console.log(graphData.decodedData, 'here')
-
   return (
     <>
-      {graphData && graphData.decodedData ? (
+      {1==2 ? (
         <div className="AllFeedsView">
           <Table
             data={viewing}
-            allData={graphData}
+            allData={''}
             setFiltering={setFiltering}
           />
           <button
@@ -82,4 +70,4 @@ function AllFeeds() {
   )
 }
 
-export default AllFeeds
+export default AllTips
