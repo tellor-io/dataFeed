@@ -87,7 +87,7 @@ const Graph = ({ children }) => {
       loading: mainnet.loading,
       error: mainnet.error,
     })
-
+    console.log('checker', mainnet.data)
     return () => {
       setGraphMainnetData({})
     }

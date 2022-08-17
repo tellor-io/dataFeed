@@ -1,13 +1,18 @@
 import React, { useContext, useEffect, useState } from 'react'
 import '../styles/AllFeeds.css'
+import { GraphContext } from '../contexts/Graph'
 import Table from './Table'
+import TipTable from './TipTable'
 //Context
+import { GraphAutopay } from '../archived/contexts/GraphAutopay'
 import { ModeContext } from '../contexts/Mode'
 //Components
 import LinearIndeterminate from './LinearIndeterminate'
 
 function AllTips() {
   //Context State
+  const autoPayData = useContext(GraphAutopay)
+  const graphData = useContext(GraphContext)
   const mode = useContext(ModeContext)
   //Component State
   const [clippedData, setClippedData] = useState(null)
@@ -16,6 +21,16 @@ function AllTips() {
   const [loadMoreButton, setLoadMoreButton] = useState(true)
   const [filtering, setFiltering] = useState(false)
 
+  console.log(autoPayData, 'did we hit the jackpot')
+
+  useEffect(() => {
+    if (!graphData.decodedData) return
+    setClippedData(graphData.decodedData.slice(0, 50))
+
+    return () => {
+      setClippedData(null)
+    }
+  }, [graphData.decodedData])
 
   useEffect(() => {
     if (!clippedData) return
@@ -41,11 +56,11 @@ function AllTips() {
 
   return (
     <>
-      {1==2 ? (
+      {graphData && graphData.decodedData ? (
         <div className="AllFeedsView">
-          <Table
+          <TipTable
             data={viewing}
-            allData={''}
+            allData={graphData}
             setFiltering={setFiltering}
           />
           <button

@@ -1,10 +1,10 @@
 import React, { useState, createContext, useEffect, useContext } from 'react'
 //Contexts
-import { UserContext } from '../contexts/User'
+import { UserContext } from '../../contexts/User'
 //The Graph
 import { ApolloClient, InMemoryCache, useQuery } from '@apollo/client'
 //Utils
-import { autopayQuery } from '../utils/queries'
+import { autopayQuery } from '../../utils/queries'
 import autopayABI from '../utils/autopayABI.json'
 
 export const GraphAutopayContext = createContext()
