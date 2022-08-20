@@ -4,14 +4,14 @@ import { GraphContext } from '../contexts/Graph'
 import Table from './Table'
 import TipTable from './TipTable'
 //Context
-import { GraphAutopay } from '../archived/contexts/GraphAutopay'
+import { GraphAutopay, GraphAutopayContext } from '../contexts/GraphAutopay'
 import { ModeContext } from '../contexts/Mode'
 //Components
 import LinearIndeterminate from './LinearIndeterminate'
 
 function AllTips() {
   //Context State
-  const autoPayData = useContext(GraphAutopay)
+  const autoPayData = useContext(GraphAutopayContext)
   const graphData = useContext(GraphContext)
   const mode = useContext(ModeContext)
   //Component State
