@@ -6,6 +6,7 @@ import { ApolloClient, InMemoryCache, useQuery } from '@apollo/client'
 //Utils
 import { autopayQuery } from '../utils/queries'
 import autopayABI from '../utils/autopayABI.json'
+import { sortDataByProperty } from '../utils/helpers'
 
 export const GraphAutopayContext = createContext()
 
@@ -24,6 +25,7 @@ const GraphAutopay = ({ children }) => {
   const [autopayMaticData, setAutopayMaticData] = useState({})
   const [autopayMumbaiData, setAutopayMumbaiData] = useState({})
   const [decodedData, setDecodedData] = useState(null)
+  const [allGraphData, setAllGraphData] = useState(null)
   //Context State
   const user = useContext(UserContext)
   //Matic
@@ -114,7 +116,7 @@ const GraphAutopay = ({ children }) => {
       loading: matic.loading,
       error: matic.error,
     })
-
+    console.log('autopayMaticData', matic.data)
     return () => {
       setAutopayMaticData({})
     }
@@ -127,34 +129,52 @@ const GraphAutopay = ({ children }) => {
       loading: mumbai.loading,
       error: mumbai.error,
     })
-
+    console.log('autopayMaticData', matic.data)
     return () => {
       setAutopayMumbaiData({})
     }
   }, [mumbai.data, mumbai.loading, mumbai.error]) //eslint-disable-line
 
+  //useEffects for decoding autopay events
   useEffect(() => {
-    if (!autopayMaticData || !autopayMumbaiData || !user.currentUser) return
+    if (!autopayMaticData.data || !autopayMumbaiData ) return
 
-    if (user.currentUser.network === 'matic') {
-      setDecodedData(decodingAutopayMiddleware(autopayMaticData))
-    } else if (user.currentUser.network === 'mumbai') {
-      setDecodedData(decodingAutopayMiddleware(autopayMumbaiData))
+    let eventsArray = []
+
+    autopayMaticData.data.tipAddedEntities.forEach((event) => {
+      event.chain = 'Polygon Mainnet'
+      event.txnLink = `https://polygonscan.com/tx/${event.txnHash}`
+      eventsArray.push(event)
+    })
+    autopayMumbaiData.data.tipAddedEntities.forEach((event) => {
+      event.chain = 'Mumbai Testnet'
+      event.txnLink = `https://mumbai.polygonscan.com/tx/${event.txnHash}`
+      eventsArray.push(event)
+    })
+
+    let sorted = sortDataByProperty('_time', eventsArray)
+    setAllGraphData(sorted)
+
+    return () => {
+      setAllGraphData(null)
     }
+  })
+
+  useEffect(() => {
+    if (!allGraphData) return
+    setDecodedData(decodingMiddleware(allGraphData))
 
     return () => {
       setDecodedData(null)
     }
-  }, [
-    autopayMaticData,
-    autopayMumbaiData,
-    user.currentUser && user.currentUser.network,
-  ]) //eslint-disable-line
+  }, [allGraphData])
 
   const GraphAutopayContextObj = {
     decodedData: decodedData,
   }
 
+
+  console.log(GraphAutopayContextObj, 'dos')
   console.log('decodedData something', decodedData)
 
   return (
