@@ -24,13 +24,13 @@ function AllTips() {
   console.log(autoPayData, 'did we hit the jackpot')
 
   useEffect(() => {
-    if (!graphData.decodedData) return
-    setClippedData(graphData.decodedData.slice(0, 50))
+    if (!autoPayData.decodedData) return
+    setClippedData(autoPayData.decodedData.slice(0, 50))
 
     return () => {
       setClippedData(null)
     }
-  }, [graphData.decodedData])
+  }, [autoPayData.decodedData])
 
   useEffect(() => {
     if (!clippedData) return
@@ -56,11 +56,11 @@ function AllTips() {
 
   return (
     <>
-      {graphData && graphData.decodedData ? (
+      {autoPayData && autoPayData.decodedData ? (
         <div className="AllFeedsView">
           <TipTable
             data={viewing}
-            allData={graphData}
+            allData={autoPayData}
             setFiltering={setFiltering}
           />
           <button

@@ -7,6 +7,7 @@ import { ApolloClient, InMemoryCache, useQuery } from '@apollo/client'
 import { autopayQuery } from '../utils/queries'
 import autopayABI from '../utils/autopayABI.json'
 import { sortDataByProperty } from '../utils/helpers'
+import { decodingMiddleware } from '../utils/helpers'
 
 export const GraphAutopayContext = createContext()
 
@@ -41,70 +42,6 @@ const GraphAutopay = ({ children }) => {
     pollInterval: 5000,
   })
   //Helpers
-  const decodingAutopayMiddleware = (autopayEvents) => {
-    if (!user.currentUser) return
-    //Globals
-    let feedFundedEntities = autopayEvents.data.dataFeedFundedEntities
-    let setupFeedEntities = autopayEvents.data.newDataFeedEntities
-    let feedIdParams = {}
-    //Contract Instances
-    const autopayContractMatic = new user.currentUser.web3.eth.Contract(
-      autopayABI,
-      '0x671d444D1fF68393d260D754c2303B9a4f51a8E8'
-    )
-    const autopayContractMumbai = new user.currentUser.web3.eth.Contract(
-      autopayABI,
-      '0xf27C4d5551a9127D649E2b99f6Ffa9604B85973d'
-    )
-
-    console.log('feedFundedEntities', feedFundedEntities)
-    console.log('setupFeedEntities', setupFeedEntities)
-
-    if (user.currentUser.network === 'matic') {
-      feedFundedEntities.map((event) => {
-        autopayContractMatic.methods
-          .getDataFeed(event._feedId, event._queryId)
-          .call()
-          .then((res) => {
-            console.log('res', res)
-            feedIdParams.balance = res.balance
-            feedIdParams.interval = res.interval
-            feedIdParams.reward = res.reward
-            feedIdParams.startTime = res.startTime
-            feedIdParams.token = res.token
-            feedIdParams.window = res.window
-            event.feedIdParams = feedIdParams
-            return event
-          })
-          .catch((err) =>
-            console.log('Error in autopay contract call', err.message)
-          )
-      })
-      return
-    } else if (user.currentUser.network === 'mumbai') {
-      feedFundedEntities.map((event) => {
-        autopayContractMumbai.methods
-          .getDataFeed(event._feedId, event._queryId)
-          .call()
-          .then((res) => {
-            console.log('res', res)
-            feedIdParams.balance = res.balance
-            feedIdParams.interval = res.interval
-            feedIdParams.reward = res.reward
-            feedIdParams.startTime = res.startTime
-            feedIdParams.token = res.token
-            feedIdParams.window = res.window
-            event.feedIdParams = feedIdParams
-            return event
-          })
-          .catch((err) =>
-            console.log('Error in autopay contract call', err.message)
-          )
-      })
-      return
-    }
-    return
-  }
 
   //useEffects for listening to reponses
   //from ApolloClient queries
@@ -137,7 +74,7 @@ const GraphAutopay = ({ children }) => {
 
   //useEffects for decoding autopay events
   useEffect(() => {
-    if (!autopayMaticData.data || !autopayMumbaiData ) return
+    if (!autopayMaticData.data || !autopayMumbaiData.data ) return
 
     let eventsArray = []
 
@@ -158,7 +95,7 @@ const GraphAutopay = ({ children }) => {
     return () => {
       setAllGraphData(null)
     }
-  })
+  }, [autopayMaticData.data, autopayMumbaiData.data])
 
   useEffect(() => {
     if (!allGraphData) return
@@ -173,8 +110,6 @@ const GraphAutopay = ({ children }) => {
     decodedData: decodedData,
   }
 
-
-  console.log(GraphAutopayContextObj, 'dos')
   console.log('decodedData something', decodedData)
 
   return (
