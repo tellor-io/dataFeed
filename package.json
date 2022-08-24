@@ -30,7 +30,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "graphql:coverage": "graphql coverage",
+    "graphql:validate": "graphql validate"
   },
   "eslintConfig": {
     "extends": [
@@ -49,5 +51,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "graphql-cli": "4.1.0",
+    "@graphql-cli/coverage": "2.1.0",
+    "@graphql-cli/validate": "2.1.0"
   }
 }

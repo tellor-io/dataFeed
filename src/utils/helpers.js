@@ -146,6 +146,15 @@ export const sortDataByProperty = (prop, arr) => {
   return arr
 }
 
+export const decodingAutopayMiddleware = (allGraphData) => {
+  allGraphData.map((event, i) => {
+    let queryData
+
+    
+    console.log(queryData, i)
+  })
+}
+
 export const decodingMiddleware = (reportEvents) => {
   let decoded = reportEvents.map((event) => {
     let queryData

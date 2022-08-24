@@ -5,8 +5,10 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import '../styles/Hero.css'
 //Components
 import AllFeeds from '../components/AllFeeds.js'
+import AllTips from './AllTips'
 //Contexts
 import Graph from '../contexts/Graph'
+import GraphAutopay from '../contexts/GraphAutopay'
 import { ModeContext } from '../contexts/Mode'
 
 function Hero() {
@@ -38,28 +40,31 @@ function Hero() {
     <div className="HeroInnerContainer">
       <h1 className="HeroHeader">Your Oracle at Work</h1>
       <Graph>
-        <Router>
-          <div
-            className={
-              mode && mode.mode === 'dark'
-                ? 'HeroNavLinks'
-                : 'HeroNavLinksLight'
-            }
-          >
-            {/* <Link
-              to="/"
-              className={active ? 'ActiveLink' : 'InactiveLink'}
-              onClick={() => activeHelper('AllFeeds')}
+        <GraphAutopay>
+          <Router>
+            <div
+              className={
+                mode && mode.mode === 'dark'
+                  ? 'HeroNavLinks'
+                  : 'HeroNavLinksLight'
+              }
             >
-              All Feeds
-            </Link> */}
-          </div>
-          <div className="HeroSection">
-            <Routes>
-              <Route exact path="/" element={<AllFeeds />} />
-            </Routes>
-          </div>
-        </Router>
+              {/* <Link
+                to="/"
+                className={active ? 'ActiveLink' : 'InactiveLink'}
+                onClick={() => activeHelper('AllFeeds')}
+              >
+                All Feeds
+              </Link> */}
+            </div>
+            <div className="HeroSection">
+              <Routes>
+                <Route exact path="/" element={<AllFeeds />} />
+              </Routes>
+              <AllTips />
+            </div>
+          </Router>
+        </GraphAutopay>
       </Graph>
     </div>
   )
