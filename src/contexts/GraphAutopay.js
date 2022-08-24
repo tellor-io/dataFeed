@@ -5,9 +5,9 @@ import { UserContext } from './User'
 import { ApolloClient, InMemoryCache, useQuery } from '@apollo/client'
 //Utils
 import { autopayQuery } from '../utils/queries'
-import autopayABI from '../utils/autopayABI.json'
+import { decodingAutopayMiddleware } from '../utils/helpers'
+//Sort
 import { sortDataByProperty } from '../utils/helpers'
-import { decodingMiddleware } from '../utils/helpers'
 
 export const GraphAutopayContext = createContext()
 
@@ -41,8 +41,7 @@ const GraphAutopay = ({ children }) => {
     fetchPolicy: 'network-only',
     pollInterval: 5000,
   })
-  //Helpers
-
+  
   //useEffects for listening to reponses
   //from ApolloClient queries
   //Matic
@@ -80,17 +79,16 @@ const GraphAutopay = ({ children }) => {
 
     autopayMaticData.data.tipAddedEntities.forEach((event) => {
       event.chain = 'Polygon Mainnet'
-      event.txnLink = `https://polygonscan.com/tx/${event.txnHash}`
       eventsArray.push(event)
+      console.log(event)
     })
     autopayMumbaiData.data.tipAddedEntities.forEach((event) => {
       event.chain = 'Mumbai Testnet'
-      event.txnLink = `https://mumbai.polygonscan.com/tx/${event.txnHash}`
       eventsArray.push(event)
+      console.log(event)
     })
 
-    let sorted = sortDataByProperty('_time', eventsArray)
-    setAllGraphData(sorted)
+    setAllGraphData(eventsArray)
 
     return () => {
       setAllGraphData(null)
@@ -99,8 +97,7 @@ const GraphAutopay = ({ children }) => {
 
   useEffect(() => {
     if (!allGraphData) return
-    setDecodedData(decodingMiddleware(allGraphData))
-
+    decodingAutopayMiddleware(allGraphData)
     return () => {
       setDecodedData(null)
     }
@@ -109,8 +106,6 @@ const GraphAutopay = ({ children }) => {
   const GraphAutopayContextObj = {
     decodedData: decodedData,
   }
-
-  console.log('decodedData something', decodedData)
 
   return (
     <GraphAutopayContext.Provider value={GraphAutopayContextObj}>

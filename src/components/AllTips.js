@@ -56,10 +56,10 @@ function AllTips() {
 
   return (
     <>
-      {autoPayData && autoPayData.decodedData ? (
+      {false && autoPayData.decodedData ? (
         <div className="AllFeedsView">
           <TipTable
-            data={viewing}
+            data={autoPayData}
             allData={autoPayData}
             setFiltering={setFiltering}
           />

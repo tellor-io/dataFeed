@@ -37,6 +37,7 @@ function TipTable({ data, allData, setFiltering }) {
   //useEffect for tableData
   useEffect(() => {
     setTableData(data)
+   console.log(data)
   }, [data])
 
   //useEffect for populating
