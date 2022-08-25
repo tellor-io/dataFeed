@@ -1,6 +1,8 @@
 import { psrLookup } from './psrLookup'
+import Web3 from 'web3'
 
 const eighteenDecimals = 1000000000000000000
+const web3 = new Web3(window.ethereum)
 
 export const queryDataParsers = {
   LegacyRequest: (event) => {
@@ -190,7 +192,7 @@ export const queryDataParsers = {
           event._queryData.charAt(0).toUpperCase() + event._queryData.slice(1)
         return event
       default:
-        event.decodedValueName = 'New QueryData w/out JSON'
+        event.decodedValueName = web3.eth.abi.decodeParameters(['string', 'bytes'], event._queryData)[0]
         event.decodedValue = '0'
         return event
     }
