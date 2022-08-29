@@ -192,18 +192,19 @@ export const decodingAutopayMiddleware = (autopayEvents, user) => {
       )
       event.queryDataObj = decodedQueryData
       queryDataParsers['SpotPriceProper' || 'Default'](event)
-      console.log(queryDataPartial, '2 3', decodedQueryData)
       autopayContractMatic.methods
       .getDataFeed(event._feedId)
       .call()
       .then((res) => {
-        feedIdParams.balance = res.balance
-        feedIdParams.interval = res.interval ? `${(res.interval / 60 / 60)} hours` : 'n/a'
-        feedIdParams.reward = res.reward
-        feedIdParams.startTime = getDate(res.startTime)
-        feedIdParams.window = res.window
+        event.symbols = `${event.queryDataObj[0].toUpperCase()}/${event.queryDataObj[1].toUpperCase()}`
+        event.balance = res.balance
+        event.interval = res.interval ? `${(res.interval / 60 / 60)} hours` : 'n/a'
+        event.tip = res.reward
+        event.startTime = getDate(res.startTime)
+        event.window = res.window
         event.feedIdParams = feedIdParams
         feeds.push(event)
+
         return event
       })
       .catch((err) =>

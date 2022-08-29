@@ -19,11 +19,12 @@ function AllTips() {
   const [viewing, setViewing] = useState(null)
   const [loadMoreButton, setLoadMoreButton] = useState(true)
   const [filtering, setFiltering] = useState(false)
+  const [events, setEvents] = useState(false)
 
-  useEffect(() => {
+  useEffect(async() => {
     if (!autoPayData.decodedData) return
     setClippedData(autoPayData.decodedData.slice(0, 50))
-
+   
     return () => {
       setClippedData(null)
     }
@@ -50,9 +51,7 @@ function AllTips() {
       }
     }
   }
-
-  console.log(autoPayData, 'here')
-
+  
   return (
     <>
       {autoPayData && autoPayData.decodedData ? (

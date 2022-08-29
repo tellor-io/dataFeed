@@ -3,6 +3,7 @@ import '../styles/Table.css'
 import { ReactComponent as FilterIcon } from '../assets/filter_outline.svg'
 import { ReactComponent as FilterIconFilled } from '../assets/filter.svg'
 import { ReactComponent as Checked } from '../assets/done.svg'
+import LinearIndeterminate from './LinearIndeterminate'
 //Icons
 import { Jazzicon } from '@ukstv/jazzicon-react'
 //Utils
@@ -12,7 +13,7 @@ import { ModeContext } from '../contexts/Mode'
 
 function TipTable({ data, allData, setFiltering }) {
   //Component State
-  const [tableData, setTableData] = useState([])
+  const [tableData, setTableData] = useState()
   //
   const [symbolClicked, setSymbolClicked] = useState(false)
   const [chainClicked, setChainClicked] = useState(false)
@@ -23,13 +24,13 @@ function TipTable({ data, allData, setFiltering }) {
   const [time, setTime] = useState(null)
   const [tip, setTip] = useState(null)
   const [interval, setInterval] = useState(null)
+  
   //
   const [allFilters, setAllFilters] = useState([])
   const [symbolFilters, setSymbolFilters] = useState([])
   const [chainFilters, setChainFilters] = useState([])
   const [reporterFilters, setReporterFilters] = useState([])
-  let table = []
-  let counter = 1;
+
   //Refs
   const symbolRef = useRef()
   const chainRef = useRef()
@@ -42,35 +43,17 @@ function TipTable({ data, allData, setFiltering }) {
   //table dropdown data
 
   useEffect(() => {
-    if (!allData && !allData.decodedData && tableData !== undefined) return
-    let row = {
-      symbols: '',
-      time: '',
-      chain: '',
-      interval: '',
-      tip: '', 
-    }
-    let table = [row]
-    allData.decodedData.forEach((event) => {
-     
-      row.time = event.feedIdParams.startTime
-      row.chain = event.chain
-      row.interval = (event.feedIdParams.interval)
-      row.tip = event.feedIdParams.reward
-      row.symbols = `${event.queryDataObj[0].toUpperCase()}/${event.queryDataObj[1].toUpperCase()}`
-      table.push(row)
-    
-    })
-    if (table === undefined) {return}
-    setTableData(table)
+    setTableData(data)
+  }, [time])
 
-    console.log(tableData)
-    return () => {
-      setTableData(table)
-    }
-
-  }, [])
-
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setTime(2)
+    }, 2000);
+  
+    return () => clearTimeout(timeout);
+  }, []);
+  
   //Handlers
   const handleClick = (iconType) => {
     switch (iconType) {
@@ -658,7 +641,7 @@ function TipTable({ data, allData, setFiltering }) {
         </tr>
       </thead>
       <tbody>
-        {tableData ? (
+        {time && tableData ? (
           tableData.map((event, i) => (
             <tr
               key={`${event.id}-${i}`}
@@ -669,14 +652,15 @@ function TipTable({ data, allData, setFiltering }) {
               <td className="TB__Value">{event.tip}</td>
               <td className="TB__Chain">{event.chain}</td>
               <td className="TB__Reporter">{event.interval}</td>
-              <td className="TB__DateTime">{event.time}</td>
+              <td className="TB__DateTime">{event.startTime}</td>
             </tr>
           ))
         ) : (
           <tr className="TableBodyNoMatches">
-            <td>Data Doesn't Match Entries</td>
+            <LinearIndeterminate />
           </tr>
         )}
+
       </tbody>
     </table>
   )
