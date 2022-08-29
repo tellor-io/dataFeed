@@ -1,0 +1,26 @@
+{
+  "files": {
+    "main.css": "/static/css/main.89dd7443.chunk.css",
+    "main.js": "/static/js/main.edc069fc.chunk.js",
+    "main.js.map": "/static/js/main.edc069fc.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.6dfbb4b1.js",
+    "runtime-main.js.map": "/static/js/runtime-main.6dfbb4b1.js.map",
+    "static/js/2.6f127f4b.chunk.js": "/static/js/2.6f127f4b.chunk.js",
+    "static/js/2.6f127f4b.chunk.js.map": "/static/js/2.6f127f4b.chunk.js.map",
+    "index.html": "/index.html",
+    "static/css/main.89dd7443.chunk.css.map": "/static/css/main.89dd7443.chunk.css.map",
+    "static/js/2.6f127f4b.chunk.js.LICENSE.txt": "/static/js/2.6f127f4b.chunk.js.LICENSE.txt",
+    "static/media/index.css": "/static/media/Montserrat-Bold.a3f009a2.woff",
+    "static/media/done.3e6bfe38.svg": "/static/media/done.3e6bfe38.svg",
+    "static/media/filter.11b581e6.svg": "/static/media/filter.11b581e6.svg",
+    "static/media/filter_outline.b8515040.svg": "/static/media/filter_outline.b8515040.svg",
+    "static/media/tellor.88465ca4.svg": "/static/media/tellor.88465ca4.svg",
+    "static/media/tellor_white.d665a575.svg": "/static/media/tellor_white.d665a575.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.6dfbb4b1.js",
+    "static/js/2.6f127f4b.chunk.js",
+    "static/css/main.89dd7443.chunk.css",
+    "static/js/main.edc069fc.chunk.js"
+  ]
+}

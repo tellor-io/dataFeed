@@ -21,10 +21,7 @@ function TipTable({ data, allData, setFiltering }) {
   //
   const [reportedSymbols, setReportedSymbols] = useState(null)
   const [reportedChains, setReportedChains] = useState(null)
-  const [time, setTime] = useState(null)
-  const [tip, setTip] = useState(null)
-  const [interval, setInterval] = useState(null)
-  
+  const [time, setTime] = useState(null)  
   //
   const [allFilters, setAllFilters] = useState([])
   const [symbolFilters, setSymbolFilters] = useState([])
@@ -38,10 +35,6 @@ function TipTable({ data, allData, setFiltering }) {
   //Contexts
   const mode = useContext(ModeContext)
 
-  // console.log(data)
-  //useEffect for populating
-  //table dropdown data
-
   useEffect(() => {
     setTableData(data)
   }, [time])
@@ -50,7 +43,6 @@ function TipTable({ data, allData, setFiltering }) {
     const timeout = setTimeout(() => {
       setTime(2)
     }, 2000);
-  
     return () => clearTimeout(timeout);
   }, []);
   
@@ -646,7 +638,6 @@ function TipTable({ data, allData, setFiltering }) {
             <tr
               key={`${event.id}-${i}`}
               className={mode.mode === 'dark' ? 'TableBody' : 'TableBodyDark'}
-    
             >
               <td className="TB__Symbols">{event.symbols}</td>
               <td className="TB__Value">{event.tip}</td>

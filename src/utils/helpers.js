@@ -166,13 +166,11 @@ export const decodingAutopayMiddleware = (autopayEvents, user) => {
     mumbaiAutopayABI,
     '0x7B49420008BcA14782F2700547764AdAdD54F813'
   )
-  console.log('autopay mumbai', autopayContractMumbai)
 
   if(feedFundedEntities === undefined) {return}
   let queryData
   feedFundedEntities.map((event) => {
     if(event.chain === 'Matic Mainnet'){
-      console.log('right', event._queryData, event.queryDataObj)
       if (event._queryData && event._queryData.length <= 104) {
         try {queryData = JSON.parse(hex2a(event._queryData))
         event.queryDataObj = queryData
@@ -199,7 +197,7 @@ export const decodingAutopayMiddleware = (autopayEvents, user) => {
         event.symbols = `${event.queryDataObj[0].toUpperCase()}/${event.queryDataObj[1].toUpperCase()}`
         event.balance = res.balance
         event.interval = res.interval ? `${(res.interval / 60 / 60)} hours` : 'n/a'
-        event.tip = res.reward
+        event.tip = res.reward.toString().slice(0, 1) + 'TRB'
         event.startTime = getDate(res.startTime)
         event.window = res.window
         event.feedIdParams = feedIdParams

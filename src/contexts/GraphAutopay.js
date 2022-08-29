@@ -7,7 +7,6 @@ import { ApolloClient, InMemoryCache, useQuery } from '@apollo/client'
 import { autopayQuery } from '../utils/queries'
 import { decodingAutopayMiddleware } from '../utils/helpers'
 //Sort
-import { sortDataByProperty } from '../utils/helpers'
 
 export const GraphAutopayContext = createContext()
 
@@ -52,7 +51,6 @@ const GraphAutopay = ({ children }) => {
       loading: matic.loading,
       error: matic.error,
     })
-    console.log('initialized matic', autopayMaticData)
     return () => {
       setAutopayMaticData({})
     }
@@ -65,7 +63,6 @@ const GraphAutopay = ({ children }) => {
       loading: mumbai.loading,
       error: mumbai.error,
     })
-    console.log('initialized mumbai', autopayMumbaiData)
     return () => {
       setAutopayMumbaiData({})
     }
@@ -86,7 +83,7 @@ const GraphAutopay = ({ children }) => {
       eventsArray.push(event)
     })
 
-    setAllGraphData(eventsArray, 'test')
+    setAllGraphData(eventsArray)
 
     return () => {
       setAllGraphData(null)

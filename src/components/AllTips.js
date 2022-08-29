@@ -19,7 +19,6 @@ function AllTips() {
   const [viewing, setViewing] = useState(null)
   const [loadMoreButton, setLoadMoreButton] = useState(true)
   const [filtering, setFiltering] = useState(false)
-  const [events, setEvents] = useState(false)
 
   useEffect(async() => {
     if (!autoPayData.decodedData) return
@@ -51,7 +50,7 @@ function AllTips() {
       }
     }
   }
-  
+
   return (
     <>
       {autoPayData && autoPayData.decodedData ? (
