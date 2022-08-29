@@ -86,7 +86,7 @@ const GraphAutopay = ({ children }) => {
       eventsArray.push(event)
     })
 
-    setAllGraphData(eventsArray)
+    setAllGraphData(eventsArray, 'test')
 
     return () => {
       setAllGraphData(null)

@@ -62,14 +62,14 @@ function TipTable({ data, allData, setFiltering }) {
     
     })
     if (table === undefined) {return}
-    setTableData([...table])
+    setTableData(table)
 
     console.log(tableData)
     return () => {
       setTableData(table)
     }
 
-  })
+  }, [])
 
   //Handlers
   const handleClick = (iconType) => {
@@ -659,10 +659,11 @@ function TipTable({ data, allData, setFiltering }) {
       </thead>
       <tbody>
         {tableData ? (
-          tableData.map((event) => (
+          tableData.map((event, i) => (
             <tr
-              key={event.id}
+              key={`${event.id}-${i}`}
               className={mode.mode === 'dark' ? 'TableBody' : 'TableBodyDark'}
+    
             >
               <td className="TB__Symbols">{event.symbols}</td>
               <td className="TB__Value">{event.tip}</td>
