@@ -12,7 +12,6 @@ import LinearIndeterminate from './LinearIndeterminate'
 function AllTips() {
   //Context State
   const autoPayData = useContext(GraphAutopayContext)
-  const graphData = useContext(GraphContext)
   const mode = useContext(ModeContext)
   //Component State
   const [clippedData, setClippedData] = useState(null)
@@ -20,8 +19,6 @@ function AllTips() {
   const [viewing, setViewing] = useState(null)
   const [loadMoreButton, setLoadMoreButton] = useState(true)
   const [filtering, setFiltering] = useState(false)
-
-  console.log(autoPayData, 'did we hit the jackpot')
 
   useEffect(() => {
     if (!autoPayData.decodedData) return
@@ -54,12 +51,14 @@ function AllTips() {
     }
   }
 
+  console.log(autoPayData, 'here')
+
   return (
     <>
-      {false && autoPayData.decodedData ? (
+      {autoPayData && autoPayData.decodedData ? (
         <div className="AllFeedsView">
           <TipTable
-            data={autoPayData}
+            data={autoPayData.decodedData}
             allData={autoPayData}
             setFiltering={setFiltering}
           />

@@ -49,8 +49,6 @@ function AllFeeds() {
     }
   }
 
-  console.log(graphData.decodedData, 'here')
-
   return (
     <>
       {graphData && graphData.decodedData ? (

@@ -1,8 +1,11 @@
 import minABI from './minimumABI.json'
 import Web3 from 'web3'
 import { queryDataParsers } from './queryDataParsers'
+import maticAutopayABI from './maticAutopayABI.json'
+import mumbaiAutopayABI from './mumbaiAutopayABI.json'
 //Globals
 const web3 = new Web3(window.ethereum)
+
 const tellorAddressMainnet = '0x88dF592F8eb5D7Bd38bFeF7dEb0fBc02cf3778a0'
 const tellorAddressPolygon = '0xE3322702BEdaaEd36CdDAb233360B939775ae5f1'
 const tellorAddressMumbai = '0xce4e32fe9d894f8185271aa990d2db425df3e6be'
@@ -146,14 +149,72 @@ export const sortDataByProperty = (prop, arr) => {
   return arr
 }
 
-export const decodingAutopayMiddleware = (allGraphData) => {
-  allGraphData.map((event, i) => {
-    let queryData
+export const decodingAutopayMiddleware = (autopayEvents, user) => {
+  //Globals
+  let feedFundedEntities = autopayEvents
+  let feedIdParams = {}
+  let feeds = []
+  let queryDataPartial
+  let decodedQueryData
 
-    
-    console.log(queryData, i)
+  //Contract Instances
+  const autopayContractMatic = new web3.eth.Contract(
+    maticAutopayABI,
+    '0xD789488E5ee48Ef8b0719843672Bc04c213b648c'
+  )
+  const autopayContractMumbai = new web3.eth.Contract(
+    mumbaiAutopayABI,
+    '0x7B49420008BcA14782F2700547764AdAdD54F813'
+  )
+  console.log('autopay mumbai', autopayContractMumbai)
+
+  if(feedFundedEntities === undefined) {return}
+  let queryData
+  feedFundedEntities.map((event) => {
+    if(event.chain === 'Matic Mainnet'){
+      console.log('right', event._queryData, event.queryDataObj)
+      if (event._queryData && event._queryData.length <= 104) {
+        try {queryData = JSON.parse(hex2a(event._queryData))
+        event.queryDataObj = queryData
+        queryDataParsers[queryData?.type || queryData?.Type || 'Default'](event)
+        } catch {
+          event.queryDataObj='0x'
+        }
+      } else if (event._queryData && event._queryData.length > 104) {
+        queryDataPartial = web3.eth.abi.decodeParameters(
+          ['string', 'bytes'],
+          event._queryData
+        )
+      }
+      decodedQueryData = web3.eth.abi.decodeParameters(
+        ['string', 'string'],
+        queryDataPartial[1]
+      )
+      event.queryDataObj = decodedQueryData
+      queryDataParsers['SpotPriceProper' || 'Default'](event)
+      console.log(queryDataPartial, '2 3', decodedQueryData)
+      autopayContractMatic.methods
+      .getDataFeed(event._feedId)
+      .call()
+      .then((res) => {
+        feedIdParams.balance = res.balance
+        feedIdParams.interval = res.interval ? `${(res.interval / 60 / 60)} hours` : 'n/a'
+        feedIdParams.reward = res.reward
+        feedIdParams.startTime = getDate(res.startTime)
+        feedIdParams.window = res.window
+        event.feedIdParams = feedIdParams
+        feeds.push(event)
+        return event
+      })
+      .catch((err) =>
+        console.log('Error in autopay contract call', err.message)
+      )
+    }
   })
+  return feeds
 }
+
+
 
 export const decodingMiddleware = (reportEvents) => {
   let decoded = reportEvents.map((event) => {
@@ -211,7 +272,6 @@ export const decodingMiddleware = (reportEvents) => {
           event.feedType = 'TellorRNG'
           event.decodedValueName = `TellorRNG`
           let t1  = `[${temp[0]}]`
-          console.log(t1)
           event.decodedValue = t1.slice(1,7) + "..."
           return event
         case 'Snapshot':

@@ -13,11 +13,11 @@ export const GraphAutopayContext = createContext()
 
 //ApolloClients
 const clientMatic = new ApolloClient({
-  uri: 'https://api.thegraph.com/subgraphs/name/joshuasamaniego/autopay-matic',
+  uri: 'https://api.thegraph.com/subgraphs/name/tellor-io/tellorautopaymatichgraph',
   cache: new InMemoryCache(),
 })
 const clientMumbai = new ApolloClient({
-  uri: 'https://api.thegraph.com/subgraphs/name/joshuasamaniego/autopay-mumbai',
+  uri: 'https://api.thegraph.com/subgraphs/name/tellor-io/tellorautopaymumbaihgraph',
   cache: new InMemoryCache(),
 })
 
@@ -52,7 +52,7 @@ const GraphAutopay = ({ children }) => {
       loading: matic.loading,
       error: matic.error,
     })
-    console.log('autopayMaticData', matic.data)
+    console.log('initialized matic', autopayMaticData)
     return () => {
       setAutopayMaticData({})
     }
@@ -65,30 +65,28 @@ const GraphAutopay = ({ children }) => {
       loading: mumbai.loading,
       error: mumbai.error,
     })
-    console.log('autopayMaticData', matic.data)
+    console.log('initialized mumbai', autopayMumbaiData)
     return () => {
       setAutopayMumbaiData({})
     }
   }, [mumbai.data, mumbai.loading, mumbai.error]) //eslint-disable-line
-
+  
   //useEffects for decoding autopay events
   useEffect(() => {
-    if (!autopayMaticData.data || !autopayMumbaiData.data ) return
-
+    if (autopayMaticData.data === undefined || autopayMumbaiData.data === undefined ) return
     let eventsArray = []
-
-    autopayMaticData.data.tipAddedEntities.forEach((event) => {
-      event.chain = 'Polygon Mainnet'
+    
+    autopayMaticData.data.newDataFeedEntities.forEach((event) => {
+      event.chain = 'Matic Mainnet'
       eventsArray.push(event)
-      console.log(event)
     })
-    autopayMumbaiData.data.tipAddedEntities.forEach((event) => {
+
+    autopayMumbaiData.data.newDataFeedEntities.forEach((event) => {
       event.chain = 'Mumbai Testnet'
       eventsArray.push(event)
-      console.log(event)
     })
 
-    setAllGraphData(eventsArray)
+    setAllGraphData(eventsArray, 'test')
 
     return () => {
       setAllGraphData(null)
@@ -97,7 +95,9 @@ const GraphAutopay = ({ children }) => {
 
   useEffect(() => {
     if (!allGraphData) return
-    decodingAutopayMiddleware(allGraphData)
+
+    setDecodedData(decodingAutopayMiddleware(allGraphData, user))
+
     return () => {
       setDecodedData(null)
     }

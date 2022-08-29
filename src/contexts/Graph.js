@@ -76,7 +76,6 @@ const Graph = ({ children }) => {
     pollInterval: 5000,
   })
 
-  console.log(mainPay, 'mainnet')
   //useEffects for listening to reponses
   //from ApolloClient queries
   //Mainnet
@@ -87,7 +86,6 @@ const Graph = ({ children }) => {
       loading: mainnet.loading,
       error: mainnet.error,
     })
-    console.log('checker', mainnet.data)
     return () => {
       setGraphMainnetData({})
     }
