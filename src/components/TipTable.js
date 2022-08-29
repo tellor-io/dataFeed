@@ -20,12 +20,16 @@ function TipTable({ data, allData, setFiltering }) {
   //
   const [reportedSymbols, setReportedSymbols] = useState(null)
   const [reportedChains, setReportedChains] = useState(null)
-  const [reportedReporters, setReportedReporters] = useState(null)
+  const [time, setTime] = useState(null)
+  const [tip, setTip] = useState(null)
+  const [interval, setInterval] = useState(null)
   //
   const [allFilters, setAllFilters] = useState([])
   const [symbolFilters, setSymbolFilters] = useState([])
   const [chainFilters, setChainFilters] = useState([])
   const [reporterFilters, setReporterFilters] = useState([])
+  let table = []
+  let counter = 1;
   //Refs
   const symbolRef = useRef()
   const chainRef = useRef()
@@ -34,44 +38,38 @@ function TipTable({ data, allData, setFiltering }) {
   const mode = useContext(ModeContext)
 
   // console.log(data)
-  //useEffect for tableData
-  useEffect(() => {
-    setTableData(data)
-   console.log(data)
-  }, [data])
-
   //useEffect for populating
   //table dropdown data
-  useEffect(() => {
-    if (!allData && !allData.decodedData) return
-    let symbols = []
-    let chains = []
-    let reporters = []
-    allData.decodedData.forEach((event) => {
-      if (!symbols.includes(event.decodedValueName) && event.decodedValueName) {
-        if (event.feedType === 'Snapshot' && !symbols.includes('Snapshot')) {
-          symbols.push('Snapshot')
-        } else if (!event.feedType) {
-          symbols.push(event.decodedValueName)
-        }
-      }
-      if (!chains.includes(event.chain)) {
-        chains.push(event.chain)
-      }
-      if (!reporters.includes(event.decodedReporter) && event.decodedReporter) {
-        reporters.push(event.decodedReporter)
-      }
-    })
-    setReportedSymbols(symbols)
-    setReportedChains(chains)
-    setReportedReporters(reporters)
 
-    return () => {
-      setReportedSymbols(null)
-      setReportedChains(null)
-      setReportedReporters(null)
+  useEffect(() => {
+    if (!allData && !allData.decodedData && tableData !== undefined) return
+    let row = {
+      symbols: '',
+      time: '',
+      chain: '',
+      interval: '',
+      tip: '', 
     }
-  }, [allData])
+    let table = [row]
+    allData.decodedData.forEach((event) => {
+     
+      row.time = event.feedIdParams.startTime
+      row.chain = event.chain
+      row.interval = (event.feedIdParams.interval)
+      row.tip = event.feedIdParams.reward
+      row.symbols = `${event.queryDataObj[0].toUpperCase()}/${event.queryDataObj[1].toUpperCase()}`
+      table.push(row)
+    
+    })
+    if (table === undefined) {return}
+    setTableData([...table])
+
+    console.log(tableData)
+    return () => {
+      setTableData(table)
+    }
+
+  })
 
   //Handlers
   const handleClick = (iconType) => {
@@ -635,7 +633,7 @@ function TipTable({ data, allData, setFiltering }) {
             </div>
           </th>
           <th className="TH__HeaderSpecial">
-            <div className="TH__HeaderDiv">s
+            <div className="TH__HeaderDiv">
               <h1>Recurring</h1>
               {reporterClicked ? (
                 <FilterIconFilled
@@ -653,65 +651,6 @@ function TipTable({ data, allData, setFiltering }) {
                 />
               )}
             </div>
-            <div
-              className={
-                mode.mode === 'dark'
-                  ? 'TableFilterDropdown'
-                  : 'TableFilterDropdownDark'
-              }
-              ref={reporterRef}
-            >
-              <h3>filter by reporter</h3>
-              <div className="DropdownResults">
-                {reportedReporters &&
-                  reportedReporters.map((reporter) => (
-                    <div
-                      key={reporter}
-                      className={
-                        mode.mode === 'dark'
-                          ? 'DropdownDataRow'
-                          : 'DropdownDataRowDark'
-                      }
-                      onClick={() => handleFilter('reporter', reporter)}
-                    >
-                      {reporterFilters.includes(reporter) ? (
-                        <>
-                          <p>{truncateAddr(reporter)}</p>
-                          <Checked
-                            className={
-                              mode.mode === 'dark' ? '' : 'DropdownCheckDark'
-                            }
-                          />
-                        </>
-                      ) : (
-                        <p>{truncateAddr(reporter)}</p>
-                      )}
-                    </div>
-                  ))}
-              </div>
-              <div
-                className={
-                  mode.mode === 'dark'
-                    ? 'DropdownButtons'
-                    : 'DropdownButtonsDark'
-                }
-              >
-                <button
-                  className="DropdownApply"
-                  onClick={() => handleFilterApply('reporter')}
-                >
-                  Apply
-                </button>
-                <button
-                  className={
-                    mode.mode === 'dark' ? 'DropdownClear' : 'DropdownClearDark'
-                  }
-                  onClick={() => handleFilterClear('reporter')}
-                >
-                  Clear
-                </button>
-              </div>
-            </div>
           </th>
           <th>
             <h1>DATE/TIME</h1>
@@ -719,24 +658,17 @@ function TipTable({ data, allData, setFiltering }) {
         </tr>
       </thead>
       <tbody>
-        {tableData && tableData.length > 0 ? (
+        {tableData ? (
           tableData.map((event) => (
             <tr
               key={event.id}
               className={mode.mode === 'dark' ? 'TableBody' : 'TableBodyDark'}
-              onClick={() => handleRowClick(event.txnLink)}
             >
-              <td className="TB__Symbols">{event.decodedValueName}</td>
-              <td className="TB__Value">{event.decodedValue}</td>
+              <td className="TB__Symbols">{event.symbols}</td>
+              <td className="TB__Value">{event.tip}</td>
               <td className="TB__Chain">{event.chain}</td>
-              <td className="TB__Reporter">
-                <Jazzicon
-                  address={event.decodedReporter}
-                  className="Table__Jazzicon"
-                />
-                <p>{truncateAddr(event.decodedReporter)}</p>
-              </td>
-              <td className="TB__DateTime">{event.decodedTime}</td>
+              <td className="TB__Reporter">{event.interval}</td>
+              <td className="TB__DateTime">{event.time}</td>
             </tr>
           ))
         ) : (
