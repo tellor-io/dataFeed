@@ -61,6 +61,7 @@ function Hero() {
               <Routes>
                 <Route exact path="/" element={<AllFeeds />} />
               </Routes>
+              <h3 style={{marginTop: '1em'}}>Tips</h3>
               <AllTips />
             </div>
           </Router>

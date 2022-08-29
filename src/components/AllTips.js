@@ -20,10 +20,10 @@ function AllTips() {
   const [loadMoreButton, setLoadMoreButton] = useState(true)
   const [filtering, setFiltering] = useState(false)
 
-  useEffect(() => {
+  useEffect(async() => {
     if (!autoPayData.decodedData) return
     setClippedData(autoPayData.decodedData.slice(0, 50))
-
+   
     return () => {
       setClippedData(null)
     }
@@ -50,8 +50,6 @@ function AllTips() {
       }
     }
   }
-
-  console.log(autoPayData, 'here')
 
   return (
     <>
