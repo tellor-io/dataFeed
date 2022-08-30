@@ -171,7 +171,7 @@ export const queryDataParsers = {
         event.decodedValue = new Intl.NumberFormat('en-EN', {
           style: 'currency',
           currency: queryData[1].toUpperCase(),
-        }).format(parseInt(Number(event._value), 10) / eighteenDecimals)
+        }).format(Number(event._value) / eighteenDecimals)
         return event
     }
   },
