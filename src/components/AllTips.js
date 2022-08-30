@@ -95,7 +95,9 @@ function AllTips() {
         </div>
       ) : (
        
-        <button className="MyFeeds__Button" onClick={() => startFlow()}>
+        <button className={
+          mode.mode === 'dark' ? 'AllFeeds__Button' : 'AllFeeds__ButtonDark'
+        } onClick={() => startFlow()}>
           Connect Wallet To View Tips
         </button>
         

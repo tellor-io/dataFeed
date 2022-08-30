@@ -5,7 +5,7 @@ import { UserContext } from './User'
 import { ApolloClient, InMemoryCache, useQuery } from '@apollo/client'
 //Utils
 import { autopayQuery } from '../utils/queries'
-import { decodingAutopayMiddleware } from '../utils/helpers'
+import { decodingAutopayMiddleware, decodingMumbaiAutopayMiddleware } from '../utils/helpers'
 //Sort
 
 export const GraphAutopayContext = createContext()
@@ -24,8 +24,9 @@ const GraphAutopay = ({ children }) => {
   //Component State
   const [autopayMaticData, setAutopayMaticData] = useState({})
   const [autopayMumbaiData, setAutopayMumbaiData] = useState({})
-  const [decodedData, setDecodedData] = useState(null)
+  const [decodedData, setDecodedData] = useState([])
   const [allGraphData, setAllGraphData] = useState(null)
+  const [allMumbaiGraphData, setAllMumbaiGraphData] = useState(null)
   //Context State
   const user = useContext(UserContext)
   //Matic
@@ -70,25 +71,41 @@ const GraphAutopay = ({ children }) => {
   
   //useEffects for decoding autopay events
   useEffect(() => {
-    if (autopayMaticData.data === undefined || autopayMumbaiData.data === undefined ) return
+    if (autopayMaticData.data === undefined) return
     let eventsArray = []
     
     autopayMaticData.data.newDataFeedEntities.forEach((event) => {
       event.chain = 'Matic Mainnet'
       eventsArray.push(event)
     })
-
+    
     setAllGraphData(eventsArray)
 
     return () => {
       setAllGraphData(null)
     }
-  }, [autopayMaticData.data, autopayMumbaiData.data])
+  }, [autopayMaticData.data])
+
+  useEffect(() => {
+    if (autopayMumbaiData.data === undefined ) return
+    let eventsArray = []
+    
+    autopayMumbaiData.data.newDataFeedEntities.forEach((event) => {
+      event.chain = 'Mumbai Testnet'
+      eventsArray.push(event)
+    })
+    
+    setAllMumbaiGraphData(eventsArray)
+
+    return () => {
+      setAllGraphData(null)
+    }
+  }, [autopayMumbaiData.data])
 
   useEffect(() => {
     if (!allGraphData) return
 
-    setDecodedData(decodingAutopayMiddleware(allGraphData, user))
+    setDecodedData(...decodedData, decodingAutopayMiddleware(allGraphData, user))
 
     return () => {
       setDecodedData(null)

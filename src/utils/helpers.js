@@ -170,7 +170,7 @@ export const decodingAutopayMiddleware = (autopayEvents, user) => {
   if(feedFundedEntities === undefined) {return}
   let queryData
   feedFundedEntities.map((event) => {
-    if(event.chain === 'Matic Mainnet'){
+    if(event.chain === 'Matic Mainnet' || event.chain === 'Mumbai Testnet'){
       if (event._queryData && event._queryData.length <= 104) {
         try {queryData = JSON.parse(hex2a(event._queryData))
         event.queryDataObj = queryData
