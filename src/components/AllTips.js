@@ -1,18 +1,19 @@
 import React, { useContext, useEffect, useState } from 'react'
 import '../styles/AllFeeds.css'
-import { GraphContext } from '../contexts/Graph'
-import Table from './Table'
 import TipTable from './TipTable'
 //Context
-import { GraphAutopay, GraphAutopayContext } from '../contexts/GraphAutopay'
+import {  GraphAutopayContext } from '../contexts/GraphAutopay'
 import { ModeContext } from '../contexts/Mode'
+
+import { UserContext } from '../contexts/User'
 //Components
-import LinearIndeterminate from './LinearIndeterminate'
 
 function AllTips() {
   //Context State
   const autoPayData = useContext(GraphAutopayContext)
   const mode = useContext(ModeContext)
+  
+  const user = useContext(UserContext)
   //Component State
   const [clippedData, setClippedData] = useState(null)
   const [loadMoreClicks, setLoadMoreClicks] = useState(1)
@@ -20,7 +21,24 @@ function AllTips() {
   const [loadMoreButton, setLoadMoreButton] = useState(true)
   const [filtering, setFiltering] = useState(false)
 
-  useEffect(async() => {
+  useEffect(() => {
+    if (!user) return
+    if (
+      user.setupUserError === 'User closed modal' ||
+      user.setupUserError === 'User Rejected'
+    ) {
+      user.setConnected(false)
+      user.setSetupUserError(null)
+    }
+  }, [user])
+
+  const startFlow = () => {
+    if (user) {
+      user.setConnected(true)
+    }
+  }
+
+  useEffect(() => {
     if (!autoPayData.decodedData) return
     setClippedData(autoPayData.decodedData.slice(0, 50))
    
@@ -51,14 +69,16 @@ function AllTips() {
     }
   }
 
+
   return (
     <>
-      {autoPayData && autoPayData.decodedData ? (
+      {autoPayData && autoPayData.decodedData && user.currentUser ? (
         <div className="AllFeedsView">
           <TipTable
             data={autoPayData.decodedData}
             allData={autoPayData}
             setFiltering={setFiltering}
+            user={user}
           />
           <button
             className={
@@ -74,9 +94,11 @@ function AllTips() {
           </button>
         </div>
       ) : (
-        <div className="Loading">
-          <LinearIndeterminate />
-        </div>
+       
+        <button className="MyFeeds__Button" onClick={() => startFlow()}>
+          Connect Wallet To View Tips
+        </button>
+        
       )}
     </>
   )

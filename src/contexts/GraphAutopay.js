@@ -78,11 +78,6 @@ const GraphAutopay = ({ children }) => {
       eventsArray.push(event)
     })
 
-    autopayMumbaiData.data.newDataFeedEntities.forEach((event) => {
-      event.chain = 'Mumbai Testnet'
-      eventsArray.push(event)
-    })
-
     setAllGraphData(eventsArray)
 
     return () => {

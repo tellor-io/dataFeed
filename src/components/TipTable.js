@@ -4,14 +4,10 @@ import { ReactComponent as FilterIcon } from '../assets/filter_outline.svg'
 import { ReactComponent as FilterIconFilled } from '../assets/filter.svg'
 import { ReactComponent as Checked } from '../assets/done.svg'
 import LinearIndeterminate from './LinearIndeterminate'
-//Icons
-import { Jazzicon } from '@ukstv/jazzicon-react'
-//Utils
-import { truncateAddr } from '../utils/helpers'
 //Contexts
 import { ModeContext } from '../contexts/Mode'
 
-function TipTable({ data, allData, setFiltering }) {
+function TipTable({ data, allData, setFiltering, user }) {
   //Component State
   const [tableData, setTableData] = useState()
   //
@@ -42,7 +38,7 @@ function TipTable({ data, allData, setFiltering }) {
   useEffect(() => {
     const timeout = setTimeout(() => {
       setTime(2)
-    }, 2000);
+    }, 3000);
     return () => clearTimeout(timeout);
   }, []);
   
@@ -438,9 +434,6 @@ function TipTable({ data, allData, setFiltering }) {
         return
     }
   }
-  const handleRowClick = (txnLink) => {
-    window.open(txnLink, '_blank').focus()
-  }
 
   return (
     <table className="Table">
@@ -610,21 +603,6 @@ function TipTable({ data, allData, setFiltering }) {
           <th className="TH__HeaderSpecial">
             <div className="TH__HeaderDiv">
               <h1>Recurring</h1>
-              {reporterClicked ? (
-                <FilterIconFilled
-                  className={
-                    mode.mode === 'dark' ? 'FilterIcon' : 'FilterIconDark'
-                  }
-                  onClick={() => handleClose('reporter')}
-                />
-              ) : (
-                <FilterIcon
-                  className={
-                    mode.mode === 'dark' ? 'FilterIcon' : 'FilterIconDark'
-                  }
-                  onClick={() => handleClick('reporter')}
-                />
-              )}
             </div>
           </th>
           <th>
