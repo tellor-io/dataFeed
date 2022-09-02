@@ -4,7 +4,7 @@ import TipTable from './TipTable'
 //Context
 import {  GraphAutopayContext } from '../contexts/GraphAutopay'
 import { ModeContext } from '../contexts/Mode'
-
+import LinearIndeterminate from './LinearIndeterminate'
 import { UserContext } from '../contexts/User'
 //Components
 
@@ -72,13 +72,12 @@ function AllTips() {
 
   return (
     <>
-      {autoPayData && autoPayData.decodedData && user.currentUser ? (
+      {autoPayData && autoPayData.decodedData ? (
         <div className="AllFeedsView">
           <TipTable
             data={autoPayData.decodedData}
             allData={autoPayData}
             setFiltering={setFiltering}
-            user={user}
           />
           <button
             className={
@@ -94,13 +93,7 @@ function AllTips() {
           </button>
         </div>
       ) : (
-       
-        <button className={
-          mode.mode === 'dark' ? 'AllFeeds__Button' : 'AllFeeds__ButtonDark'
-        } onClick={() => startFlow()}>
-          Connect Wallet To View Tips
-        </button>
-        
+        <LinearIndeterminate />
       )}
     </>
   )

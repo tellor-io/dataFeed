@@ -7,10 +7,9 @@ import LinearIndeterminate from './LinearIndeterminate'
 //Contexts
 import { ModeContext } from '../contexts/Mode'
 
-function TipTable({ data, allData, setFiltering, user }) {
+function TipTable({ data, allData, setFiltering }) {
   //Component State
   const [tableData, setTableData] = useState()
-  console.log(user)
   //
   const [symbolClicked, setSymbolClicked] = useState(false)
   const [chainClicked, setChainClicked] = useState(false)
@@ -630,14 +629,6 @@ function TipTable({ data, allData, setFiltering, user }) {
             <LinearIndeterminate />
           </tr>
         )}
-        <br/>
-        {
-          user.currentUser && user.currentUser.chainId == 137 || user.currentUser.chainId == 80001 ?
-          <tr><td >Viewing {user.currentUser.network} chain tips</td></tr>
-          :
-          <tr><td>We have not add {user.currentUser.network} tips yet.</td></tr>
-        }
-
       </tbody>
     </table>
   )

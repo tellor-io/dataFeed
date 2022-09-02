@@ -26,7 +26,6 @@ const GraphAutopay = ({ children }) => {
   const [autopayMumbaiData, setAutopayMumbaiData] = useState({})
   const [decodedData, setDecodedData] = useState([])
   const [allGraphData, setAllGraphData] = useState(null)
-  const [allMumbaiGraphData, setAllMumbaiGraphData] = useState(null)
   //Context State
   const user = useContext(UserContext)
   //Matic
@@ -57,17 +56,6 @@ const GraphAutopay = ({ children }) => {
     }
   }, [matic.data, matic.loading, matic.error]) //eslint-disable-line
   //Mumbai
-  useEffect(() => {
-    if (!mumbai) return
-    setAutopayMumbaiData({
-      data: mumbai.data,
-      loading: mumbai.loading,
-      error: mumbai.error,
-    })
-    return () => {
-      setAutopayMumbaiData({})
-    }
-  }, [mumbai.data, mumbai.loading, mumbai.error]) //eslint-disable-line
   
   //useEffects for decoding autopay events
   useEffect(() => {
@@ -86,21 +74,6 @@ const GraphAutopay = ({ children }) => {
     }
   }, [autopayMaticData.data])
 
-  useEffect(() => {
-    if (autopayMumbaiData.data === undefined ) return
-    let eventsArray = []
-    
-    autopayMumbaiData.data.newDataFeedEntities.forEach((event) => {
-      event.chain = 'Mumbai Testnet'
-      eventsArray.push(event)
-    })
-    
-    setAllMumbaiGraphData(eventsArray)
-
-    return () => {
-      setAllGraphData(null)
-    }
-  }, [autopayMumbaiData.data])
 
   useEffect(() => {
     if (!allGraphData) return
