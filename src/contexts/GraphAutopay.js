@@ -5,7 +5,7 @@ import { UserContext } from './User'
 import { ApolloClient, InMemoryCache, useQuery } from '@apollo/client'
 //Utils
 import { autopayQuery } from '../utils/queries'
-import { decodingAutopayMiddleware, decodingMumbaiAutopayMiddleware } from '../utils/helpers'
+import { decodingAutopayMiddleware } from '../utils/helpers'
 //Sort
 
 export const GraphAutopayContext = createContext()
@@ -56,10 +56,20 @@ const GraphAutopay = ({ children }) => {
     }
   }, [matic.data, matic.loading, matic.error]) //eslint-disable-line
   //Mumbai
-  
+  useEffect(() => {
+    if (!mumbai) return
+    setAutopayMumbaiData({
+      data: mumbai.data,
+      loading: mumbai.loading,
+      error: mumbai.error,
+    })
+    return () => {
+      setAutopayMumbaiData({})
+    }
+  }, [matic.data, matic.loading, matic.error]) //eslint-disable-line
   //useEffects for decoding autopay events
   useEffect(() => {
-    if (autopayMaticData.data === undefined) return
+    if (autopayMaticData.data === undefined || autopayMumbaiData.data === undefined) return
     let eventsArray = []
     
     autopayMaticData.data.newDataFeedEntities.forEach((event) => {

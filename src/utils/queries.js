@@ -68,5 +68,13 @@ export const autopayQuery = gql`
       _amount
       _reporter
     }
+    dataFeedEntities(orderBy: id, orderDirection: desc) {
+      id
+      _reward
+      _startTime
+      _interval
+      _window
+      _priceThreshold
+    }
   }
 `
