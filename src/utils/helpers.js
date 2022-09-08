@@ -149,71 +149,20 @@ export const sortDataByProperty = (prop, arr) => {
   return arr
 }
 
-export const decodingAutopayMiddleware = (autopayEvents, user) => {
-  //Globals
-  let feedFundedEntities = autopayEvents
-  let feedIdParams = {}
-  let feeds = []
-  let queryDataPartial
-  let decodedQueryData
+export const decodingAutopayMiddleware = (autopayEvents) => {
+  let decoded = autopayEvents.map((event) => {
+    
+    event.interval = event._interval ? `${(event._interval / 60 / 60)} hours` : 'n/a'
+    event.tip = event._reward.toString().slice(0, 1) + 'TRB'
+    event.startTime = getDate(event._startTime)
+    event.window = event._window
+    event.symbols = event._queryData
 
-  //Contract Instances
-  const autopayContractMatic = new web3.eth.Contract(
-    maticAutopayABI,
-    '0xD789488E5ee48Ef8b0719843672Bc04c213b648c'
-  )
-  const autopayContractMumbai = new web3.eth.Contract(
-    mumbaiAutopayABI,
-    '0x7B49420008BcA14782F2700547764AdAdD54F813'
-  )
-
-  if(feedFundedEntities === undefined) {return}
-  let queryData
-  feedFundedEntities.map((event) => {
-    if(event.chain === 'Matic Mainnet' || event.chain === 'Mumbai Testnet'){
-      if (event._queryData && event._queryData.length <= 104) {
-        try {queryData = JSON.parse(hex2a(event._queryData))
-        event.queryDataObj = queryData
-        queryDataParsers[queryData?.type || queryData?.Type || 'Default'](event)
-        } catch {
-          event.queryDataObj='0x'
-        }
-      } else if (event._queryData && event._queryData.length > 104) {
-        queryDataPartial = web3.eth.abi.decodeParameters(
-          ['string', 'bytes'],
-          event._queryData
-        )
-      }
-      decodedQueryData = web3.eth.abi.decodeParameters(
-        ['string', 'string'],
-        queryDataPartial[1]
-      )
-      event.queryDataObj = decodedQueryData
-      queryDataParsers['SpotPriceProper' || 'Default'](event)
-      autopayContractMatic.methods
-      .getDataFeed(event._feedId)
-      .call()
-      .then((res) => {
-        event.symbols = `${event.queryDataObj[0].toUpperCase()}/${event.queryDataObj[1].toUpperCase()}`
-        event.balance = res.balance
-        event.interval = res.interval ? `${(res.interval / 60 / 60)} hours` : 'n/a'
-        event.tip = res.reward.toString().slice(0, 1) + 'TRB'
-        event.startTime = getDate(res.startTime)
-        event.window = res.window
-        event.feedIdParams = feedIdParams
-        feeds.push(event)
-
-        return event
-      })
-      .catch((err) =>
-        console.log('Error in autopay contract call', err.message)
-      )
-    }
+    return event
   })
-  return feeds
+  // console.log(decoded)
+  return decoded
 }
-
-
 
 export const decodingMiddleware = (reportEvents) => {
   let decoded = reportEvents.map((event) => {

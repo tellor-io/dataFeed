@@ -75,6 +75,7 @@ export const autopayQuery = gql`
       _interval
       _window
       _priceThreshold
+      _queryData
     }
   }
 `

@@ -12,7 +12,7 @@ function AllTips() {
   //Context State
   const autoPayData = useContext(GraphAutopayContext)
   const mode = useContext(ModeContext)
-  
+  console.log('autopay data ', autoPayData)
   const user = useContext(UserContext)
   //Component State
   const [clippedData, setClippedData] = useState(null)
@@ -74,6 +74,8 @@ function AllTips() {
     <>
       {autoPayData && autoPayData.decodedData ? (
         <div className="AllFeedsView">
+          {
+  console.log('testing validity ', autoPayData)}
           <TipTable
             data={autoPayData.decodedData}
             allData={autoPayData}

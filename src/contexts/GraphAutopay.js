@@ -5,18 +5,20 @@ import { UserContext } from './User'
 import { ApolloClient, InMemoryCache, useQuery } from '@apollo/client'
 //Utils
 import { autopayQuery } from '../utils/queries'
-import { decodingAutopayMiddleware } from '../utils/helpers'
+import { decodingAutopayMiddleware, sortDataByProperty  } from '../utils/helpers'
 //Sort
 
 export const GraphAutopayContext = createContext()
 
 //ApolloClients
-const clientMatic = new ApolloClient({
-  uri: 'https://api.thegraph.com/subgraphs/name/tellor-io/tellorautopaymatichgraph',
+
+const clientMumbai = new ApolloClient({
+  uri: 'https://api.thegraph.com/subgraphs/name/seroxdesign/tellor-autopay-mumbai',
   cache: new InMemoryCache(),
 })
-const clientMumbai = new ApolloClient({
-  uri: 'https://api.thegraph.com/subgraphs/name/tellor-io/tellorautopaymumbaihgraph',
+
+const clientMatic = new ApolloClient({
+  uri: 'https://api.thegraph.com/subgraphs/name/seroxdesign/tellor-autopay-mumbai',
   cache: new InMemoryCache(),
 })
 
@@ -51,6 +53,7 @@ const GraphAutopay = ({ children }) => {
       loading: matic.loading,
       error: matic.error,
     })
+    console.log('matic ', matic.data)
     return () => {
       setAutopayMaticData({})
     }
@@ -63,44 +66,55 @@ const GraphAutopay = ({ children }) => {
       loading: mumbai.loading,
       error: mumbai.error,
     })
+          
+    console.log('mumbai ',mumbai.data)
     return () => {
       setAutopayMumbaiData({})
     }
-  }, [matic.data, matic.loading, matic.error]) //eslint-disable-line
+  }, [mumbai.data, mumbai.loading, mumbai.error]) //eslint-disable-line
   //useEffects for decoding autopay events
   useEffect(() => {
-    if (autopayMaticData.data === undefined || autopayMumbaiData.data === undefined) return
+    if (
+      !autopayMaticData.data ||
+      !autopayMumbaiData.data 
+    )
+      return
+
     let eventsArray = []
-    
-    autopayMaticData.data.newDataFeedEntities.forEach((event) => {
-      event.chain = 'Matic Mainnet'
+
+    autopayMaticData.data.dataFeedEntities.forEach((event) => {
+      event.chain = 'Polygon Mainnet'
+      event.txnLink = `https://polygonscan.com/tx/${event.txnHash}`
       eventsArray.push(event)
     })
-    
-    setAllGraphData(eventsArray)
+    autopayMumbaiData.data.dataFeedEntities.forEach((event) => {
+      event.chain = 'Mumbai Testnet'
+      event.txnLink = `https://mumbai.polygonscan.com/tx/${event.txnHash}`
+      eventsArray.push(event)
+    })
+    let sorted = sortDataByProperty('_startTime', eventsArray)
+    setAllGraphData(sorted)
 
-    return () => {
-      setAllGraphData(null)
-    }
   }, [autopayMaticData.data])
 
 
   useEffect(() => {
     if (!allGraphData) return
-
-    setDecodedData(...decodedData, decodingAutopayMiddleware(allGraphData, user))
+    setDecodedData(decodingAutopayMiddleware(allGraphData))
 
     return () => {
       setDecodedData(null)
     }
   }, [allGraphData])
 
-  const GraphAutopayContextObj = {
+
+  const GraphContextObj = {
     decodedData: decodedData,
   }
-
+  console.log('decoded ', GraphContextObj.decodedData)
+ 
   return (
-    <GraphAutopayContext.Provider value={GraphAutopayContextObj}>
+    <GraphAutopayContext.Provider value={GraphContextObj}>
       {children}
     </GraphAutopayContext.Provider>
   )

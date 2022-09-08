@@ -5,6 +5,7 @@ import { ReactComponent as FilterIconFilled } from '../assets/filter.svg'
 import { ReactComponent as Checked } from '../assets/done.svg'
 import LinearIndeterminate from './LinearIndeterminate'
 //Contexts
+import { decodeSymbols } from '../utils/helpers'
 import { ModeContext } from '../contexts/Mode'
 
 function TipTable({ data, allData, setFiltering }) {
@@ -439,85 +440,7 @@ function TipTable({ data, allData, setFiltering }) {
     <table className="Table">
       <thead className="TableHeaders">
         <tr className="TH__Header">
-          <th className="TH__HeaderSpecial">
-            <div className="TH__HeaderDiv">
-              <h1>SYMBOLS</h1>
-              {symbolClicked ? (
-                <FilterIconFilled
-                  className={
-                    mode.mode === 'dark' ? 'FilterIcon' : 'FilterIconDark'
-                  }
-                  onClick={() => handleClose('symbol')}
-                />
-              ) : (
-                <FilterIcon
-                  className={
-                    mode.mode === 'dark' ? 'FilterIcon' : 'FilterIconDark'
-                  }
-                  onClick={() => handleClick('symbol')}
-                />
-              )}
-            </div>
-            <div
-              className={
-                mode.mode === 'dark'
-                  ? 'TableFilterDropdown'
-                  : 'TableFilterDropdownDark'
-              }
-              ref={symbolRef}
-            >
-              <h3>filter by symbol</h3>
-              <div className="DropdownResults">
-                {reportedSymbols &&
-                  reportedSymbols.map((symbol) => (
-                    <div
-                      key={symbol}
-                      className={
-                        mode.mode === 'dark'
-                          ? 'DropdownDataRow'
-                          : 'DropdownDataRowDark'
-                      }
-                      onClick={() => handleFilter('symbol', symbol)}
-                    >
-                      {symbolFilters.includes(symbol) ? (
-                        <>
-                          <p>{symbol}</p>
-                          <Checked
-                            className={
-                              mode.mode === 'dark' ? '' : 'DropdownCheckDark'
-                            }
-                          />
-                        </>
-                      ) : (
-                        <p>{symbol}</p>
-                      )}
-                    </div>
-                  ))}
-              </div>
-              <div
-                className={
-                  mode.mode === 'dark'
-                    ? 'DropdownButtons'
-                    : 'DropdownButtonsDark'
-                }
-              >
-                <button
-                  className="DropdownApply"
-                  onClick={() => handleFilterApply('symbol')}
-                >
-                  Apply
-                </button>
-                <button
-                  className={
-                    mode.mode === 'dark' ? 'DropdownClear' : 'DropdownClearDark'
-                  }
-                  onClick={() => handleFilterClear('symbol')}
-                >
-                  Clear
-                </button>
-              </div>
-            </div>
-          </th>
+        
           <th>
             <h1>Tip Amount</h1>
           </th>
@@ -617,7 +540,6 @@ function TipTable({ data, allData, setFiltering }) {
               key={`${event.id}-${i}`}
               className={mode.mode === 'dark' ? 'TableBody' : 'TableBodyDark'}
             >
-              <td className="TB__Symbols">{event.symbols}</td>
               <td className="TB__Value">{event.tip}</td>
               <td className="TB__Chain">{event.chain}</td>
               <td className="TB__Reporter">{event.interval}</td>
