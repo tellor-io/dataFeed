@@ -5,38 +5,18 @@ import TipTable from './TipTable'
 import {  GraphAutopayContext } from '../contexts/GraphAutopay'
 import { ModeContext } from '../contexts/Mode'
 import LinearIndeterminate from './LinearIndeterminate'
-import { UserContext } from '../contexts/User'
 //Components
 
 function AllTips() {
   //Context State
   const autoPayData = useContext(GraphAutopayContext)
   const mode = useContext(ModeContext)
-  console.log('autopay data ', autoPayData)
-  const user = useContext(UserContext)
   //Component State
   const [clippedData, setClippedData] = useState(null)
   const [loadMoreClicks, setLoadMoreClicks] = useState(1)
   const [viewing, setViewing] = useState(null)
   const [loadMoreButton, setLoadMoreButton] = useState(true)
   const [filtering, setFiltering] = useState(false)
-
-  useEffect(() => {
-    if (!user) return
-    if (
-      user.setupUserError === 'User closed modal' ||
-      user.setupUserError === 'User Rejected'
-    ) {
-      user.setConnected(false)
-      user.setSetupUserError(null)
-    }
-  }, [user])
-
-  const startFlow = () => {
-    if (user) {
-      user.setConnected(true)
-    }
-  }
 
   useEffect(() => {
     if (!autoPayData.decodedData) return
@@ -69,15 +49,12 @@ function AllTips() {
     }
   }
 
-
   return (
     <>
       {autoPayData && autoPayData.decodedData ? (
         <div className="AllFeedsView">
-          {
-  console.log('testing validity ', autoPayData)}
           <TipTable
-            data={autoPayData.decodedData}
+            data={viewing}
             allData={autoPayData}
             setFiltering={setFiltering}
           />

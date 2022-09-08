@@ -150,17 +150,77 @@ export const sortDataByProperty = (prop, arr) => {
 }
 
 export const decodingAutopayMiddleware = (autopayEvents) => {
+
   let decoded = autopayEvents.map((event) => {
-    
+    let queryDataPartial
+    let decodedQueryData
+    let temp
+    let queryData
+    let finalQueryData
     event.interval = event._interval ? `${(event._interval / 60 / 60)} hours` : 'n/a'
     event.tip = event._reward.toString().slice(0, 1) + 'TRB'
     event.startTime = getDate(event._startTime)
     event.window = event._window
     event.symbols = event._queryData
+    event.txnLink = event.txnLink
 
+    if (event._queryData && event._queryData.length <= 104) {
+      try {queryData = JSON.parse(hex2a(event._queryData))
+      event.queryDataObj = queryData
+      queryDataParsers[queryData?.type || queryData?.Type || 'Default'](event)
+      } catch {
+        event.queryDataObj='0x'
+      }
+    } 
+    if (event._queryData && event._queryData.length > 104) {
+      queryDataPartial = web3.eth.abi.decodeParameters(
+        ['string', 'bytes'],
+        event._queryData
+        
+      )
+      console.log(queryDataPartial)
+      switch (queryDataPartial[0]) {
+        
+        case 'LegacyRequest':
+          event.decodedValue = parseInt(Number(queryDataPartial[1]), 10)
+          queryDataParsers[queryDataPartial[0] || 'Default'](event)
+          break
+        case 'SpotPrice':
+          finalQueryData = web3.eth.abi.decodeParameters(
+            ['string', 'string'],
+            queryDataPartial[1]
+          )
+          event.decodedValue = `${finalQueryData[0].toUpperCase()}/${finalQueryData[1].toUpperCase()}`
+          break
+        case 'CurrencyExchangeRate':
+            finalQueryData = web3.eth.abi.decodeParameters(
+              ['string', 'string'],
+              queryDataPartial[1]
+            )
+            event.decodedValue = `${finalQueryData[0].toUpperCase()}/${finalQueryData[1].toUpperCase()}`
+            break
+        case 'TellorRNG':
+          finalQueryData = web3.eth.abi.decodeParameters(
+            ['uint'],
+            queryDataPartial[1]
+          )
+          temp = web3.eth.abi.decodeParameters(
+            ['uint256'],
+            event._value
+          )
+    
+          event.decodedValue = `${finalQueryData[0].toUpperCase()}/${finalQueryData[1].toUpperCase()}`
+          return event
+        //These will not be shown: https://github.com/tellor-io/dataSpecs/blob/main/types/NumericApiResponse.md
+        default:
+          event.decodedValue = 'NumericApiResponse'
+          return event
+      }
+      console.log('testing', event)
+    }
     return event
   })
-  // console.log(decoded)
+  console.log('decoded', decoded)
   return decoded
 }
 

@@ -1,6 +1,4 @@
-import React, { useState, createContext, useEffect, useContext } from 'react'
-//Contexts
-import { UserContext } from './User'
+import React, { useState, createContext, useEffect } from 'react'
 //The Graph
 import { ApolloClient, InMemoryCache, useQuery } from '@apollo/client'
 //Utils
@@ -29,7 +27,6 @@ const GraphAutopay = ({ children }) => {
   const [decodedData, setDecodedData] = useState([])
   const [allGraphData, setAllGraphData] = useState(null)
   //Context State
-  const user = useContext(UserContext)
   //Matic
   const matic = useQuery(autopayQuery, {
     client: clientMatic,
@@ -53,7 +50,6 @@ const GraphAutopay = ({ children }) => {
       loading: matic.loading,
       error: matic.error,
     })
-    console.log('matic ', matic.data)
     return () => {
       setAutopayMaticData({})
     }
@@ -66,8 +62,6 @@ const GraphAutopay = ({ children }) => {
       loading: mumbai.loading,
       error: mumbai.error,
     })
-          
-    console.log('mumbai ',mumbai.data)
     return () => {
       setAutopayMumbaiData({})
     }
@@ -111,8 +105,7 @@ const GraphAutopay = ({ children }) => {
   const GraphContextObj = {
     decodedData: decodedData,
   }
-  console.log('decoded ', GraphContextObj.decodedData)
- 
+
   return (
     <GraphAutopayContext.Provider value={GraphContextObj}>
       {children}

@@ -76,6 +76,7 @@ export const autopayQuery = gql`
       _window
       _priceThreshold
       _queryData
+      txnHash
     }
   }
 `

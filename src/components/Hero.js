@@ -58,9 +58,7 @@ function Hero() {
               </Link> */}
             </div>
             <div className="HeroSection">
-              <Routes>
-                <Route exact path="/" element={<AllFeeds />} />
-              </Routes>
+              <AllFeeds />
               <h3 style={{marginTop: '1em'}}>Tips</h3>
               <AllTips />
             </div>

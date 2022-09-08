@@ -18,7 +18,6 @@ function TipTable({ data, allData, setFiltering }) {
   //
   const [reportedSymbols, setReportedSymbols] = useState(null)
   const [reportedChains, setReportedChains] = useState(null)
-  const [time, setTime] = useState(null)  
   //
   const [allFilters, setAllFilters] = useState([])
   const [symbolFilters, setSymbolFilters] = useState([])
@@ -34,14 +33,7 @@ function TipTable({ data, allData, setFiltering }) {
 
   useEffect(() => {
     setTableData(data)
-  }, [time])
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setTime(2)
-    }, 3000);
-    return () => clearTimeout(timeout);
-  }, []);
+  }, [data])
   
   //Handlers
   const handleClick = (iconType) => {
@@ -436,11 +428,93 @@ function TipTable({ data, allData, setFiltering }) {
     }
   }
 
+  const handleRowClick = (txnLink) => {
+    window.open(txnLink, '_blank').focus()
+  }
+
   return (
     <table className="Table">
       <thead className="TableHeaders">
         <tr className="TH__Header">
-        
+        <th className="TH__HeaderSpecial">
+            <div className="TH__HeaderDiv">
+              <h1>SYMBOLS</h1>
+              {symbolClicked ? (
+                <FilterIconFilled
+                  className={
+                    mode.mode === 'dark' ? 'FilterIcon' : 'FilterIconDark'
+                  }
+                  onClick={() => handleClose('symbol')}
+                />
+              ) : (
+                <FilterIcon
+                  className={
+                    mode.mode === 'dark' ? 'FilterIcon' : 'FilterIconDark'
+                  }
+                  onClick={() => handleClick('symbol')}
+                />
+              )}
+            </div>
+            <div
+              className={
+                mode.mode === 'dark'
+                  ? 'TableFilterDropdown'
+                  : 'TableFilterDropdownDark'
+              }
+              ref={symbolRef}
+            >
+              <h3>filter by symbol</h3>
+              <div className="DropdownResults">
+                {reportedSymbols &&
+                  reportedSymbols.map((symbol) => (
+                    <div
+                      key={symbol}
+                      className={
+                        mode.mode === 'dark'
+                          ? 'DropdownDataRow'
+                          : 'DropdownDataRowDark'
+                      }
+                      onClick={() => handleFilter('symbol', symbol)}
+                    >
+                      {symbolFilters.includes(symbol) ? (
+                        <>
+                          <p>{symbol}</p>
+                          <Checked
+                            className={
+                              mode.mode === 'dark' ? '' : 'DropdownCheckDark'
+                            }
+                          />
+                        </>
+                      ) : (
+                        <p>{symbol}</p>
+                      )}
+                    </div>
+                  ))}
+              </div>
+              <div
+                className={
+                  mode.mode === 'dark'
+                    ? 'DropdownButtons'
+                    : 'DropdownButtonsDark'
+                }
+              >
+                <button
+                  className="DropdownApply"
+                  onClick={() => handleFilterApply('symbol')}
+                >
+                  Apply
+                </button>
+                <button
+                  className={
+                    mode.mode === 'dark' ? 'DropdownClear' : 'DropdownClearDark'
+                  }
+                  onClick={() => handleFilterClear('symbol')}
+                >
+                  Clear
+                </button>
+              </div>
+            </div>
+          </th>
           <th>
             <h1>Tip Amount</h1>
           </th>
@@ -534,16 +608,20 @@ function TipTable({ data, allData, setFiltering }) {
         </tr>
       </thead>
       <tbody>
-        {time && tableData ? (
+        {tableData && tableData.length > 0 ? (
           tableData.map((event, i) => (
             <tr
-              key={`${event.id}-${i}`}
-              className={mode.mode === 'dark' ? 'TableBody' : 'TableBodyDark'}
-            >
-              <td className="TB__Value">{event.tip}</td>
-              <td className="TB__Chain">{event.chain}</td>
-              <td className="TB__Reporter">{event.interval}</td>
-              <td className="TB__DateTime">{event.startTime}</td>
+                key={`${event.id}-${i}`}
+                className={mode.mode === 'dark' ? 'TableBody' : 'TableBodyDark'}
+                onClick={() => handleRowClick(event.txnLink)}
+              >
+                <td className="TB__Symbols">{event.decodedValue}</td>
+                <td className="TB__Value">{event.tip}</td>
+                <td className="TB__Chain">{event.chain}</td>
+                <td className="TB__Reporter">
+                  <p>{event.interval}</p>
+                </td>
+                <td className="TB__DateTime">{event.startTime}</td>
             </tr>
           ))
         ) : (
