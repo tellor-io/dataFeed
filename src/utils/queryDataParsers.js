@@ -1,6 +1,8 @@
 import { psrLookup } from './psrLookup'
+import Web3 from 'web3'
 
 const eighteenDecimals = 1000000000000000000
+const web3 = new Web3(window.ethereum)
 
 export const queryDataParsers = {
   LegacyRequest: (event) => {
@@ -164,8 +166,12 @@ export const queryDataParsers = {
           }).format(parseInt(Number(event._value), 10) / eighteenDecimals)
           return event
       default:
-        event.decodedValueName = 'New SpotPriceProper Type'
-        event.decodedValue = '0'
+        let queryData = web3.eth.abi.decodeParameters(['string', 'string'], web3.eth.abi.decodeParameters(['string', 'bytes'], event._queryData)[1])
+        event.decodedValueName = `${queryData[0].toUpperCase()}/${queryData[1].toUpperCase()}`
+        event.decodedValue = new Intl.NumberFormat('en-EN', {
+          style: 'currency',
+          currency: queryData[1].toUpperCase(),
+        }).format(Number(event._value) / eighteenDecimals)
         return event
     }
   },
@@ -182,15 +188,13 @@ export const queryDataParsers = {
   //   }
   // },
   Default: (event) => {
-    switch (event.queryId) {
-      case 8:
-        event.decodedValueName =
-          event._queryData.charAt(0).toUpperCase() + event._queryData.slice(1)
-        event.decodedValue =
-          event._queryData.charAt(0).toUpperCase() + event._queryData.slice(1)
+    switch (event._value.length) {
+      case 66:
+        event.decodedValueName = web3.eth.abi.decodeParameters(['string', 'bytes'], event._queryData)[0]
+        event.decodedValue =  parseInt(event._value)/eighteenDecimals
         return event
       default:
-        event.decodedValueName = 'New QueryData w/out JSON'
+        event.decodedValueName = web3.eth.abi.decodeParameters(['string', 'bytes'], event._queryData)[0]
         event.decodedValue = '0'
         return event
     }
