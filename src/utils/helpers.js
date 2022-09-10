@@ -1,8 +1,6 @@
 import minABI from './minimumABI.json'
 import Web3 from 'web3'
 import { queryDataParsers } from './queryDataParsers'
-import maticAutopayABI from './maticAutopayABI.json'
-import mumbaiAutopayABI from './mumbaiAutopayABI.json'
 //Globals
 const web3 = new Web3(window.ethereum)
 
@@ -150,7 +148,6 @@ export const sortDataByProperty = (prop, arr) => {
 }
 
 export const decodingAutopayMiddleware = (autopayEvents) => {
-  console.log(autopayEvents)
   let decoded = autopayEvents.map((event) => {
     let queryDataPartial
     let queryData

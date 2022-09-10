@@ -1,7 +1,5 @@
 import React, { useContext } from 'react'
-//ReactRouterDom
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-//Styles
+
 import '../styles/Hero.css'
 //Components
 import AllFeeds from '../components/AllFeeds.js'
@@ -41,7 +39,6 @@ function Hero() {
       <h1 className="HeroHeader">Your Oracle at Work</h1>
       <Graph>
         <GraphAutopay>
-          <Router>
             <div
               className={
                 mode && mode.mode === 'dark'
@@ -62,7 +59,6 @@ function Hero() {
               <h3 style={{marginTop: '1em'}}>Tips</h3>
               <AllTips />
             </div>
-          </Router>
         </GraphAutopay>
       </Graph>
     </div>
