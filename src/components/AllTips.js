@@ -21,7 +21,6 @@ function AllTips() {
   useEffect(() => {
     if (!autoPayData.decodedData) return
     setClippedData(autoPayData.decodedData.slice(0, 50))
-   
     return () => {
       setClippedData(null)
     }
@@ -53,6 +52,7 @@ function AllTips() {
     <>
       {autoPayData && autoPayData.decodedData ? (
         <div className="AllFeedsView">
+         
           <TipTable
             data={viewing}
             allData={autoPayData}

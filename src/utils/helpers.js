@@ -153,7 +153,6 @@ export const decodingAutopayMiddleware = (autopayEvents) => {
 
   let decoded = autopayEvents.map((event) => {
     let queryDataPartial
-    let decodedQueryData
     let temp
     let queryData
     let finalQueryData
@@ -162,7 +161,6 @@ export const decodingAutopayMiddleware = (autopayEvents) => {
     event.startTime = getDate(event._startTime)
     event.window = event._window
     event.symbols = event._queryData
-    event.txnLink = event.txnLink
 
     if (event._queryData && event._queryData.length <= 104) {
       try {queryData = JSON.parse(hex2a(event._queryData))

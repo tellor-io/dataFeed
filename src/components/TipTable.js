@@ -19,7 +19,7 @@ function TipTable({ data, allData, setFiltering }) {
   const [reportedSymbols, setReportedSymbols] = useState(null)
   const [reportedChains, setReportedChains] = useState(null)
   //
-  const [allFilters, setAllFilters] = useState([])
+  const [allFilters, setAllFilters] = useState()
   const [symbolFilters, setSymbolFilters] = useState([])
   const [chainFilters, setChainFilters] = useState([])
   const [reporterFilters, setReporterFilters] = useState([])
@@ -30,6 +30,7 @@ function TipTable({ data, allData, setFiltering }) {
   const reporterRef = useRef()
   //Contexts
   const mode = useContext(ModeContext)
+  let counter = 0
 
   useEffect(() => {
     setTableData(data)
@@ -627,6 +628,7 @@ function TipTable({ data, allData, setFiltering }) {
         ) : (
           <tr className="TableBodyNoMatches">
             <LinearIndeterminate />
+         
           </tr>
         )}
       </tbody>

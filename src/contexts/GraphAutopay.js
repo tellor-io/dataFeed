@@ -89,13 +89,12 @@ const GraphAutopay = ({ children }) => {
     let sorted = sortDataByProperty('_startTime', eventsArray)
     setAllGraphData(sorted)
 
-  }, [autopayMaticData.data])
+  }, [autopayMaticData, autopayMumbaiData])
 
 
   useEffect(() => {
     if (!allGraphData) return
     setDecodedData(decodingAutopayMiddleware(allGraphData))
-
     return () => {
       setDecodedData(null)
     }
