@@ -150,12 +150,12 @@ export const sortDataByProperty = (prop, arr) => {
 }
 
 export const decodingAutopayMiddleware = (autopayEvents) => {
-
+  console.log(autopayEvents)
   let decoded = autopayEvents.map((event) => {
     let queryDataPartial
-    let temp
     let queryData
     let finalQueryData
+    let temp
     event.interval = event._interval ? `${(event._interval / 60 / 60)} hours` : 'n/a'
     event.tip = event._reward.toString().slice(0, 1) + 'TRB'
     event.startTime = getDate(event._startTime)
@@ -176,7 +176,6 @@ export const decodingAutopayMiddleware = (autopayEvents) => {
         event._queryData
         
       )
-      console.log(queryDataPartial)
       switch (queryDataPartial[0]) {
         
         case 'LegacyRequest':
@@ -214,11 +213,9 @@ export const decodingAutopayMiddleware = (autopayEvents) => {
           event.decodedValue = 'NumericApiResponse'
           return event
       }
-      console.log('testing', event)
     }
     return event
   })
-  console.log('decoded', decoded)
   return decoded
 }
 

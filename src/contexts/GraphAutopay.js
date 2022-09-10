@@ -16,7 +16,7 @@ const clientMumbai = new ApolloClient({
 })
 
 const clientMatic = new ApolloClient({
-  uri: 'https://api.thegraph.com/subgraphs/name/seroxdesign/tellor-autopay-mumbai',
+  uri: 'https://api.thegraph.com/subgraphs/name/seroxdesign/tellor-autopay-matic',
   cache: new InMemoryCache(),
 })
 
