@@ -36,7 +36,7 @@ function Hero() {
 
   return (
     <div className="HeroInnerContainer">
-      <h1 className="HeroHeader">Your Oracle at Work</h1>
+      {/*<h1 className="HeroHeader">Your Oracle at Work</h1>}}*/}
       <Graph>
         <GraphAutopay>
             <div
@@ -55,8 +55,9 @@ function Hero() {
               </Link> */}
             </div>
             <div className="HeroSection">
+              <h2 style={{marginTop: '1em'}}>Recent Reports</h2>
               <AllFeeds />
-              <h3 style={{marginTop: '1em'}}>Tips</h3>
+              <h2 style={{marginTop: '2em'}}>Tips</h2>
               <AllTips />
             </div>
         </GraphAutopay>
