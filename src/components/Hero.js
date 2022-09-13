@@ -1,12 +1,12 @@
 import React, { useContext } from 'react'
-//ReactRouterDom
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-//Styles
+
 import '../styles/Hero.css'
 //Components
 import AllFeeds from '../components/AllFeeds.js'
+import AllTips from './AllTips'
 //Contexts
 import Graph from '../contexts/Graph'
+import GraphAutopay from '../contexts/GraphAutopay'
 import { ModeContext } from '../contexts/Mode'
 
 function Hero() {
@@ -38,28 +38,28 @@ function Hero() {
     <div className="HeroInnerContainer">
       <h1 className="HeroHeader">Your Oracle at Work</h1>
       <Graph>
-        <Router>
-          <div
-            className={
-              mode && mode.mode === 'dark'
-                ? 'HeroNavLinks'
-                : 'HeroNavLinksLight'
-            }
-          >
-            {/* <Link
-              to="/"
-              className={active ? 'ActiveLink' : 'InactiveLink'}
-              onClick={() => activeHelper('AllFeeds')}
+        <GraphAutopay>
+            <div
+              className={
+                mode && mode.mode === 'dark'
+                  ? 'HeroNavLinks'
+                  : 'HeroNavLinksLight'
+              }
             >
-              All Feeds
-            </Link> */}
-          </div>
-          <div className="HeroSection">
-            <Routes>
-              <Route exact path="/" element={<AllFeeds />} />
-            </Routes>
-          </div>
-        </Router>
+              {/* <Link
+                to="/"
+                className={active ? 'ActiveLink' : 'InactiveLink'}
+                onClick={() => activeHelper('AllFeeds')}
+              >
+                All Feeds
+              </Link> */}
+            </div>
+            <div className="HeroSection">
+              <AllFeeds />
+              <h3 style={{marginTop: '1em'}}>Tips</h3>
+              <AllTips />
+            </div>
+        </GraphAutopay>
       </Graph>
     </div>
   )
