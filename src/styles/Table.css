@@ -192,13 +192,9 @@
 }
 .TB__Symbols {
   flex: 0.2;
-  font-size: 20px;
-  font-weight: 900;
 }
 .TB__Value {
   flex: 0.2;
-  font-size: 20px;
-  font-weight: 900;
 }
 .TB__Chain {
   flex: 0.2;
