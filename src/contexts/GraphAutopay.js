@@ -11,12 +11,12 @@ export const GraphAutopayContext = createContext()
 //ApolloClients
 
 const clientMumbai = new ApolloClient({
-  uri: 'https://api.thegraph.com/subgraphs/name/tellor-io/tellorflexoraclemumbaihgraph',
+  uri: 'https://api.thegraph.com/subgraphs/name/tellor-io/tellorautopaymumbaihgraph',
   cache: new InMemoryCache(),
 })
 
 const clientMatic = new ApolloClient({
-  uri: 'https://api.thegraph.com/subgraphs/name/tellor-io/tellorflexoraclematichgraph',
+  uri: 'https://api.thegraph.com/subgraphs/name/tellor-io/tellorautopaymatichgraph',
   cache: new InMemoryCache(),
 })
 
