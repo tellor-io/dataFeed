@@ -149,6 +149,7 @@ export const sortDataByProperty = (prop, arr) => {
 
 export const decodingAutopayMiddleware = (autopayEvents) => {
   let decoded = autopayEvents.map((event) => {
+    console.log('events', event);
     let queryDataPartial
     let queryData
     let finalQueryData
@@ -193,18 +194,6 @@ export const decodingAutopayMiddleware = (autopayEvents) => {
             )
             event.decodedValue = `${finalQueryData[0].toUpperCase()}/${finalQueryData[1].toUpperCase()}`
             break
-        case 'TellorRNG':
-          finalQueryData = web3.eth.abi.decodeParameters(
-            ['uint'],
-            queryDataPartial[1]
-          )
-          temp = web3.eth.abi.decodeParameters(
-            ['uint256'],
-            event._value
-          )
-    
-          event.decodedValue = `${finalQueryData[0].toUpperCase()}/${finalQueryData[1].toUpperCase()}`
-          return event
         //These will not be shown: https://github.com/tellor-io/dataSpecs/blob/main/types/NumericApiResponse.md
         default:
           event.decodedValue = 'NumericApiResponse'
@@ -213,6 +202,7 @@ export const decodingAutopayMiddleware = (autopayEvents) => {
     }
     return event
   })
+  console.log('decoded', decoded);
   return decoded
 }
 
