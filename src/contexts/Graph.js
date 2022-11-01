@@ -16,6 +16,10 @@ const clientRinkeby = new ApolloClient({
   uri: 'https://api.thegraph.com/subgraphs/name/tellor-io/tellorxoraclerinkhgraph',
   cache: new InMemoryCache(),
 })
+const clientGoerli = new ApolloClient({
+  uri: 'https://api.thegraph.com/subgraphs/name/raynharr/tellor-flex-goerli-graph',
+  cache: new InMemoryCache(),
+})
 const clientMatic = new ApolloClient({
   uri: 'https://api.thegraph.com/subgraphs/name/tellor-io/tellorflexoraclematichgraph',
   cache: new InMemoryCache(),
@@ -33,6 +37,7 @@ const Graph = ({ children }) => {
   //Component State
   const [graphMainnetData, setGraphMainnetData] = useState({})
   const [graphRinkebyData, setGraphRinkebyData] = useState({})
+  const [graphGoerliData, setGraphGoerliData] = useState({})
   const [graphMaticData, setGraphMaticData] = useState({})
   const [graphMumbaiData, setGraphMumbaiData] = useState({})
   const [graphOptkovData, setGraphOptkovData] = useState({})
@@ -54,6 +59,12 @@ const Graph = ({ children }) => {
   //Rinkeby
   const rinkeby = useQuery(reporterQuery, {
     client: clientRinkeby,
+    fetchPolicy: 'network-only',
+    pollInterval: 5000,
+  })
+   //Goerli
+   const goerli = useQuery(reporterQuery, {
+    client: clientGoerli,
     fetchPolicy: 'network-only',
     pollInterval: 5000,
   })
@@ -103,6 +114,20 @@ const Graph = ({ children }) => {
       setGraphRinkebyData({})
     }
   }, [rinkeby.data, rinkeby.loading, rinkeby.error]) //eslint-disable-line
+    //Goerli
+    useEffect(() => {
+      if (!goerli) return
+      setGraphGoerliData({
+        data: goerli.data,
+        loading: goerli.loading,
+        error: goerli.error,
+      })
+  
+      return () => {
+        setGraphGoerliData({})
+      }
+    }, [goerli.data, goerli.loading, goerli.error]) //eslint-disable-line
+   
   //Matic
   useEffect(() => {
     if (!matic) return
@@ -148,6 +173,7 @@ const Graph = ({ children }) => {
     if (
       !graphMainnetData.data ||
       !graphRinkebyData.data ||
+      !graphGoerliData.data ||
       !graphMaticData.data ||
       !graphMumbaiData.data ||
       !graphOptkovData.data
@@ -163,6 +189,11 @@ const Graph = ({ children }) => {
     graphRinkebyData.data.newReportEntities.forEach((event) => {
       event.chain = 'Rinkeby Testnet'
       event.txnLink = `https://rinkeby.etherscan.io/tx/${event.txnHash}`
+      eventsArray.push(event)
+    })
+    graphGoerliData.data.newReportEntities.forEach((event) => {
+      event.chain = 'Goerli Testnet'
+      event.txnLink = `https://goerli.etherscan.io/tx/${event.txnHash}`
       eventsArray.push(event)
     })
     graphMaticData.data.newReportEntities.forEach((event) => {
@@ -186,7 +217,7 @@ const Graph = ({ children }) => {
     return () => {
       setAllGraphData(null)
     }
-  }, [graphMainnetData, graphRinkebyData, graphMaticData, graphMumbaiData, graphOptkovData])
+  }, [graphMainnetData, graphRinkebyData, graphGoerliData, graphMaticData, graphMumbaiData, graphOptkovData])
 
   useEffect(() => {
     if (!allGraphData) return
