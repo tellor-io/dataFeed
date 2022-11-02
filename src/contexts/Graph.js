@@ -9,7 +9,7 @@ export const GraphContext = createContext()
 
 //ApolloClients
 const clientMainnet = new ApolloClient({
-  uri: 'https://api.thegraph.com/subgraphs/name/tellor-io/tellorxoraclemainhgraph',
+  uri: 'https://api.thegraph.com/subgraphs/name/raynharr/tellor-flex-ethmain-graph',
   cache: new InMemoryCache(),
 })
 const clientRinkeby = new ApolloClient({
@@ -186,9 +186,14 @@ const Graph = ({ children }) => {
       event.txnLink = `https://etherscan.io/tx/${event.txnHash}`
       eventsArray.push(event)
     })
-    graphRinkebyData.data.newReportEntities.forEach((event) => {
+    /*graphRinkebyData.data.newReportEntities.forEach((event) => {
       event.chain = 'Rinkeby Testnet'
       event.txnLink = `https://rinkeby.etherscan.io/tx/${event.txnHash}`
+      eventsArray.push(event)
+    })*/
+    graphGoerliData.data.newReportEntities.forEach((event) => {
+      event.chain = 'Goerli Testnet'
+      event.txnLink = `https://goerli.etherscan.io/tx/${event.txnHash}`
       eventsArray.push(event)
     })
     graphGoerliData.data.newReportEntities.forEach((event) => {
