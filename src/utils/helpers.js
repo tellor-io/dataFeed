@@ -7,7 +7,7 @@ const web3 = new Web3(window.ethereum)
 const tellorAddressMainnet = '0x88dF592F8eb5D7Bd38bFeF7dEb0fBc02cf3778a0'
 const tellorAddressPolygon = '0xE3322702BEdaaEd36CdDAb233360B939775ae5f1'
 const tellorAddressMumbai = '0xce4e32fe9d894f8185271aa990d2db425df3e6be'
-const tellorAddressGoerli = '0x002E861910D7f87BAa832A22Ac436F25FB66FA24'
+const tellorAddressGoerli = '0xB3B662644F8d3138df63D2F43068ea621e2981f9'
 
 const getDate = (timestamp) => {
   const months = {
