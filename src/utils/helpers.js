@@ -154,8 +154,8 @@ export const decodingAutopayMiddleware = (autopayEvents) => {
     let queryData
     let finalQueryData
     let temp
-    event.interval = event._interval ? `${(event._interval / 60 / 60)} hours` : 'n/a'
-    event.tip = event._reward.toString().slice(0, 1) + 'TRB'
+    event.interval = event._interval ? `${(event._interval / 60 / 60)} hours` : 'One Time Tip'
+    event.tip = event._reward ? web3.utils.fromWei(event._reward) + ' TRB' : web3.utils.fromWei(event._amount) + ' TRB'
     event.startTime = getDate(event._startTime)
     event.window = event._window
     event.symbols = event._queryData

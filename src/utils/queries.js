@@ -53,7 +53,6 @@ export const autopayQuery = gql`
       _amount
       _reporter
     }
-    
     tipAddedEntities(orderBy: id, orderDirection: desc) {
       id
       _queryId

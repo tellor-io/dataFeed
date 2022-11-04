@@ -81,9 +81,21 @@ const GraphAutopay = ({ children }) => {
       event.txnLink = `https://polygonscan.com/tx/${event.txnHash}`
       eventsArray.push(event)
     })
+    autopayMaticData.data.tipAddedEntities.forEach((event) => {
+      event.chain = 'Polygon Mainnet'
+      event.type = 'Tip'
+      event._startTime = ''
+      eventsArray.push(event)
+    })
     autopayMumbaiData.data.dataFeedEntities.forEach((event) => {
       event.chain = 'Mumbai Testnet'
       event.txnLink = `https://mumbai.polygonscan.com/tx/${event.txnHash}`
+      eventsArray.push(event)
+    })
+    autopayMumbaiData.data.tipAddedEntities.forEach((event) => {
+      event.chain = 'Mumbai Testnet'
+      event.type = 'Tip'
+      event._startTime = ''
       eventsArray.push(event)
     })
     let sorted = sortDataByProperty('_startTime', eventsArray)
@@ -94,6 +106,7 @@ const GraphAutopay = ({ children }) => {
 
   useEffect(() => {
     if (!allGraphData) return
+    console.log('I die here')
     setDecodedData(decodingAutopayMiddleware(allGraphData))
     return () => {
       setDecodedData(null)
