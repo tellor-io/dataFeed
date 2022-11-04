@@ -51,6 +51,7 @@ const GraphAutopay = ({ children }) => {
       error: matic.error,
     })
     return () => {
+      console.log(matic.data)
       setAutopayMaticData({})
     }
   }, [matic.data, matic.loading, matic.error]) //eslint-disable-line
@@ -83,8 +84,7 @@ const GraphAutopay = ({ children }) => {
     })
     autopayMaticData.data.tipAddedEntities.forEach((event) => {
       event.chain = 'Polygon Mainnet'
-      event.type = 'Tip'
-      event._startTime = ''
+      event.txnLink = `https://polygonscan.com/tx/${event.txnHash}`
       eventsArray.push(event)
     })
     autopayMumbaiData.data.dataFeedEntities.forEach((event) => {
@@ -94,8 +94,7 @@ const GraphAutopay = ({ children }) => {
     })
     autopayMumbaiData.data.tipAddedEntities.forEach((event) => {
       event.chain = 'Mumbai Testnet'
-      event.type = 'Tip'
-      event._startTime = ''
+      event.txnLink = `https://mumbai.polygonscan.com/tx/${event.txnHash}`
       eventsArray.push(event)
     })
     let sorted = sortDataByProperty('_startTime', eventsArray)
@@ -106,7 +105,6 @@ const GraphAutopay = ({ children }) => {
 
   useEffect(() => {
     if (!allGraphData) return
-    console.log('I die here')
     setDecodedData(decodingAutopayMiddleware(allGraphData))
     return () => {
       setDecodedData(null)
