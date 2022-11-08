@@ -51,6 +51,7 @@ const GraphAutopay = ({ children }) => {
       error: matic.error,
     })
     return () => {
+      console.log(matic.data)
       setAutopayMaticData({})
     }
   }, [matic.data, matic.loading, matic.error]) //eslint-disable-line
@@ -81,7 +82,17 @@ const GraphAutopay = ({ children }) => {
       event.txnLink = `https://polygonscan.com/tx/${event.txnHash}`
       eventsArray.push(event)
     })
+    autopayMaticData.data.tipAddedEntities.forEach((event) => {
+      event.chain = 'Polygon Mainnet'
+      event.txnLink = `https://polygonscan.com/tx/${event.txnHash}`
+      eventsArray.push(event)
+    })
     autopayMumbaiData.data.dataFeedEntities.forEach((event) => {
+      event.chain = 'Mumbai Testnet'
+      event.txnLink = `https://mumbai.polygonscan.com/tx/${event.txnHash}`
+      eventsArray.push(event)
+    })
+    autopayMumbaiData.data.tipAddedEntities.forEach((event) => {
       event.chain = 'Mumbai Testnet'
       event.txnLink = `https://mumbai.polygonscan.com/tx/${event.txnHash}`
       eventsArray.push(event)
