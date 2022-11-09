@@ -196,11 +196,6 @@ const Graph = ({ children }) => {
       event.txnLink = `https://goerli.etherscan.io/tx/${event.txnHash}`
       eventsArray.push(event)
     })
-    graphGoerliData.data.newReportEntities.forEach((event) => {
-      event.chain = 'Goerli Testnet'
-      event.txnLink = `https://goerli.etherscan.io/tx/${event.txnHash}`
-      eventsArray.push(event)
-    })
     graphMaticData.data.newReportEntities.forEach((event) => {
       event.chain = 'Polygon Mainnet'
       event.txnLink = `https://polygonscan.com/tx/${event.txnHash}`
