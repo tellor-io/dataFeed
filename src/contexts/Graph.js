@@ -28,6 +28,10 @@ const clientMumbai = new ApolloClient({
   uri: 'https://api.thegraph.com/subgraphs/name/tellor-io/tellorflexoraclemumbaihgraph',
   cache: new InMemoryCache(),
 })
+const clientArbone = new ApolloClient({
+  uri: 'https://api.thegraph.com/subgraphs/name/raynharr/tellor-flex-arbitrummain-graph',
+  cache: new InMemoryCache(),
+})
 const clientOptkov = new ApolloClient({
   uri: 'https://api.thegraph.com/subgraphs/name/raynharr/tellorflexoracleoptimismkovanhgraph',
   cache: new InMemoryCache(),
@@ -40,6 +44,7 @@ const Graph = ({ children }) => {
   const [graphGoerliData, setGraphGoerliData] = useState({})
   const [graphMaticData, setGraphMaticData] = useState({})
   const [graphMumbaiData, setGraphMumbaiData] = useState({})
+  const [graphArboneData, setGraphArboneData] = useState({})
   const [graphOptkovData, setGraphOptkovData] = useState({})
   const [allGraphData, setAllGraphData] = useState(null)
   const [decodedData, setDecodedData] = useState(null)
@@ -77,6 +82,12 @@ const Graph = ({ children }) => {
   //Mumbai
   const mumbai = useQuery(reporterQuery, {
     client: clientMumbai,
+    fetchPolicy: 'network-only',
+    pollInterval: 5000,
+  })
+  //Arbitrum One (Main)
+  const arbone = useQuery(reporterQuery, {
+    client: clientArbone,
     fetchPolicy: 'network-only',
     pollInterval: 5000,
   })
@@ -127,7 +138,6 @@ const Graph = ({ children }) => {
         setGraphGoerliData({})
       }
     }, [goerli.data, goerli.loading, goerli.error]) //eslint-disable-line
-   
   //Matic
   useEffect(() => {
     if (!matic) return
@@ -154,6 +164,19 @@ const Graph = ({ children }) => {
       setGraphMumbaiData({})
     }
   }, [mumbai.data, mumbai.loading, mumbai.error]) //eslint-disable-line
+   //Arbitrum One
+   useEffect(() => {
+    if (!arbone) return
+    setGraphArboneData({
+      data: arbone.data,
+      loading: arbone.loading,
+      error: arbone.error,
+    })
+
+    return () => {
+      setGraphArboneData({})
+    }
+  }, [arbone.data, arbone.loading, arbone.error]) //eslint-disable-line  
   //Optkov
   useEffect(() => {
     if (!optkov) return
@@ -176,6 +199,7 @@ const Graph = ({ children }) => {
       !graphGoerliData.data ||
       !graphMaticData.data ||
       !graphMumbaiData.data ||
+      !graphArboneData.data ||
       !graphOptkovData.data
     )
       return
@@ -186,11 +210,6 @@ const Graph = ({ children }) => {
       event.txnLink = `https://etherscan.io/tx/${event.txnHash}`
       eventsArray.push(event)
     })
-    /*graphRinkebyData.data.newReportEntities.forEach((event) => {
-      event.chain = 'Rinkeby Testnet'
-      event.txnLink = `https://rinkeby.etherscan.io/tx/${event.txnHash}`
-      eventsArray.push(event)
-    })*/
     graphGoerliData.data.newReportEntities.forEach((event) => {
       event.chain = 'Goerli Testnet'
       event.txnLink = `https://goerli.etherscan.io/tx/${event.txnHash}`
@@ -206,6 +225,11 @@ const Graph = ({ children }) => {
       event.txnLink = `https://mumbai.polygonscan.com/tx/${event.txnHash}`
       eventsArray.push(event)
     })
+    graphArboneData.data.newReportEntities.forEach((event) => {
+      event.chain = 'Arbitrum Mainnet'
+      event.txnLink = `https://arbiscan.io/address/0x73b6715d9289bdfe5e758bb7ace782cc7c933cfc`
+      eventsArray.push(event)
+    })
     graphOptkovData.data.newReportEntities.forEach((event) => {
       event.chain = 'Optimism Testnet'
       event.txnLink = `https://kovan-optimistic.etherscan.io/tx/${event.txnHash}`
@@ -217,7 +241,7 @@ const Graph = ({ children }) => {
     return () => {
       setAllGraphData(null)
     }
-  }, [graphMainnetData, graphRinkebyData, graphGoerliData, graphMaticData, graphMumbaiData, graphOptkovData])
+  }, [graphMainnetData, graphRinkebyData, graphGoerliData, graphMaticData, graphMumbaiData, graphArboneData, graphOptkovData])
 
   useEffect(() => {
     if (!allGraphData) return
