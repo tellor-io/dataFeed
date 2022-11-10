@@ -604,7 +604,7 @@ function TipTable({ data, allData, setFiltering }) {
             </div>
           </th>
           <th>
-            <h1>DATE/TIME</h1>
+            <h1>DATE(DD/MM/YY), TIME </h1>
           </th>
         </tr>
       </thead>
