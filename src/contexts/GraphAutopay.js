@@ -15,6 +15,11 @@ const clientMumbai = new ApolloClient({
   cache: new InMemoryCache(),
 })
 
+const clientMainnet = new ApolloClient({
+  uri: 'https://api.thegraph.com/subgraphs/name/seroxdesign/tellor-autopay-mainnet',
+  cache: new InMemoryCache(),
+})
+
 const clientMatic = new ApolloClient({
   uri: 'https://api.thegraph.com/subgraphs/name/tellor-io/tellorautopaymatichgraph',
   cache: new InMemoryCache(),
@@ -23,6 +28,7 @@ const clientMatic = new ApolloClient({
 const GraphAutopay = ({ children }) => {
   //Component State
   const [autopayMaticData, setAutopayMaticData] = useState({})
+  const [autopayMainnetData, setAutopayMainnetData] = useState({})
   const [autopayMumbaiData, setAutopayMumbaiData] = useState({})
   const [decodedData, setDecodedData] = useState([])
   const [allGraphData, setAllGraphData] = useState(null)
@@ -30,6 +36,11 @@ const GraphAutopay = ({ children }) => {
   //Matic
   const matic = useQuery(autopayQuery, {
     client: clientMatic,
+    fetchPolicy: 'network-only',
+    pollInterval: 5000,
+  })
+  const mainnet = useQuery(autopayQuery, {
+    client: clientMainnet,
     fetchPolicy: 'network-only',
     pollInterval: 5000,
   })
@@ -55,6 +66,19 @@ const GraphAutopay = ({ children }) => {
       setAutopayMaticData({})
     }
   }, [matic.data, matic.loading, matic.error]) //eslint-disable-line
+  //mainnet
+  useEffect(() => {
+    if (!mainnet) return
+    setAutopayMainnetData({
+      data: mainnet.data,
+      loading: mainnet.loading,
+      error: mainnet.error,
+    })
+    return () => {
+      console.log(mainnet.data)
+      setAutopayMainnetData({})
+    }
+  }, [mainnet.data, mainnet.loading, mainnet.error]) //eslint-disable-line
   //Mumbai
   useEffect(() => {
     if (!mumbai) return
@@ -95,6 +119,16 @@ const GraphAutopay = ({ children }) => {
     autopayMumbaiData.data.tipAddedEntities.forEach((event) => {
       event.chain = 'Mumbai Testnet'
       event.txnLink = `https://mumbai.polygonscan.com/tx/${event.txnHash}`
+      eventsArray.push(event)
+    })
+    autopayMainnetData.data.dataFeedEntities.forEach((event) => {
+      event.chain = 'Ethereum Mainnet'
+      event.txnLink = `https://etherscan.com/tx/${event.txnHash}`
+      eventsArray.push(event)
+    })
+    autopayMainnetData.data.tipAddedEntities.forEach((event) => {
+      event.chain = 'Ethereum Mainnet'
+      event.txnLink = `https://etherscan.com/tx/${event.txnHash}`
       eventsArray.push(event)
     })
     let sorted = sortDataByProperty('_startTime', eventsArray)
