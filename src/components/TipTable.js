@@ -30,7 +30,6 @@ function TipTable({ data, allData, setFiltering }) {
   const reporterRef = useRef()
   //Contexts
   const mode = useContext(ModeContext)
-  let counter = 0
 
   useEffect(() => {
     setTableData(data)
