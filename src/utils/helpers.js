@@ -165,11 +165,9 @@ export const sortDataByProperty = (prop, arr) => {
 
 export const decodingAutopayMiddleware = (autopayEvents) => {
   let decoded = autopayEvents.map((event) => {
-    console.log('events', event);
     let queryDataPartial
     let queryData
     let finalQueryData
-    let temp
     event.interval = event._interval ? `${(event._interval / 60 / 60)} hours` : 'One Time Tip'
     event.tip = event._reward ? web3.utils.fromWei(event._reward) + ' TRB' : web3.utils.fromWei(event._amount) + ' TRB'
     event.startTime = getDate(event._startTime)
@@ -218,8 +216,17 @@ export const decodingAutopayMiddleware = (autopayEvents) => {
     }
     return event
   })
-  console.log('decoded', decoded);
-  return decoded
+
+  let filtered = [];
+  decoded.map((event) => {
+    if(event.decodedValue === 'NumericApiResponse'){
+      return;
+    } else {
+      filtered.push(event);
+    }
+  })
+  console.log('filtered', filtered);
+  return filtered;
 }
 
 export const decodingMiddleware = (reportEvents) => {
