@@ -9,7 +9,7 @@ export const GraphContext = createContext()
 
 //ApolloClients
 const clientMainnet = new ApolloClient({
-  uri: 'https://api.thegraph.com/subgraphs/name/raynharr/tellor-flex-ethmain-graph',
+  uri: 'https://api.studio.thegraph.com/query/33329/tellororaclemainhgraph/v0.23.0',
   cache: new InMemoryCache(),
 })
 const clientRinkeby = new ApolloClient({
