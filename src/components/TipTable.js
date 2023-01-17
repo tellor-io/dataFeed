@@ -10,7 +10,7 @@ import { ModeContext } from '../contexts/Mode'
 
 function TipTable({ data, allData, setFiltering }) {
   //Component State
-  const [tableData, setTableData] = useState()
+  const [tableData, setTableData] = useState([])
   //
   const [symbolClicked, setSymbolClicked] = useState(false)
   const [chainClicked, setChainClicked] = useState(false)
@@ -18,12 +18,13 @@ function TipTable({ data, allData, setFiltering }) {
   //
   const [reportedSymbols, setReportedSymbols] = useState(null)
   const [reportedChains, setReportedChains] = useState(null)
+  const [reportedReporters, setReportedReporters] = useState(null)
+
   //
-  const [allFilters, setAllFilters] = useState()
+  const [allFilters, setAllFilters] = useState([])
   const [symbolFilters, setSymbolFilters] = useState([])
   const [chainFilters, setChainFilters] = useState([])
   const [reporterFilters, setReporterFilters] = useState([])
-
   //Refs
   const symbolRef = useRef()
   const chainRef = useRef()
@@ -35,6 +36,37 @@ function TipTable({ data, allData, setFiltering }) {
     setTableData(data)
   }, [data])
   
+  useEffect(() => {
+    if (!allData && !allData.decodedData) return
+    let symbols = []
+    let chains = []
+    let reporters = []
+    allData.decodedData.forEach((event) => {
+      if (!symbols.includes(event.decodedValue) && event.decodedValue) {
+        if (event.feedType === 'Snapshot' && !symbols.includes('Snapshot')) {
+          symbols.push('Snapshot')
+        } else if (!event.feedType) {
+          symbols.push(event.decodedValue)
+        }
+      }
+      if (!chains.includes(event.chain)) {
+        chains.push(event.chain)
+      }
+      if (!reporters.includes(event.decodedReporter) && event.decodedReporter) {
+        reporters.push(event.decodedReporter)
+      }
+    })
+    setReportedSymbols(symbols)
+    setReportedChains(chains)
+    setReportedReporters(reporters)
+
+    return () => {
+      setReportedSymbols(null)
+      setReportedChains(null)
+      setReportedReporters(null)
+    }
+  }, [allData])
+
   //Handlers
   const handleClick = (iconType) => {
     switch (iconType) {
@@ -160,7 +192,7 @@ function TipTable({ data, allData, setFiltering }) {
                   chains.forEach((chain) => {
                     reporters.forEach((reporter) => {
                       if (
-                        (filter.filterValue === event.decodedValueName ||
+                        (filter.filterValue === event.decodedValue ||
                           filter.filterValue === event.feedType) &&
                         event.chain === chain &&
                         event.decodedReporter === reporter
@@ -179,7 +211,7 @@ function TipTable({ data, allData, setFiltering }) {
                 symbols.forEach((symbol) => {
                   chains.forEach((chain) => {
                     if (
-                      (filter.filterValue === event.decodedValueName ||
+                      (filter.filterValue === event.decodedValue ||
                         filter.filterValue === event.feedType) &&
                       event.chain === chain
                     ) {
@@ -195,7 +227,7 @@ function TipTable({ data, allData, setFiltering }) {
                 symbols.forEach((symbol) => {
                   reporters.forEach((reporter) => {
                     if (
-                      (filter.filterValue === event.decodedValueName ||
+                      (filter.filterValue === event.decodedValue ||
                         filter.filterValue === event.feedType) &&
                       event.decodedReporter === reporter
                     ) {
@@ -225,7 +257,7 @@ function TipTable({ data, allData, setFiltering }) {
               //For single category filterTypes
               case symbolFilter:
                 if (
-                  filter.filterValue === event.decodedValueName ||
+                  filter.filterValue === event.decodedValue ||
                   filter.filterValue === event.feedType
                 ) {
                   filteredData.push(event)
@@ -284,7 +316,7 @@ function TipTable({ data, allData, setFiltering }) {
                   chains.forEach((chain) => {
                     reporters.forEach((reporter) => {
                       if (
-                        (event.decodedValueName === symbol ||
+                        (event.decodedValue === symbol ||
                           event.feedType === symbol) &&
                         event.chain === chain &&
                         event.decodedReporter === reporter
@@ -303,7 +335,7 @@ function TipTable({ data, allData, setFiltering }) {
                 symbols.forEach((symbol) => {
                   chains.forEach((chain) => {
                     if (
-                      (event.decodedValueName === symbol ||
+                      (event.decodedValue === symbol ||
                         event.feedType === symbol) &&
                       event.chain === chain
                     ) {
@@ -319,7 +351,7 @@ function TipTable({ data, allData, setFiltering }) {
                 symbols.forEach((symbol) => {
                   reporters.forEach((reporter) => {
                     if (
-                      (event.decodedValueName === symbol ||
+                      (event.decodedValue  === symbol ||
                         event.feedType === symbol) &&
                       event.decodedReporter === reporter
                     ) {
@@ -349,7 +381,7 @@ function TipTable({ data, allData, setFiltering }) {
               //For single category filterTypes
               case symbolFilter:
                 if (
-                  filter.filterValue === event.decodedValueName ||
+                  filter.filterValue === event.decodedValue ||
                   filter.filterValue === event.feedType
                 ) {
                   filteredData.push(event)
@@ -490,7 +522,7 @@ function TipTable({ data, allData, setFiltering }) {
                       )}
                     </div>
                   ))}
-              </div>
+              </div>             
               <div
                 className={
                   mode.mode === 'dark'
