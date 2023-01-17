@@ -78,7 +78,7 @@ const GraphAutopay = ({ children }) => {
       console.log(mainnet.data)
       setAutopayMainnetData({})
     }
-  }, [mainnet.data, mainnet.loading, mainnet.error]) //eslint-disable-line
+  }, [mainnet.data, mainnet.loading, mainnet.error]) //eslint-disable-line*/
   //Mumbai
   useEffect(() => {
     if (!mumbai) return
