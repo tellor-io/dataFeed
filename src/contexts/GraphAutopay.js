@@ -158,11 +158,11 @@ const GraphAutopay = ({ children }) => {
       event.txnLink = `https://etherscan.com/tx/${event.txnHash}`
       eventsArray.push(event)
     })
-    /*autopayGoerliData.data.dataFeedEntities.forEach((event) => {
+    autopayGoerliData.data.dataFeedEntities.forEach((event) => {
       event.chain = 'Goerli Testnet'
-      event.txnLink = `https://goerli.etherscan.com/tx/${event.txnHash}`
+      event.txnLink = `https://goerli.etherscan.io/tx/${event.txnHash}`
       eventsArray.push(event)
-    })*/
+    })
     autopayGoerliData.data.tipAddedEntities.forEach((event) => {
       event.chain = 'Goerli Testnet'
       event.txnLink = `https://goerli.etherscan.com/tx/${event.txnHash}`
