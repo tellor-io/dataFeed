@@ -25,11 +25,17 @@ const clientMatic = new ApolloClient({
   cache: new InMemoryCache(),
 })
 
+const clientGoerli = new ApolloClient({
+  uri: 'https://api.thegraph.com/subgraphs/name/raynharr/tellor-autopay-goerli-graph',
+  cache: new InMemoryCache(),
+})
+
 const GraphAutopay = ({ children }) => {
   //Component State
   const [autopayMaticData, setAutopayMaticData] = useState({})
   const [autopayMainnetData, setAutopayMainnetData] = useState({})
   const [autopayMumbaiData, setAutopayMumbaiData] = useState({})
+  const [autopayGoerliData, setAutopayGoerliData] = useState({})
   const [decodedData, setDecodedData] = useState([])
   const [allGraphData, setAllGraphData] = useState(null)
   //Context State
@@ -50,6 +56,12 @@ const GraphAutopay = ({ children }) => {
     fetchPolicy: 'network-only',
     pollInterval: 5000,
   })
+  //Goerli
+  const goerli = useQuery(autopayQuery, {
+    client: clientGoerli,
+    fetchPolicy: 'network-only',
+    pollInterval: 5000,
+  })
   
   //useEffects for listening to reponses
   //from ApolloClient queries
@@ -66,7 +78,7 @@ const GraphAutopay = ({ children }) => {
       setAutopayMaticData({})
     }
   }, [matic.data, matic.loading, matic.error]) //eslint-disable-line
-  //mainnet
+  //Eth Mainnet
   useEffect(() => {
     if (!mainnet) return
     setAutopayMainnetData({
@@ -79,6 +91,19 @@ const GraphAutopay = ({ children }) => {
       setAutopayMainnetData({})
     }
   }, [mainnet.data, mainnet.loading, mainnet.error]) //eslint-disable-line*/
+    //Goerli
+    useEffect(() => {
+      if (!goerli) return
+      setAutopayGoerliData({
+        data: goerli.data,
+        loading: goerli.loading,
+        error: goerli.error,
+      })
+      return () => {
+        console.log(goerli.data)
+        setAutopayGoerliData({})
+      }
+    }, [goerli.data, goerli.loading, goerli.error]) //eslint-disable-line*/
   //Mumbai
   useEffect(() => {
     if (!mumbai) return
@@ -95,6 +120,8 @@ const GraphAutopay = ({ children }) => {
   useEffect(() => {
     if (
       !autopayMaticData.data ||
+      !autopayMainnetData.data ||
+      !autopayGoerliData.data ||
       !autopayMumbaiData.data 
     )
       return
@@ -131,10 +158,23 @@ const GraphAutopay = ({ children }) => {
       event.txnLink = `https://etherscan.com/tx/${event.txnHash}`
       eventsArray.push(event)
     })
+    /*autopayGoerliData.data.dataFeedEntities.forEach((event) => {
+      event.chain = 'Goerli Testnet'
+      event.txnLink = `https://goerli.etherscan.com/tx/${event.txnHash}`
+      eventsArray.push(event)
+    })*/
+    autopayGoerliData.data.tipAddedEntities.forEach((event) => {
+      event.chain = 'Goerli Testnet'
+      event.txnLink = `https://goerli.etherscan.com/tx/${event.txnHash}`
+      eventsArray.push(event)
+    })
     let sorted = sortDataByProperty('_startTime', eventsArray)
     setAllGraphData(sorted)
 
-  }, [autopayMaticData, autopayMumbaiData])
+    return () => {
+      setAllGraphData(null)
+    }
+  }, [autopayMaticData, autopayMumbaiData, autopayMainnetData, autopayGoerliData])
 
 
   useEffect(() => {
