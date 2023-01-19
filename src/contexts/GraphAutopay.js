@@ -165,7 +165,7 @@ const GraphAutopay = ({ children }) => {
     })
     autopayGoerliData.data.tipAddedEntities.forEach((event) => {
       event.chain = 'Goerli Testnet'
-      event.txnLink = `https://goerli.etherscan.com/tx/${event.txnHash}`
+      event.txnLink = `https://goerli.etherscan.io/tx/${event.txnHash}`
       eventsArray.push(event)
     })
     let sorted = sortDataByProperty('_startTime', eventsArray)
