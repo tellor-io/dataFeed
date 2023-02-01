@@ -9,7 +9,7 @@ export const GraphContext = createContext()
 
 //ApolloClients
 const clientMainnet = new ApolloClient({
-  uri: 'https://api.studio.thegraph.com/query/33329/tellororaclemainhgraph/v0.23.0',
+  uri: 'https://api.studio.thegraph.com/query/33329/tellororaclemainhgraph/v0.24.0',
   cache: new InMemoryCache(),
 })
 const clientRinkeby = new ApolloClient({
@@ -33,7 +33,7 @@ const clientArbone = new ApolloClient({
   cache: new InMemoryCache(),
 })
 const clientGnosismain = new ApolloClient({
-  uri: 'https://api.studio.thegraph.com/query/33329/tellor-oracle-gnosis-main/v0.0.1',
+  uri: 'https://api.studio.thegraph.com/query/33329/tellor-oracle-gnosis-main/v0.0.3',
   cache: new InMemoryCache(),
 })
 const clientOptkov = new ApolloClient({
@@ -78,11 +78,11 @@ const Graph = ({ children }) => {
     fetchPolicy: 'network-only',
     pollInterval: 5000,
   })
-  /*const goerliPay = useQuery(autopayQuery, {
+  const goerliPay = useQuery(autopayQuery, {
     client: clientGoerli,
     fetchPolicy: 'network-only',
     pollInterval: 5000,
-  })*/
+  })
   //Matic
   const matic = useQuery(reporterQuery, {
     client: clientMatic,
@@ -228,9 +228,9 @@ const Graph = ({ children }) => {
       !graphGoerliData.data ||
       !graphMaticData.data ||
       !graphMumbaiData.data ||
-      !graphArboneData.data 
+      !graphArboneData.data ||
       //!graphGnosismainData.data ||
-      //!graphOptkovData.data
+      !graphOptkovData.data
     )
       return
 
@@ -262,9 +262,9 @@ const Graph = ({ children }) => {
     })
     /*graphGnosismainData.data.newReportEntities.forEach((event) => {
       event.chain = 'Gnosis Mainnet'
-      event.txnLink = `https://gnosisscan.io/address/0x15e6Cc0D69A162151Cadfba035aa10b82b12b970`
+      event.txnLink = `https://gnosisscan.io/tx/${event.txnHash}`
       eventsArray.push(event)
-    })*/
+    })
     /*graphOptkovData.data.newReportEntities.forEach((event) => {
       event.chain = 'Optimism Testnet'
       event.txnLink = `https://kovan-optimistic.etherscan.io/tx/${event.txnHash}`
