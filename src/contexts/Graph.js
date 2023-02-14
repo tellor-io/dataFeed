@@ -9,7 +9,7 @@ export const GraphContext = createContext()
 
 //ApolloClients
 const clientMainnet = new ApolloClient({
-  uri: 'https://api.studio.thegraph.com/query/33329/tellororaclemainhgraph/v0.24.0',
+  uri: 'https://gateway.thegraph.com/api/ad08435a6d6c0933c9e272dbdfa21322/subgraphs/id/4mgMy9x1FC6kzjXSQisntEKJFT2U7r73qXMZy2XZ1t4R',
   cache: new InMemoryCache(),
 })
 const clientRinkeby = new ApolloClient({
@@ -33,7 +33,7 @@ const clientArbone = new ApolloClient({
   cache: new InMemoryCache(),
 })
 const clientGnosismain = new ApolloClient({
-  uri: 'https://api.studio.thegraph.com/query/33329/tellor-oracle-gnosis-main/v0.0.3',
+  uri: 'https://gateway.thegraph.com/api/ad08435a6d6c0933c9e272dbdfa21322/subgraphs/id/A614VZr6wqD4B8wNwiZTqrV6StP1Kvmp2AgG2EdJF31k',
   cache: new InMemoryCache(),
 })
 const clientOptkov = new ApolloClient({
@@ -229,7 +229,7 @@ const Graph = ({ children }) => {
       !graphMaticData.data ||
       !graphMumbaiData.data ||
       !graphArboneData.data ||
-      //!graphGnosismainData.data ||
+      !graphGnosismainData.data ||
       !graphOptkovData.data
     )
       return
@@ -260,7 +260,7 @@ const Graph = ({ children }) => {
       event.txnLink = `https://arbiscan.io/address/0x73b6715d9289bdfe5e758bb7ace782cc7c933cfc`
       eventsArray.push(event)
     })
-    /*graphGnosismainData.data.newReportEntities.forEach((event) => {
+    graphGnosismainData.data.newReportEntities.forEach((event) => {
       event.chain = 'Gnosis Mainnet'
       event.txnLink = `https://gnosisscan.io/tx/${event.txnHash}`
       eventsArray.push(event)
