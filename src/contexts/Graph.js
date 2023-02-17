@@ -36,8 +36,8 @@ const clientGnosismain = new ApolloClient({
   uri: 'https://gateway.thegraph.com/api/ad08435a6d6c0933c9e272dbdfa21322/subgraphs/id/A614VZr6wqD4B8wNwiZTqrV6StP1Kvmp2AgG2EdJF31k',
   cache: new InMemoryCache(),
 })
-const clientOptkov = new ApolloClient({
-  uri: 'https://api.thegraph.com/subgraphs/name/raynharr/tellorflexoracleoptimismkovanhgraph',
+const clientOptmain = new ApolloClient({
+  uri: 'https://api.thegraph.com/subgraphs/name/tellor-io/tellor-oracle-optimism-main',
   cache: new InMemoryCache(),
 })
 
@@ -50,7 +50,7 @@ const Graph = ({ children }) => {
   const [graphMumbaiData, setGraphMumbaiData] = useState({})
   const [graphArboneData, setGraphArboneData] = useState({})
   const [graphGnosismainData, setGraphGnosismainData] = useState({})
-  const [graphOptkovData, setGraphOptkovData] = useState({})
+  const [graphOptmainData, setGraphOptmainData] = useState({})
   const [allGraphData, setAllGraphData] = useState(null)
   const [decodedData, setDecodedData] = useState(null)
 
@@ -107,9 +107,9 @@ const Graph = ({ children }) => {
     fetchPolicy: 'network-only',
     pollInterval: 5000,
   })
-  //optimism(kovan)
-  const optkov = useQuery(reporterQuery, {
-    client: clientOptkov,
+  //optimism(mainnet)
+  const optmain = useQuery(reporterQuery, {
+    client: clientOptmain,
     fetchPolicy: 'network-only',
     pollInterval: 5000,
   })
@@ -206,19 +206,19 @@ const Graph = ({ children }) => {
       setGraphGnosismainData({})
     }
   }, [gnosismain.data, gnosismain.loading, gnosismain.error]) //eslint-disable-line 
-  //Optkov
+  //Optmain
   useEffect(() => {
-    if (!optkov) return
-    setGraphOptkovData({
-      data: optkov.data,
-      loading: optkov.loading,
-      error: optkov.error,
+    if (!optmain) return
+    setGraphOptmainData({
+      data: optmain.data,
+      loading: optmain.loading,
+      error: optmain.error,
     })
 
     return () => {
-      setGraphOptkovData({})
+      setGraphOptmainData({})
     }
-  }, [optkov.data, optkov.loading, optkov.error]) //eslint-disable-line
+  }, [optmain.data, optmain.loading, optmain.error]) //eslint-disable-line
 
   //For conglomerating data
   useEffect(() => {
@@ -230,7 +230,7 @@ const Graph = ({ children }) => {
       !graphMumbaiData.data ||
       !graphArboneData.data ||
       !graphGnosismainData.data ||
-      !graphOptkovData.data
+      !graphOptmainData.data
     )
       return
 
@@ -265,18 +265,18 @@ const Graph = ({ children }) => {
       event.txnLink = `https://gnosisscan.io/tx/${event.txnHash}`
       eventsArray.push(event)
     })
-    /*graphOptkovData.data.newReportEntities.forEach((event) => {
-      event.chain = 'Optimism Testnet'
-      event.txnLink = `https://kovan-optimistic.etherscan.io/tx/${event.txnHash}`
+    graphOptmainData.data.newReportEntities.forEach((event) => {
+      event.chain = 'Optimism Mainnet'
+      event.txnLink = `https://optimistic.etherscan.io/tx/${event.txnHash}`
       eventsArray.push(event)
-    })*/
+    })
     let sorted = sortDataByProperty('_time', eventsArray)
     setAllGraphData(sorted)
 
     return () => {
       setAllGraphData(null)
     }
-  }, [graphMainnetData, graphRinkebyData, graphGoerliData, graphMaticData, graphMumbaiData, graphArboneData, graphGnosismainData, graphOptkovData])
+  }, [graphMainnetData, graphRinkebyData, graphGoerliData, graphMaticData, graphMumbaiData, graphArboneData, graphGnosismainData, graphOptmainData])
 
   useEffect(() => {
     if (!allGraphData) return
