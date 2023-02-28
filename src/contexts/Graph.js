@@ -32,6 +32,10 @@ const clientArbone = new ApolloClient({
   uri: 'https://api.thegraph.com/subgraphs/name/raynharr/tellor-flex-arbitrummain-graph',
   cache: new InMemoryCache(),
 })
+const clientArbtest = new ApolloClient({
+  uri: 'https://api.thegraph.com/subgraphs/name/tellor-io/tellor-oracle-arbitrum-goerli',
+  cache: new InMemoryCache(),
+})
 const clientGnosismain = new ApolloClient({
   uri: 'https://gateway.thegraph.com/api/ad08435a6d6c0933c9e272dbdfa21322/subgraphs/id/A614VZr6wqD4B8wNwiZTqrV6StP1Kvmp2AgG2EdJF31k',
   cache: new InMemoryCache(),
@@ -49,6 +53,7 @@ const Graph = ({ children }) => {
   const [graphMaticData, setGraphMaticData] = useState({})
   const [graphMumbaiData, setGraphMumbaiData] = useState({})
   const [graphArboneData, setGraphArboneData] = useState({})
+  const [graphArbtestData, setGraphArbtestData] = useState({})
   const [graphGnosismainData, setGraphGnosismainData] = useState({})
   const [graphOptmainData, setGraphOptmainData] = useState({})
   const [allGraphData, setAllGraphData] = useState(null)
@@ -98,6 +103,12 @@ const Graph = ({ children }) => {
   //Arbitrum One (Main)
   const arbone = useQuery(reporterQuery, {
     client: clientArbone,
+    fetchPolicy: 'network-only',
+    pollInterval: 5000,
+  })
+    //Arbitrum Test (Goerli)
+  const arbtest = useQuery(reporterQuery, {
+    client: clientArbtest,
     fetchPolicy: 'network-only',
     pollInterval: 5000,
   })
@@ -193,6 +204,19 @@ const Graph = ({ children }) => {
       setGraphArboneData({})
     }
   }, [arbone.data, arbone.loading, arbone.error]) //eslint-disable-line  
+     //Arbitrum Test
+     useEffect(() => {
+      if (!arbtest) return
+      setGraphArbtestData({
+        data: arbtest.data,
+        loading: arbtest.loading,
+        error: arbtest.error,
+      })
+  
+      return () => {
+        setGraphArbtestData({})
+      }
+    }, [arbtest.data, arbtest.loading, arbtest.error]) //eslint-disable-line  
   //Gnosis Main
   useEffect(() => {
     if (!gnosismain) return
@@ -229,6 +253,7 @@ const Graph = ({ children }) => {
       !graphMaticData.data ||
       !graphMumbaiData.data ||
       !graphArboneData.data ||
+      !graphArbtestData.data ||
       !graphGnosismainData.data ||
       !graphOptmainData.data
     )
@@ -257,7 +282,12 @@ const Graph = ({ children }) => {
     })
     graphArboneData.data.newReportEntities.forEach((event) => {
       event.chain = 'Arbitrum Mainnet'
-      event.txnLink = `https://arbiscan.io/address/0x73b6715d9289bdfe5e758bb7ace782cc7c933cfc`
+      event.txnLink = `https://arbiscan.io//tx/${event.txnHash}`
+      eventsArray.push(event)
+    })
+    graphArbtestData.data.newReportEntities.forEach((event) => {
+      event.chain = 'Arbitrum Goerli'
+      event.txnLink = `https://goerli.arbiscan.io/tx/${event.txnHash}`
       eventsArray.push(event)
     })
     graphGnosismainData.data.newReportEntities.forEach((event) => {
@@ -276,7 +306,7 @@ const Graph = ({ children }) => {
     return () => {
       setAllGraphData(null)
     }
-  }, [graphMainnetData, graphRinkebyData, graphGoerliData, graphMaticData, graphMumbaiData, graphArboneData, graphGnosismainData, graphOptmainData])
+  }, [graphMainnetData, graphRinkebyData, graphGoerliData, graphMaticData, graphMumbaiData, graphArboneData, graphArbtestData, graphGnosismainData, graphOptmainData])
 
   useEffect(() => {
     if (!allGraphData) return
