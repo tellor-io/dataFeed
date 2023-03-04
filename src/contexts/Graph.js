@@ -248,7 +248,7 @@ const Graph = ({ children }) => {
   useEffect(() => {
     if (
       !graphMainnetData.data ||
-      !graphRinkebyData.data ||
+      //!graphRinkebyData.data ||
       !graphGoerliData.data ||
       !graphMaticData.data ||
       !graphMumbaiData.data ||
