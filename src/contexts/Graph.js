@@ -9,7 +9,7 @@ export const GraphContext = createContext()
 
 //ApolloClients
 const clientMainnet = new ApolloClient({
-  uri: 'https://gateway.thegraph.com/api/ad08435a6d6c0933c9e272dbdfa21322/subgraphs/id/4mgMy9x1FC6kzjXSQisntEKJFT2U7r73qXMZy2XZ1t4R',
+  uri: 'https://api.thegraph.com/subgraphs/name/raynharr/tellor-flex-ethmain-graph',
   cache: new InMemoryCache(),
 })
 const clientRinkeby = new ApolloClient({
@@ -72,22 +72,22 @@ const Graph = ({ children }) => {
     pollInterval: 5000,
   })
   //Rinkeby
-  const rinkeby = useQuery(reporterQuery, {
+  /*const rinkeby = useQuery(reporterQuery, {
     client: clientRinkeby,
     fetchPolicy: 'network-only',
     pollInterval: 5000,
-  })
+  })*/
    //Goerli
    const goerli = useQuery(reporterQuery, {
     client: clientGoerli,
     fetchPolicy: 'network-only',
     pollInterval: 5000,
   })
-  const goerliPay = useQuery(autopayQuery, {
+  /*const goerliPay = useQuery(autopayQuery, {
     client: clientGoerli,
     fetchPolicy: 'network-only',
     pollInterval: 5000,
-  })
+  })*/
   //Matic
   const matic = useQuery(reporterQuery, {
     client: clientMatic,
@@ -140,7 +140,7 @@ const Graph = ({ children }) => {
     }
   }, [mainnet.data, mainnet.loading, mainnet.error]) //eslint-disable-line
   //Rinkeby
-  useEffect(() => {
+  /*useEffect(() => {
     if (!rinkeby) return
     setGraphRinkebyData({
       data: rinkeby.data,
@@ -151,7 +151,7 @@ const Graph = ({ children }) => {
     return () => {
       setGraphRinkebyData({})
     }
-  }, [rinkeby.data, rinkeby.loading, rinkeby.error]) //eslint-disable-line
+  }, [rinkeby.data, rinkeby.loading, rinkeby.error])*/ //eslint-disable-line
     //Goerli
     useEffect(() => {
       if (!goerli) return
@@ -254,13 +254,13 @@ const Graph = ({ children }) => {
       !graphMumbaiData.data ||
       !graphArboneData.data ||
       !graphArbtestData.data ||
-      !graphGnosismainData.data ||
+      //!graphGnosismainData.data ||
       !graphOptmainData.data
     )
       return
 
     let eventsArray = []
-    graphMainnetData.data.newReportEntities.forEach((event) => {
+   graphMainnetData.data.newReportEntities.forEach((event) => {
       event.chain = 'Ethereum Mainnet'
       event.txnLink = `https://etherscan.io/tx/${event.txnHash}`
       eventsArray.push(event)
@@ -290,11 +290,11 @@ const Graph = ({ children }) => {
       event.txnLink = `https://goerli.arbiscan.io/tx/${event.txnHash}`
       eventsArray.push(event)
     })
-    graphGnosismainData.data.newReportEntities.forEach((event) => {
+    /*graphGnosismainData.data.newReportEntities.forEach((event) => {
       event.chain = 'Gnosis Mainnet'
       event.txnLink = `https://gnosisscan.io/tx/${event.txnHash}`
       eventsArray.push(event)
-    })
+    })*/
     graphOptmainData.data.newReportEntities.forEach((event) => {
       event.chain = 'Optimism Mainnet'
       event.txnLink = `https://optimistic.etherscan.io/tx/${event.txnHash}`
@@ -306,7 +306,7 @@ const Graph = ({ children }) => {
     return () => {
       setAllGraphData(null)
     }
-  }, [graphMainnetData, graphRinkebyData, graphGoerliData, graphMaticData, graphMumbaiData, graphArboneData, graphArbtestData, graphGnosismainData, graphOptmainData])
+  }, [graphMainnetData, graphGoerliData, graphMaticData, graphMumbaiData, graphArboneData, graphArbtestData, graphGnosismainData, graphOptmainData])
 
   useEffect(() => {
     if (!allGraphData) return
@@ -321,7 +321,7 @@ const Graph = ({ children }) => {
     decodedData: decodedData,
   }
 
-  // console.log('graphMainnetData', graphMainnetData)
+   //console.log('graphOptmainData', graphOptmainData)
 
   return (
     <GraphContext.Provider value={GraphContextObj}>
