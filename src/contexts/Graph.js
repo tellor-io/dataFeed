@@ -9,7 +9,7 @@ export const GraphContext = createContext()
 
 //ApolloClients
 const clientMainnet = new ApolloClient({
-  uri: 'https://api.thegraph.com/subgraphs/name/raynharr/tellor-flex-ethmain-graph',
+  uri: 'https://gateway.thegraph.com/api/ad08435a6d6c0933c9e272dbdfa21322/subgraphs/id/4mgMy9x1FC6kzjXSQisntEKJFT2U7r73qXMZy2XZ1t4R',
   cache: new InMemoryCache(),
 })
 const clientRinkeby = new ApolloClient({
@@ -17,7 +17,7 @@ const clientRinkeby = new ApolloClient({
   cache: new InMemoryCache(),
 })
 const clientGoerli = new ApolloClient({
-  uri: 'https://api.thegraph.com/subgraphs/name/raynharr/tellor-flex-goerli-graph',
+  uri: 'https://api.goldsky.com/api/public/project_clf8nopuy59a93stya1d02ev6/subgraphs/tellor-oracle-goerli/v0.0.1/gn',
   cache: new InMemoryCache(),
 })
 const clientMatic = new ApolloClient({
@@ -33,7 +33,7 @@ const clientArbone = new ApolloClient({
   cache: new InMemoryCache(),
 })
 const clientArbtest = new ApolloClient({
-  uri: 'https://api.thegraph.com/subgraphs/name/tellor-io/tellor-oracle-arbitrum-goerli',
+  uri: 'https://api.goldsky.com/api/public/project_clf8nopuy59a93stya1d02ev6/subgraphs/tellor-oracle-arbitrumtest/v0.0.1/gn',
   cache: new InMemoryCache(),
 })
 const clientGnosismain = new ApolloClient({
