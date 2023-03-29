@@ -30,12 +30,20 @@ const clientGoerli = new ApolloClient({
   cache: new InMemoryCache(),
 })
 
+const clientOpmain = new ApolloClient({
+  uri: 'https://api.thegraph.com/subgraphs/name/tellor-io/tellor-autopay-optimism-main',
+  cache: new InMemoryCache(),
+})
+
+
+
 const GraphAutopay = ({ children }) => {
   //Component State
   const [autopayMaticData, setAutopayMaticData] = useState({})
   const [autopayMainnetData, setAutopayMainnetData] = useState({})
   const [autopayMumbaiData, setAutopayMumbaiData] = useState({})
   const [autopayGoerliData, setAutopayGoerliData] = useState({})
+  const [autopayOpmainData, setAutopayOpmainData] = useState({})
   const [decodedData, setDecodedData] = useState([])
   const [allGraphData, setAllGraphData] = useState(null)
   //Context State
@@ -62,6 +70,12 @@ const GraphAutopay = ({ children }) => {
     fetchPolicy: 'network-only',
     pollInterval: 5000,
   })
+    //Optimism
+    const opmain = useQuery(autopayQuery, {
+      client: clientOpmain,
+      fetchPolicy: 'network-only',
+      pollInterval: 5000,
+    })
   
   //useEffects for listening to reponses
   //from ApolloClient queries
@@ -116,13 +130,26 @@ const GraphAutopay = ({ children }) => {
       setAutopayMumbaiData({})
     }
   }, [mumbai.data, mumbai.loading, mumbai.error]) //eslint-disable-line
+  //Optimism
+  useEffect(() => {
+    if (!opmain) return
+    setAutopayOpmainData({
+      data: opmain.data,
+      loading: opmain.loading,
+      error: opmain.error,
+    })
+    return () => {
+      setAutopayOpmainData({})
+    }
+  }, [opmain.data, opmain.loading, opmain.error]) //eslint-disable-line
   //useEffects for decoding autopay events
   useEffect(() => {
     if (
       !autopayMaticData.data ||
       !autopayMainnetData.data ||
       !autopayGoerliData.data ||
-      !autopayMumbaiData.data 
+      !autopayMumbaiData.data ||
+      !autopayOpmainData.data  
     )
       return
 
@@ -168,13 +195,23 @@ const GraphAutopay = ({ children }) => {
       event.txnLink = `https://goerli.etherscan.io/tx/${event.txnHash}`
       eventsArray.push(event)
     })
+    autopayOpmainData.data.dataFeedEntities.forEach((event) => {
+      event.chain = 'Optimism Mainnet'
+      event.txnLink = `https://optimistic.etherscan.io/tx/${event.txnHash}`
+      eventsArray.push(event)
+    })
+    autopayOpmainData.data.tipAddedEntities.forEach((event) => {
+      event.chain = 'Optimism Mainnet'
+      event.txnLink = `https://optimistic.etherscan.io/tx/${event.txnHash}`
+      eventsArray.push(event)
+    })
     let sorted = sortDataByProperty('_startTime', eventsArray)
     setAllGraphData(sorted)
 
     return () => {
       setAllGraphData(null)
     }
-  }, [autopayMaticData, autopayMumbaiData, autopayMainnetData, autopayGoerliData])
+  }, [autopayMaticData, autopayMumbaiData, autopayMainnetData, autopayGoerliData, autopayOpmainData])
 
 
   useEffect(() => {
