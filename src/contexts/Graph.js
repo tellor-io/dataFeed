@@ -254,7 +254,7 @@ const Graph = ({ children }) => {
       !graphMumbaiData.data ||
       !graphArboneData.data ||
       !graphArbtestData.data ||
-      //!graphGnosismainData.data ||
+      !graphGnosismainData.data ||
       !graphOptmainData.data
     )
       return
@@ -290,11 +290,11 @@ const Graph = ({ children }) => {
       event.txnLink = `https://goerli.arbiscan.io/tx/${event.txnHash}`
       eventsArray.push(event)
     })
-    /*graphGnosismainData.data.newReportEntities.forEach((event) => {
+    graphGnosismainData.data.newReportEntities.forEach((event) => {
       event.chain = 'Gnosis Mainnet'
       event.txnLink = `https://gnosisscan.io/tx/${event.txnHash}`
       eventsArray.push(event)
-    })*/
+    })
     graphOptmainData.data.newReportEntities.forEach((event) => {
       event.chain = 'Optimism Mainnet'
       event.txnLink = `https://optimistic.etherscan.io/tx/${event.txnHash}`
