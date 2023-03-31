@@ -169,7 +169,7 @@ export const decodingAutopayMiddleware = (autopayEvents) => {
     let queryData
     let finalQueryData
     event.interval = event._interval ? `${(event._interval / 60 / 60)} hours` : 'One Time Tip'
-    event.tip = event._reward ? web3.utils.fromWei(event._reward) + "..." + ' TRB' : web3.utils.fromWei(event._amount).slice(0,4) + ' TRB' 
+    event.tip = event._reward ? web3.utils.fromWei(event._reward) + "..." + ' TRB' : web3.utils.fromWei(event._amount).slice(0,5) + ' TRB' 
     event.startTime = getDate(event._startTime)
     event.window = event._window
     event.symbols = event._queryData
@@ -240,6 +240,8 @@ export const decodingMiddleware = (reportEvents) => {
     event.decodedReporter = web3.utils.toChecksumAddress(event._reporter)
     event.queryId = parseInt(Number(event._queryId), 10)
 
+    
+    
     if (event._queryData && event._queryData.length <= 104) {
       try {queryData = JSON.parse(hex2a(event._queryData))
       event.queryDataObj = queryData
@@ -307,6 +309,10 @@ export const decodingMiddleware = (reportEvents) => {
           queryDataParsers['Default'](event)
           return event
       }
+    }
+
+    if (event.queryId == "STEH/BTC") {
+
     }
     return event
   })
