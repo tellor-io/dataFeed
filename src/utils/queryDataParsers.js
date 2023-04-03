@@ -2,7 +2,6 @@ import { psrLookup } from './psrLookup'
 import Web3 from 'web3'
 
 const eighteenDecimals = 1000000000000000000
-const one = .1000
 
 const web3 = new Web3(window.ethereum)
 
@@ -78,6 +77,18 @@ export const queryDataParsers = {
         return event
     }
   },
+  MimicryNFTMarketIndex: (event) => {
+    event.decodedValueName = `MIMICRY NFTMKTINDX - ${event.queryDataObj[0].toUpperCase()}`
+
+    const valueInWei = parseInt(event._value, 16) / 10 ** 18;
+    const formattedValue = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    }).format(valueInWei);
+    event.decodedValue = formattedValue;
+    return event;
+  },
+  
   SpotPrice: (event) => {
     switch (event.queryId) {
       case 5:

@@ -267,6 +267,14 @@ export const decodingMiddleware = (reportEvents) => {
           event.queryDataObj = finalQueryData
           queryDataParsers['SpotPriceProper' || 'Default'](event)
           break
+      case 'MimicryNFTMarketIndex':
+        finalQueryData = web3.eth.abi.decodeParameters(
+          ['string', 'string'],
+          queryDataPartial[1]
+        )
+        event.queryDataObj = finalQueryData
+        queryDataParsers['MimicryNFTMarketIndex' || 'Default'](event)
+          break
         case 'CurrencyExchangeRate':
             finalQueryData = web3.eth.abi.decodeParameters(
               ['string', 'string'],
