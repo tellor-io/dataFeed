@@ -70,12 +70,12 @@ const GraphAutopay = ({ children }) => {
     fetchPolicy: 'network-only',
     pollInterval: 5000,
   })
-    //Optimism
-    const opmain = useQuery(autopayQuery, {
-      client: clientOpmain,
-      fetchPolicy: 'network-only',
-      pollInterval: 5000,
-    })
+  //Optimism
+  const opmain = useQuery(autopayQuery, {
+    client: clientOpmain,
+    fetchPolicy: 'network-only',
+    pollInterval: 5000,
+  })
   
   //useEffects for listening to reponses
   //from ApolloClient queries
