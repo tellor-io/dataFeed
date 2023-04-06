@@ -48,7 +48,7 @@ const clientOptmain = new ApolloClient({
 const Graph = ({ children }) => {
   //Component State
   const [graphMainnetData, setGraphMainnetData] = useState({})
-  const [graphRinkebyData, setGraphRinkebyData] = useState({})
+  //const [graphRinkebyData, setGraphRinkebyData] = useState({})
   const [graphGoerliData, setGraphGoerliData] = useState({})
   const [graphMaticData, setGraphMaticData] = useState({})
   const [graphMumbaiData, setGraphMumbaiData] = useState({})
@@ -71,12 +71,7 @@ const Graph = ({ children }) => {
     fetchPolicy: 'network-only',
     pollInterval: 5000,
   })
-  //Rinkeby
-  /*const rinkeby = useQuery(reporterQuery, {
-    client: clientRinkeby,
-    fetchPolicy: 'network-only',
-    pollInterval: 5000,
-  })*/
+
    //Goerli
    const goerli = useQuery(reporterQuery, {
     client: clientGoerli,
@@ -139,19 +134,7 @@ const Graph = ({ children }) => {
       setGraphMainnetData({})
     }
   }, [mainnet.data, mainnet.loading, mainnet.error]) //eslint-disable-line
-  //Rinkeby
-  /*useEffect(() => {
-    if (!rinkeby) return
-    setGraphRinkebyData({
-      data: rinkeby.data,
-      loading: rinkeby.loading,
-      error: rinkeby.error,
-    })
 
-    return () => {
-      setGraphRinkebyData({})
-    }
-  }, [rinkeby.data, rinkeby.loading, rinkeby.error])*/ //eslint-disable-line
     //Goerli
     useEffect(() => {
       if (!goerli) return
@@ -248,7 +231,6 @@ const Graph = ({ children }) => {
   useEffect(() => {
     if (
       !graphMainnetData.data ||
-      //!graphRinkebyData.data ||
       !graphGoerliData.data ||
       !graphMaticData.data ||
       !graphMumbaiData.data ||
