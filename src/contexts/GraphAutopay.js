@@ -53,6 +53,7 @@ const GraphAutopay = ({ children }) => {
     fetchPolicy: 'network-only',
     pollInterval: 5000,
   })
+  //Eth mainnet
   const mainnet = useQuery(autopayQuery, {
     client: clientMainnet,
     fetchPolicy: 'network-only',
@@ -89,9 +90,11 @@ const GraphAutopay = ({ children }) => {
     })
     return () => {
       console.log(matic.data)
+
       setAutopayMaticData({})
     }
   }, [matic.data, matic.loading, matic.error]) //eslint-disable-line
+  console.log(autopayMaticData)
   //Eth Mainnet
   useEffect(() => {
     if (!mainnet) return
@@ -164,6 +167,7 @@ const GraphAutopay = ({ children }) => {
       event.chain = 'Polygon Mainnet'
       event.txnLink = `https://polygonscan.com/tx/${event.txnHash}`
       eventsArray.push(event)
+      console.log(event)
     })
     autopayMumbaiData.data.dataFeedEntities.forEach((event) => {
       event.chain = 'Mumbai Testnet'
@@ -174,6 +178,7 @@ const GraphAutopay = ({ children }) => {
       event.chain = 'Mumbai Testnet'
       event.txnLink = `https://mumbai.polygonscan.com/tx/${event.txnHash}`
       eventsArray.push(event)
+      console.log(event)
     })
     autopayMainnetData.data.dataFeedEntities.forEach((event) => {
       event.chain = 'Ethereum Mainnet'

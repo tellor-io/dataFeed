@@ -201,6 +201,13 @@ export const decodingAutopayMiddleware = (autopayEvents) => {
           )
           event.decodedValue = `${finalQueryData[0].toUpperCase()}/${finalQueryData[1].toUpperCase()}`
           break
+        case 'MimicryNFTMarketIndex':
+          finalQueryData = web3.eth.abi.decodeParameters(
+            ['string', 'string'],
+            queryDataPartial[1]
+          )
+          event.decodedValue = `NFT MKT INDX ${finalQueryData[0].toUpperCase()}/${finalQueryData[1].toUpperCase()}`
+          break
         case 'CurrencyExchangeRate':
             finalQueryData = web3.eth.abi.decodeParameters(
               ['string', 'string'],

@@ -78,7 +78,7 @@ export const queryDataParsers = {
     }
   },
   MimicryNFTMarketIndex: (event) => {
-    event.decodedValueName = `MIMICRY NFTMKTINDX - ${event.queryDataObj[0].toUpperCase()}`
+    event.decodedValueName = `MIMICRY NFTMKTINDX ${event.queryDataObj[0].toUpperCase()}`
 
     const valueInWei = parseInt(event._value, 16) / 10 ** 18;
     const formattedValue = new Intl.NumberFormat('en-US', {
