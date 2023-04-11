@@ -167,7 +167,6 @@ const GraphAutopay = ({ children }) => {
       event.chain = 'Polygon Mainnet'
       event.txnLink = `https://polygonscan.com/tx/${event.txnHash}`
       eventsArray.push(event)
-      console.log(event)
     })
     autopayMumbaiData.data.dataFeedEntities.forEach((event) => {
       event.chain = 'Mumbai Testnet'
@@ -178,7 +177,6 @@ const GraphAutopay = ({ children }) => {
       event.chain = 'Mumbai Testnet'
       event.txnLink = `https://mumbai.polygonscan.com/tx/${event.txnHash}`
       eventsArray.push(event)
-      console.log(event)
     })
     autopayMainnetData.data.dataFeedEntities.forEach((event) => {
       event.chain = 'Ethereum Mainnet'
