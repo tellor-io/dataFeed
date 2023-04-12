@@ -208,6 +208,20 @@ export const decodingAutopayMiddleware = (autopayEvents) => {
           )
           event.decodedValue = `MimicryNFTMarketIndex ${finalQueryData[0].toUpperCase()}/${finalQueryData[1].toUpperCase()}`
           break
+        case 'MimicryMacroMarketMashup':
+          finalQueryData = web3.eth.abi.decodeParameters(
+            ['string', 'string', 'tuple(string, address)[]','(string, string, address)[]'],
+            queryDataPartial[1]
+          )
+          event.decodedValue = `MIMICRY NFT MASHUP (${finalQueryData[3][0][1].toUpperCase()})`
+          break
+        case 'MimicryCollectionStat':
+          finalQueryData = web3.eth.abi.decodeParameters(
+            ['string', 'string'],
+            queryDataPartial[1]
+          )
+          event.decodedValue = `Mimicry NFT STAT ${finalQueryData[0].toUpperCase()}/${finalQueryData[1].toUpperCase()}`
+          break
         case 'CurrencyExchangeRate':
             finalQueryData = web3.eth.abi.decodeParameters(
               ['string', 'string'],
@@ -282,6 +296,14 @@ export const decodingMiddleware = (reportEvents) => {
         event.queryDataObj = finalQueryData
         queryDataParsers['MimicryNFTMarketIndex' || 'Default'](event)
           break
+      case 'MimicryMacroMarketMashup':
+        finalQueryData = web3.eth.abi.decodeParameters(
+          ['string', 'string', 'tuple(string, address)[]','tuple(string, string, address)[]'],
+             queryDataPartial[1]
+          )
+        event.queryDataObj = finalQueryData
+        queryDataParsers['MimicryMacroMarketMashup' || 'Default'](event)
+              break
         case 'CurrencyExchangeRate':
             finalQueryData = web3.eth.abi.decodeParameters(
               ['string', 'string'],

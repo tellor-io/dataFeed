@@ -17,7 +17,8 @@ const clientRinkeby = new ApolloClient({
   cache: new InMemoryCache(),
 })
 const clientGoerli = new ApolloClient({
-  uri: 'https://api.goldsky.com/api/public/project_clf8nopuy59a93stya1d02ev6/subgraphs/tellor-oracle-goerli/v0.0.1/gn',
+  uri: 'https://api.thegraph.com/subgraphs/name/raynharr/tellor-flex-goerli-graph',
+  //'https://api.goldsky.com/api/public/project_clf8nopuy59a93stya1d02ev6/subgraphs/tellor-oracle-goerli/v0.0.1/gn',
   cache: new InMemoryCache(),
 })
 const clientMatic = new ApolloClient({
@@ -33,7 +34,8 @@ const clientArbone = new ApolloClient({
   cache: new InMemoryCache(),
 })
 const clientArbtest = new ApolloClient({
-  uri: 'https://api.goldsky.com/api/public/project_clf8nopuy59a93stya1d02ev6/subgraphs/tellor-oracle-arbitrumtest/v0.0.1/gn',
+  uri: 'https://api.thegraph.com/subgraphs/name/tellor-io/tellor-oracle-arbitrum-goerli',
+  //'https://api.goldsky.com/api/public/project_clf8nopuy59a93stya1d02ev6/subgraphs/tellor-oracle-arbitrumtest/v0.0.1/gn',
   cache: new InMemoryCache(),
 })
 const clientGnosismain = new ApolloClient({
@@ -48,7 +50,6 @@ const clientOptmain = new ApolloClient({
 const Graph = ({ children }) => {
   //Component State
   const [graphMainnetData, setGraphMainnetData] = useState({})
-  //const [graphRinkebyData, setGraphRinkebyData] = useState({})
   const [graphGoerliData, setGraphGoerliData] = useState({})
   const [graphMaticData, setGraphMaticData] = useState({})
   const [graphMumbaiData, setGraphMumbaiData] = useState({})

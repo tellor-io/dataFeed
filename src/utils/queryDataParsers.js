@@ -2,6 +2,7 @@ import { psrLookup } from './psrLookup'
 import Web3 from 'web3'
 
 const eighteenDecimals = 1000000000000000000
+const eighteentDecimals = 1
 
 const web3 = new Web3(window.ethereum)
 
@@ -78,8 +79,30 @@ export const queryDataParsers = {
     }
   },
   MimicryNFTMarketIndex: (event) => {
-    event.decodedValueName = `MIMICRY NFTMKTINDX ${event.queryDataObj[0].toUpperCase()}`
+    event.decodedValueName = `MIMICRY NFT INDEX (${event.queryDataObj[0].slice(0,3).toUpperCase()})`
 
+    const valueInWei = parseInt(event._value, 16) / 10 ** 18;
+    const formattedValue = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    }).format(valueInWei);
+    event.decodedValue = formattedValue;
+    return event;
+  },
+  MimicryMacroMarketMashup: (event) => {
+    console.log(event.queryDataObj[3])
+    event.decodedValueName = `MIMICRY NFT MASHUP (${event.queryDataObj[3][0][1].toUpperCase()})`
+    const valueInWei = parseInt(event._value, 16) / 1;
+    const formattedValue = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    }).format(valueInWei);
+    event.decodedValue = formattedValue;
+    return event;
+  },
+  MimicryCollectionStat : (event) => {
+    event.decodedValueName = `MimicryCollectionStat ${event.queryDataObj[0].toUpperCase(),event.queryDataObj[1],event.queryDataObj[2]}`
+    
     const valueInWei = parseInt(event._value, 16) / 10 ** 18;
     const formattedValue = new Intl.NumberFormat('en-US', {
       style: 'currency',
