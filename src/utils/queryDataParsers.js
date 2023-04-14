@@ -202,13 +202,26 @@ export const queryDataParsers = {
           }).format(parseInt(Number(event._value), 10) / eighteenDecimals)
           return event
       case 'steth':
-            event.decodedValueName = `${event.queryDataObj[0].toUpperCase()}/${event.queryDataObj[1].toUpperCase()}`
-            event.decodedValue = new Intl.NumberFormat('en-EN', {
-              style: 'currency',
-              currency: 'BTC',
-              minimumFractionDigits: 6,
-              maximumFractionDigits: 6
-            }).format(parseInt(Number(event._value), 10) / eighteenDecimals)
+        if (event.queryDataObj[1] === 'btc') {
+          event.decodedValueName = `${event.queryDataObj[0].toUpperCase()}/${event.queryDataObj[1].toUpperCase()}`
+          const value = parseInt(Number(event._value), 10) / eighteenDecimals
+          const options = {
+            style: 'currency',
+            currency: 'BTC',
+          }
+            options.minimumFractionDigits = 6
+            options.maximumFractionDigits = 6
+            event.decodedValue = new Intl.NumberFormat('en-EN', options).format(value)
+
+          }
+      if (event.queryDataObj[1] === 'usd') {
+          let queryData = web3.eth.abi.decodeParameters(['string', 'string'], web3.eth.abi.decodeParameters(['string', 'bytes'], event._queryData)[1])
+          event.decodedValueName = `${queryData[0].toUpperCase()}/${queryData[1].toUpperCase()}`
+          event.decodedValue = new Intl.NumberFormat('en-EN', {
+            style: 'currency',
+            currency: queryData[1].toUpperCase(),
+          }).format(Number(event._value) / eighteenDecimals)
+      }
             return event
       case 'wsteth':
         if (event.queryDataObj[1] === 'eth') {
@@ -229,9 +242,9 @@ export const queryDataParsers = {
             event.decodedValue = new Intl.NumberFormat('en-EN', {
               style: 'currency',
               currency: queryData[1].toUpperCase(),
-        }).format(Number(event._value) / eighteenDecimals)
-            }
-            return event
+            }).format(Number(event._value) / eighteenDecimals)
+        }
+        return event
 
           
       default:
