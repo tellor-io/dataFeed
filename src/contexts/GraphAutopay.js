@@ -94,7 +94,6 @@ const GraphAutopay = ({ children }) => {
       setAutopayMaticData({})
     }
   }, [matic.data, matic.loading, matic.error]) //eslint-disable-line
-  console.log(autopayMaticData)
   //Eth Mainnet
   useEffect(() => {
     if (!mainnet) return
@@ -104,7 +103,6 @@ const GraphAutopay = ({ children }) => {
       error: mainnet.error,
     })
     return () => {
-      console.log(mainnet.data)
       setAutopayMainnetData({})
     }
   }, [mainnet.data, mainnet.loading, mainnet.error]) //eslint-disable-line*/
@@ -117,7 +115,6 @@ const GraphAutopay = ({ children }) => {
         error: goerli.error,
       })
       return () => {
-        console.log(goerli.data)
         setAutopayGoerliData({})
       }
     }, [goerli.data, goerli.loading, goerli.error]) //eslint-disable-line*/

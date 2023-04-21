@@ -12,15 +12,16 @@ const clientMainnet = new ApolloClient({
   uri: 'https://gateway.thegraph.com/api/ad08435a6d6c0933c9e272dbdfa21322/subgraphs/id/4mgMy9x1FC6kzjXSQisntEKJFT2U7r73qXMZy2XZ1t4R',
   cache: new InMemoryCache(),
 })
-const clientRinkeby = new ApolloClient({
-  uri: 'https://api.thegraph.com/subgraphs/name/tellor-io/tellorxoraclerinkhgraph',
-  cache: new InMemoryCache(),
-})
 const clientGoerli = new ApolloClient({
   uri: 'https://api.thegraph.com/subgraphs/name/raynharr/tellor-flex-goerli-graph',
   //'https://api.goldsky.com/api/public/project_clf8nopuy59a93stya1d02ev6/subgraphs/tellor-oracle-goerli/v0.0.1/gn',
   cache: new InMemoryCache(),
 })
+const clientSepolia = new ApolloClient({
+  uri: 'https://api.studio.thegraph.com/query/33329/tellor-oracle-sepolia/v0.0.2',
+  cache: new InMemoryCache(),
+})
+
 const clientMatic = new ApolloClient({
   uri: 'https://api.thegraph.com/subgraphs/name/tellor-io/tellorflexoraclematichgraph',
   cache: new InMemoryCache(),
@@ -51,6 +52,7 @@ const Graph = ({ children }) => {
   //Component State
   const [graphMainnetData, setGraphMainnetData] = useState({})
   const [graphGoerliData, setGraphGoerliData] = useState({})
+  const [graphSepoliaData, setGraphSepoliaData] = useState({})
   const [graphMaticData, setGraphMaticData] = useState({})
   const [graphMumbaiData, setGraphMumbaiData] = useState({})
   const [graphArboneData, setGraphArboneData] = useState({})
@@ -84,6 +86,12 @@ const Graph = ({ children }) => {
     fetchPolicy: 'network-only',
     pollInterval: 5000,
   })*/
+  //Sepolia
+  const sepolia = useQuery(reporterQuery, {
+    client: clientSepolia,
+    fetchPolicy: 'network-only',
+    pollInterval: 5000,
+  })
   //Matic
   const matic = useQuery(reporterQuery, {
     client: clientMatic,
@@ -149,6 +157,20 @@ const Graph = ({ children }) => {
         setGraphGoerliData({})
       }
     }, [goerli.data, goerli.loading, goerli.error]) //eslint-disable-line
+    //Sepolia
+    useEffect(() => {
+      if (!sepolia) return
+      setGraphSepoliaData({
+        data: sepolia.data,
+        loading: sepolia.loading,
+        error: sepolia.error,
+      })
+  
+      return () => {
+        setGraphSepoliaData({})
+        console.log(setGraphSepoliaData)
+      }
+    }, [sepolia.data, sepolia.loading, sepolia.error]) //eslint-disable-line
   //Matic
   useEffect(() => {
     if (!matic) return
@@ -233,6 +255,7 @@ const Graph = ({ children }) => {
     if (
       !graphMainnetData.data ||
       !graphGoerliData.data ||
+      !graphSepoliaData.data ||
       !graphMaticData.data ||
       !graphMumbaiData.data ||
       !graphArboneData.data ||
@@ -251,6 +274,11 @@ const Graph = ({ children }) => {
     graphGoerliData.data.newReportEntities.forEach((event) => {
       event.chain = 'Goerli Testnet'
       event.txnLink = `https://goerli.etherscan.io/tx/${event.txnHash}`
+      eventsArray.push(event)
+    })
+    graphSepoliaData.data.newReportEntities.forEach((event) => {
+      event.chain = 'Sepolia Testnet'
+      event.txnLink = `https://sepolia.etherscan.io/tx/${event.txnHash}`
       eventsArray.push(event)
     })
     graphMaticData.data.newReportEntities.forEach((event) => {
@@ -289,7 +317,7 @@ const Graph = ({ children }) => {
     return () => {
       setAllGraphData(null)
     }
-  }, [graphMainnetData, graphGoerliData, graphMaticData, graphMumbaiData, graphArboneData, graphArbtestData, graphGnosismainData, graphOptmainData])
+  }, [graphMainnetData, graphGoerliData, graphSepoliaData, graphMaticData, graphMumbaiData, graphArboneData, graphArbtestData, graphGnosismainData, graphOptmainData])
 
   useEffect(() => {
     if (!allGraphData) return
@@ -304,7 +332,7 @@ const Graph = ({ children }) => {
     decodedData: decodedData,
   }
 
-   //console.log('graphOptmainData', graphOptmainData)
+   console.log(graphGoerliData)
 
   return (
     <GraphContext.Provider value={GraphContextObj}>
