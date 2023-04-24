@@ -6,5 +6,6 @@ module.exports = {
     42: "kovan",
     137: "matic",
     42161: "arbone",
-    80001: "mumbai"
+    80001: "mumbai",
+    11155111: "sepolia"
 }
