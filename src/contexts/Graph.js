@@ -31,7 +31,8 @@ const clientMumbai = new ApolloClient({
   cache: new InMemoryCache(),
 })
 const clientArbone = new ApolloClient({
-  uri: 'https://api.thegraph.com/subgraphs/name/raynharr/tellor-flex-arbitrummain-graph',
+  uri: //'https://api.zondax.ch/fil/data/v1/mainnet/transactions/address/f1bkgyshmwpji4sltshvtyzf6yb7uraxr2pkwlamq?page=1',
+  'https://api.thegraph.com/subgraphs/name/raynharr/tellor-flex-arbitrummain-graph',
   cache: new InMemoryCache(),
 })
 const clientArbtest = new ApolloClient({
@@ -332,7 +333,7 @@ const Graph = ({ children }) => {
     decodedData: decodedData,
   }
 
-   console.log(graphGoerliData)
+   // console.log(graphArboneData)
 
   return (
     <GraphContext.Provider value={GraphContextObj}>
