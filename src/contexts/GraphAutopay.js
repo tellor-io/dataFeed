@@ -30,6 +30,11 @@ const clientGoerli = new ApolloClient({
   cache: new InMemoryCache(),
 })
 
+const clientSepolia = new ApolloClient({
+  uri: 'https://api.studio.thegraph.com/query/33329/tellor-autopay-sepolia/v0.0.3',
+  cache: new InMemoryCache(),
+})
+
 const clientOpmain = new ApolloClient({
   uri: 'https://api.thegraph.com/subgraphs/name/tellor-io/tellor-autopay-optimism-main',
   cache: new InMemoryCache(),
@@ -43,6 +48,7 @@ const GraphAutopay = ({ children }) => {
   const [autopayMainnetData, setAutopayMainnetData] = useState({})
   const [autopayMumbaiData, setAutopayMumbaiData] = useState({})
   const [autopayGoerliData, setAutopayGoerliData] = useState({})
+  const [autopaySepoliaData, setAutopaySepoliaData] = useState({})
   const [autopayOpmainData, setAutopayOpmainData] = useState({})
   const [decodedData, setDecodedData] = useState([])
   const [allGraphData, setAllGraphData] = useState(null)
@@ -68,6 +74,12 @@ const GraphAutopay = ({ children }) => {
   //Goerli
   const goerli = useQuery(autopayQuery, {
     client: clientGoerli,
+    fetchPolicy: 'network-only',
+    pollInterval: 5000,
+  })
+  //Sepolia
+  const sepolia = useQuery(autopayQuery, {
+    client: clientSepolia,
     fetchPolicy: 'network-only',
     pollInterval: 5000,
   })
@@ -118,6 +130,18 @@ const GraphAutopay = ({ children }) => {
         setAutopayGoerliData({})
       }
     }, [goerli.data, goerli.loading, goerli.error]) //eslint-disable-line*/
+    //Sepolia
+    useEffect(() => {
+      if (!sepolia) return
+      setAutopaySepoliaData({
+        data: sepolia.data,
+        loading: sepolia.loading,
+        error: sepolia.error,
+      })
+      return () => {
+        setAutopaySepoliaData({})
+      }
+    }, [sepolia.data, sepolia.loading, sepolia.error]) //eslint-disable-line*/
   //Mumbai
   useEffect(() => {
     if (!mumbai) return
@@ -148,6 +172,7 @@ const GraphAutopay = ({ children }) => {
       !autopayMaticData.data ||
       !autopayMainnetData.data ||
       !autopayGoerliData.data ||
+      !autopaySepoliaData.data ||
       !autopayMumbaiData.data ||
       !autopayOpmainData.data  
     )
@@ -195,6 +220,16 @@ const GraphAutopay = ({ children }) => {
       event.txnLink = `https://goerli.etherscan.io/tx/${event.txnHash}`
       eventsArray.push(event)
     })
+    autopaySepoliaData.data.dataFeedEntities.forEach((event) => {
+      event.chain = 'Sepolia Testnet'
+      event.txnLink = `https://sepolia.etherscan.io/tx/${event.txnHash}`
+      eventsArray.push(event)
+    })
+    autopaySepoliaData.data.tipAddedEntities.forEach((event) => {
+      event.chain = 'Sepolia Testnet'
+      event.txnLink = `https://sepolia.etherscan.io/tx/${event.txnHash}`
+      eventsArray.push(event)
+    })
     autopayOpmainData.data.dataFeedEntities.forEach((event) => {
       event.chain = 'Optimism Mainnet'
       event.txnLink = `https://optimistic.etherscan.io/tx/${event.txnHash}`
@@ -211,7 +246,7 @@ const GraphAutopay = ({ children }) => {
     return () => {
       setAllGraphData(null)
     }
-  }, [autopayMaticData, autopayMumbaiData, autopayMainnetData, autopayGoerliData, autopayOpmainData])
+  }, [autopayMaticData, autopayMumbaiData, autopayMainnetData, autopayGoerliData, autopaySepoliaData, autopayOpmainData])
 
 
   useEffect(() => {
@@ -226,6 +261,7 @@ const GraphAutopay = ({ children }) => {
   const GraphContextObj = {
     decodedData: decodedData,
   }
+    console.log(autopaySepoliaData)
 
   return (
     <GraphAutopayContext.Provider value={GraphContextObj}>
