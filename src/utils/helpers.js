@@ -222,6 +222,13 @@ export const decodingAutopayMiddleware = (autopayEvents) => {
           )
           event.decodedValue = `Mimicry NFT STAT ${finalQueryData[0].toUpperCase()}/${finalQueryData[1].toUpperCase()}`
           break
+        case 'EVMCall':
+            finalQueryData = web3.eth.abi.decodeParameters(
+              ['uint'],
+              queryDataPartial[1]
+            )
+            event.decodedValue = `EVMCall ${finalQueryData[0]}`
+            return event
         case 'CurrencyExchangeRate':
             finalQueryData = web3.eth.abi.decodeParameters(
               ['string', 'string'],
@@ -303,6 +310,14 @@ export const decodingMiddleware = (reportEvents) => {
           )
         event.queryDataObj = finalQueryData
         queryDataParsers['MimicryMacroMarketMashup' || 'Default'](event)
+              break
+      case 'EVMCall':
+        finalQueryData = web3.eth.abi.decodeParameters(
+          ['uint256', 'address', 'bytes'],
+             queryDataPartial[1]
+          )
+          event.queryDataObj = finalQueryData
+          queryDataParsers['EVMCall' || 'Default'](event)
               break
         case 'CurrencyExchangeRate':
             finalQueryData = web3.eth.abi.decodeParameters(

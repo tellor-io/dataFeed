@@ -13,7 +13,7 @@ const clientMainnet = new ApolloClient({
   cache: new InMemoryCache(),
 })
 const clientGoerli = new ApolloClient({
-  uri: 'https://api.thegraph.com/subgraphs/name/raynharr/tellor-flex-goerli-graph',
+  uri: 'https://api.goldsky.com/api/public/project_clf8nopuy59a93stya1d02ev6/subgraphs/tellor-oracle-goerli/v0.0.1/gn',
   //'https://api.goldsky.com/api/public/project_clf8nopuy59a93stya1d02ev6/subgraphs/tellor-oracle-goerli/v0.0.1/gn',
   cache: new InMemoryCache(),
 })
