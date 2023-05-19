@@ -110,6 +110,12 @@ export const queryDataParsers = {
     return event;
   },
   
+  EVMCall : (event) => {
+    event.decodedValueName = `EVMCall`;
+    event.decodedValue = `${event.queryDataObj[0]}`;
+    return event;
+  },
+  
   SpotPrice: (event) => {
     switch (event.queryId) {
       case 5:
