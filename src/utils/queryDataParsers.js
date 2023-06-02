@@ -118,9 +118,14 @@ export const queryDataParsers = {
   
   SpotPrice: (event) => {
     switch (event.queryId) {
+
       case 5:
         event.decodedValueName = `${event.queryDataObj.asset}/${event.queryDataObj.currency}`
         event.decodedValue = parseInt(Number(event._value), 10)
+        if (event.decodedValue % 1 === 0 || event.decodedValue.toFixed(2).slice(-2) === '00') {
+          event.decodedValue = parseInt(event.decodedValue, 10);
+        }
+  
         return event
       default:
         event.decodedValueName = 'New SpotPrice Type'
@@ -191,7 +196,7 @@ export const queryDataParsers = {
           currency: 'USD',
         }).format(parseInt(Number(event._value), 10) / eighteenDecimals)
         return event
-      case 'pepe':
+      /*case 'pepe':
         event.decodedValueName = `${event.queryDataObj[0].toUpperCase()}/${event.queryDataObj[1].toUpperCase()}`
           const value = parseInt(Number(event._value), 10) / eighteenDecimals
           const options = {
@@ -201,7 +206,7 @@ export const queryDataParsers = {
             options.minimumFractionDigits = 6
             options.maximumFractionDigits = 6
             event.decodedValue = new Intl.NumberFormat('en-EN', options).format(value)
-        return event
+        return event*/
       case 'matic':
         event.decodedValueName = `${event.queryDataObj[0].toUpperCase()}/${event.queryDataObj[1].toUpperCase()}`
         event.decodedValue = new Intl.NumberFormat('en-EN', {
@@ -262,15 +267,37 @@ export const queryDataParsers = {
         return event
 
           
-      default:
-        let queryData = web3.eth.abi.decodeParameters(['string', 'string'], web3.eth.abi.decodeParameters(['string', 'bytes'], event._queryData)[1])
-        event.decodedValueName = `${queryData[0].toUpperCase()}/${queryData[1].toUpperCase()}`
-        event.decodedValue = new Intl.NumberFormat('en-EN', {
-          style: 'currency',
-          currency: queryData[1].toUpperCase(),
-        }).format(Number(event._value) / eighteenDecimals)
-        return event
-    }
+        default:
+          let queryData = web3.eth.abi.decodeParameters(['string', 'string'], web3.eth.abi.decodeParameters(['string', 'bytes'], event._queryData)[1]);
+          event.decodedValueName = `${queryData[0].toUpperCase()}/${queryData[1].toUpperCase()}`;
+          let value = Number(event._value) / eighteenDecimals;
+        
+          // Format the number with 7 decimals if it includes '.00', otherwise use Intl.NumberFormat with currency style
+          if (value.toFixed(2).includes('.00')) {
+            let currencySymbol = new Intl.NumberFormat('en-EN', {
+              style: 'currency',
+              currency: queryData[1].toUpperCase(),
+              minimumFractionDigits: 0,
+              maximumFractionDigits: 0,
+            }).formatToParts(0).find(part => part.type === 'currency').value;
+        
+            event.decodedValue = value.toFixed(18);
+            if (/\.0+$/.test(event.decodedValue)) {
+              event.decodedValue = event.decodedValue.replace(/\.0+$/, '');
+            }
+            event.decodedValue = currencySymbol  + event.decodedValue;
+          } else {
+            event.decodedValue = new Intl.NumberFormat('en-EN', {
+              style: 'currency',
+              currency: queryData[1].toUpperCase(),
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            }).format(value);
+          }
+        
+          return event;
+        
+  }
   },
   // Snapshot: (event) => {
   //   switch (event) {
