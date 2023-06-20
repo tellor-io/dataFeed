@@ -9,6 +9,7 @@ const tellorAddressPolygon = '0xE3322702BEdaaEd36CdDAb233360B939775ae5f1'
 const tellorAddressMumbai = '0xce4e32fe9d894f8185271aa990d2db425df3e6be'
 const tellorAddressGoerli = '0xB3B662644F8d3138df63D2F43068ea621e2981f9'
 const tellorAddressArbone = '0xd58D345Fd9c82262E087d2D0607624B410D88242'
+const tellorAddressPulsechain = '0x88dF592F8eb5D7Bd38bFeF7dEb0fBc02cf3778a0'
 
 const getDate = (timestamp) => {
   const months = {
@@ -56,6 +57,10 @@ export const getAssetBalances = async (web3, address, chainId) => {
   const trbContractMumbai = new web3.eth.Contract(minABI, tellorAddressMumbai)
   const trbContractGoerli = new web3.eth.Contract(minABI, tellorAddressGoerli)
   const trbContractArbone = new web3.eth.Contract(minABI, tellorAddressArbone)
+  const trbContractPulsechain = new web3.eth.Contract(
+    minABI,
+    tellorAddressPulsechain
+  )
   //Function Globals
   let chainMainTokenBalance
   let trbBalance
@@ -137,6 +142,21 @@ export const getAssetBalances = async (web3, address, chainId) => {
         await web3.eth.getBalance(address)
       )
       trbBalance = await trbContractMumbai.methods
+        .balanceOf(address)
+        .call()
+        .then((res) => web3.utils.fromWei(res))
+      //Add more assets here if needed
+      return {
+        main: Math.round(chainMainTokenBalance * 100) / 100,
+        trb: Math.round(trbBalance * 100) / 100,
+      }
+    case 369:
+    case 943:
+      //Main Chain Balance - PULSECHAIN
+      chainMainTokenBalance = web3.utils.fromWei(
+        await web3.eth.getBalance(address)
+      )
+      trbBalance = await trbContractPulsechain.methods
         .balanceOf(address)
         .call()
         .then((res) => web3.utils.fromWei(res))

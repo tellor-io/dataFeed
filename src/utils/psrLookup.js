@@ -58,4 +58,5 @@ export const psrLookup = {
   57: { name: 'DEFITVL', granularity: '1000000' },
   58: { name: 'DEFICAP', granularity: '1000000' },
   59: { name: 'ETH/JPY', granularity: '1000000' },
+  60: { name: 'PLS/USD', granularity: '1000000' },
 }

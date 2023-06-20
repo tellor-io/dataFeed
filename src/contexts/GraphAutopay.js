@@ -40,7 +40,15 @@ const clientOpmain = new ApolloClient({
   cache: new InMemoryCache(),
 })
 
+const clientPlsmain = new ApolloClient({
+  uri: 'https://graph.pulse.domains/subgraphs/name/graphprotocol/tellor-autopay',
+  cache: new InMemoryCache(),
+})
 
+const clientPlstest = new ApolloClient({
+  uri: 'https://v4b.graph.pulse.domains/subgraphs/name/graphprotocol/tellor-autopay',
+  cache: new InMemoryCache(),
+})
 
 const GraphAutopay = ({ children }) => {
   //Component State
@@ -50,6 +58,8 @@ const GraphAutopay = ({ children }) => {
   const [autopayGoerliData, setAutopayGoerliData] = useState({})
   const [autopaySepoliaData, setAutopaySepoliaData] = useState({})
   const [autopayOpmainData, setAutopayOpmainData] = useState({})
+  const [autopayPlsmainData, setAutopayPlsmainData] = useState({})
+  const [autopayPlstestData, setAutopayPlstestData] = useState({})
   const [decodedData, setDecodedData] = useState([])
   const [allGraphData, setAllGraphData] = useState(null)
   //Context State
@@ -86,6 +96,18 @@ const GraphAutopay = ({ children }) => {
   //Optimism
   const opmain = useQuery(autopayQuery, {
     client: clientOpmain,
+    fetchPolicy: 'network-only',
+    pollInterval: 5000,
+  })
+  //Pulsechain(mainnet)
+  const plsmain = useQuery(autopayQuery, {
+    client: clientPlsmain,
+    fetchPolicy: 'network-only',
+    pollInterval: 5000,
+  })
+  //Pulsechain(testnet)
+  const plstest = useQuery(autopayQuery, {
+    client: clientPlstest,
     fetchPolicy: 'network-only',
     pollInterval: 5000,
   })
@@ -166,6 +188,30 @@ const GraphAutopay = ({ children }) => {
       setAutopayOpmainData({})
     }
   }, [opmain.data, opmain.loading, opmain.error]) //eslint-disable-line
+  //Pulsechain(mainnet)
+  useEffect(() => {
+    if (!plsmain) return
+    setAutopayPlsmainData({
+      data: plsmain.data,
+      loading: plsmain.loading,
+      error: plsmain.error,
+    })
+    return () => {
+      setAutopayPlsmainData({})
+    }
+  }, [plsmain.data, plsmain.loading, plsmain.error]) //eslint-disable-line
+  //Pulsechain(testnet)
+  useEffect(() => {
+    if (!plstest) return
+    setAutopayPlstestData({
+      data: plstest.data,
+      loading: plstest.loading,
+      error: plstest.error,
+    })
+    return () => {
+      setAutopayPlstestData({})
+    }
+  }, [plstest.data, plstest.loading, plstest.error]) //eslint-disable-line
   //useEffects for decoding autopay events
   useEffect(() => {
     if (
@@ -174,7 +220,9 @@ const GraphAutopay = ({ children }) => {
       !autopayGoerliData.data ||
       !autopaySepoliaData.data ||
       !autopayMumbaiData.data ||
-      !autopayOpmainData.data  
+      !autopayOpmainData.data ||
+      !autopayPlsmainData.data ||
+      !autopayPlstestData.data 
     )
       return
 
@@ -240,13 +288,33 @@ const GraphAutopay = ({ children }) => {
       event.txnLink = `https://optimistic.etherscan.io/tx/${event.txnHash}`
       eventsArray.push(event)
     })
+    autopayPlsmainData.data.dataFeedEntities.forEach((event) => {
+      event.chain = 'PulseChain (Mainnet)'
+      event.txnLink = `https://scan.pulsechain.com/tx/${event.txnHash}`
+      eventsArray.push(event)
+    })
+    autopayPlsmainData.data.tipAddedEntities.forEach((event) => {
+      event.chain = 'PulseChain (Mainnet)'
+      event.txnLink = `https://scan.pulsechain.com/tx/${event.txnHash}`
+      eventsArray.push(event)
+    })
+    autopayPlstestData.data.dataFeedEntities.forEach((event) => {
+      event.chain = 'PulseChain (Testnet)'
+      event.txnLink = `https://scan.v4.testnet.pulsechain.com/tx/${event.txnHash}`
+      eventsArray.push(event)
+    })
+    autopayPlstestData.data.tipAddedEntities.forEach((event) => {
+      event.chain = 'PulseChain (Testnet)'
+      event.txnLink = `https://scan.v4.testnet.pulsechain.com/tx/${event.txnHash}`
+      eventsArray.push(event)
+    })
     let sorted = sortDataByProperty('_startTime', eventsArray)
     setAllGraphData(sorted)
 
     return () => {
       setAllGraphData(null)
     }
-  }, [autopayMaticData, autopayMumbaiData, autopayMainnetData, autopayGoerliData, autopaySepoliaData, autopayOpmainData])
+  }, [autopayMaticData, autopayMumbaiData, autopayMainnetData, autopayGoerliData, autopaySepoliaData, autopayOpmainData, autopayPlsmainData, autopayPlstestData])
 
 
   useEffect(() => {

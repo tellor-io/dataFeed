@@ -48,6 +48,14 @@ const clientOptmain = new ApolloClient({
   uri: 'https://api.thegraph.com/subgraphs/name/tellor-io/tellor-oracle-optimism-main',
   cache: new InMemoryCache(),
 })
+const clientPlsmain = new ApolloClient({
+  uri: 'https://graph.pulse.domains/subgraphs/name/graphprotocol/tellor-flex',
+  cache: new InMemoryCache(),
+})
+const clientPlstest = new ApolloClient({
+  uri: 'https://v4b.graph.pulse.domains/subgraphs/name/graphprotocol/tellor-flex',
+  cache: new InMemoryCache(),
+})
 
 const Graph = ({ children }) => {
   //Component State
@@ -60,6 +68,8 @@ const Graph = ({ children }) => {
   const [graphArbtestData, setGraphArbtestData] = useState({})
   const [graphGnosismainData, setGraphGnosismainData] = useState({})
   const [graphOptmainData, setGraphOptmainData] = useState({})
+  const [graphPlsmainData, setGraphPlsmainData] = useState({})
+  const [graphPlstestData, setGraphPlstestData] = useState({})
   const [allGraphData, setAllGraphData] = useState(null)
   const [decodedData, setDecodedData] = useState(null)
 
@@ -126,6 +136,18 @@ const Graph = ({ children }) => {
   //optimism(mainnet)
   const optmain = useQuery(reporterQuery, {
     client: clientOptmain,
+    fetchPolicy: 'network-only',
+    pollInterval: 5000,
+  })
+  //pulsechain(mainnet)
+  const plsmain = useQuery(reporterQuery, {
+    client: clientPlsmain,
+    fetchPolicy: 'network-only',
+    pollInterval: 5000,
+  })
+  //pulsechain(testnet)
+  const plstest = useQuery(reporterQuery, {
+    client: clientPlstest,
     fetchPolicy: 'network-only',
     pollInterval: 5000,
   })
@@ -250,6 +272,32 @@ const Graph = ({ children }) => {
       setGraphOptmainData({})
     }
   }, [optmain.data, optmain.loading, optmain.error]) //eslint-disable-line
+  //PulseChain(mainnet)
+  useEffect(() => {
+    if (!plsmain) return
+    setGraphPlsmainData({
+      data: plsmain.data,
+      loading: plsmain.loading,
+      error: plsmain.error,
+    })
+
+    return () => {
+      setGraphPlsmainData({})
+    }
+  }, [plsmain.data, plsmain.loading, plsmain.error]) //eslint-disable-line
+  //PulseChain(testnet)
+  useEffect(() => {
+    if (!plstest) return
+    setGraphPlstestData({
+      data: plstest.data,
+      loading: plstest.loading,
+      error: plstest.error,
+    })
+
+    return () => {
+      setGraphPlstestData({})
+    }
+  }, [plstest.data, plstest.loading, plstest.error]) //eslint-disable-line
 
   //For conglomerating data
   useEffect(() => {
@@ -262,7 +310,9 @@ const Graph = ({ children }) => {
       !graphArboneData.data ||
       !graphArbtestData.data ||
       !graphGnosismainData.data ||
-      !graphOptmainData.data
+      !graphOptmainData.data ||
+      !graphPlsmainData.data ||
+      !graphPlstestData.data
     )
       return
 
@@ -312,13 +362,35 @@ const Graph = ({ children }) => {
       event.txnLink = `https://optimistic.etherscan.io/tx/${event.txnHash}`
       eventsArray.push(event)
     })
+    graphPlsmainData.data.newReportEntities.forEach((event) => {
+      event.chain = 'PulseChain (Mainnet)'
+      event.txnLink = `https://scan.pulsechain.com/tx/${event.txnHash}`
+      eventsArray.push(event)
+    })
+    graphPlstestData.data.newReportEntities.forEach((event) => {
+      event.chain = 'PulseChain (Testnet)'
+      event.txnLink = `https://scan.v4.testnet.pulsechain.com/tx/${event.txnHash}`
+      eventsArray.push(event)
+    })
     let sorted = sortDataByProperty('_time', eventsArray)
     setAllGraphData(sorted)
 
     return () => {
       setAllGraphData(null)
     }
-  }, [graphMainnetData, graphGoerliData, graphSepoliaData, graphMaticData, graphMumbaiData, graphArboneData, graphArbtestData, graphGnosismainData, graphOptmainData])
+  }, [
+    graphMainnetData,
+    graphGoerliData,
+    graphSepoliaData,
+    graphMaticData,
+    graphMumbaiData,
+    graphArboneData,
+    graphArbtestData,
+    graphGnosismainData,
+    graphOptmainData,
+    // graphPlsmainData,
+    // graphPlstestData
+  ])
 
   useEffect(() => {
     if (!allGraphData) return
