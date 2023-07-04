@@ -548,7 +548,7 @@ function TipTable({ data, allData, setFiltering }) {
             </div>
           </th>
           <th>
-            <h1>Tip Amount</h1>
+            <h1>TIP AMOUNT</h1>
           </th>
           <th className="TH__HeaderSpecial">
             <div className="TH__HeaderDiv">
@@ -631,7 +631,12 @@ function TipTable({ data, allData, setFiltering }) {
           </th>
           <th className="TH__HeaderSpecial">
             <div className="TH__HeaderDiv">
-              <h1>Recurring</h1>
+              <h1>FREQUENCY</h1>
+            </div>
+          </th>
+          <th className="TH__HeaderSpecial">
+            <div className="TH__HeaderDiv">
+              <h1>REMAINING BALANCE</h1>
             </div>
           </th>
           <th>
@@ -653,6 +658,7 @@ function TipTable({ data, allData, setFiltering }) {
                 <td className="TB__Reporter">
                   <p>{event.interval}</p>
                 </td>
+                <td className="TB__Balance">{event.balance}</td>
                 <td className="TB__DateTime">{event.startTime}</td>
             </tr>
           ))
