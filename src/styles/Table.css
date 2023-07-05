@@ -196,6 +196,9 @@
 .TB__Value {
   flex: 0.2;
 }
+.TB__Balance {
+  flex: 0.2;
+}
 .TB__Chain {
   flex: 0.2;
 }

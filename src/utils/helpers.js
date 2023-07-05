@@ -168,8 +168,10 @@ export const decodingAutopayMiddleware = (autopayEvents) => {
     let queryDataPartial
     let queryData
     let finalQueryData
-    event.interval = event._interval ? `${(event._interval / 60 / 60)} hours` : 'One Time Tip'
+    event.interval = event._interval ? `${(event._interval / 60 / 60)} hour(s)  ` : 'One-Time Tip'
     event.tip = event._reward ? web3.utils.fromWei(event._reward) + ' TRB' : web3.utils.fromWei(event._amount).slice(0,6) + ' TRB' 
+    event.balance = event._balance ? web3.utils.fromWei(event._balance).slice(0,7) + ' TRB' : web3.utils.fromWei(event._amount).slice(0,6) + ' TRB'
+    console.log(event._balance)
     event.startTime = getDate(event._startTime)
     event.window = event._window
     event.symbols = event._queryData
@@ -206,14 +208,14 @@ export const decodingAutopayMiddleware = (autopayEvents) => {
             ['string', 'string'],
             queryDataPartial[1]
           )
-          event.decodedValue = `MimicryNFTMarketIndex ${finalQueryData[0].toUpperCase()}/${finalQueryData[1].toUpperCase()}`
+          event.decodedValue = `MIMICRY_NFTINDX ${finalQueryData[0].toUpperCase()}/${finalQueryData[1].toUpperCase()}`
           break
         case 'MimicryMacroMarketMashup':
           finalQueryData = web3.eth.abi.decodeParameters(
             ['string', 'string', 'tuple(string, address)[]','(string, string, address)[]'],
             queryDataPartial[1]
           )
-          event.decodedValue = `MIMICRY NFT MASHUP (${finalQueryData[3][0][1].toUpperCase()})`
+          event.decodedValue = `MIMICRY_NFTMASH (${finalQueryData[3][0][1].toUpperCase()})`
           break
         case 'MimicryCollectionStat':
           finalQueryData = web3.eth.abi.decodeParameters(
@@ -229,6 +231,14 @@ export const decodingAutopayMiddleware = (autopayEvents) => {
             )
             event.decodedValue = `EVMCall ${finalQueryData[0]}`
             return event
+        /*case 'GasPriceOracle':
+          finalQueryData = web3.eth.abi.decodeParameters(
+            ['string', 'string'],
+            queryDataPartial[1]
+          )
+          event.queryDataObj = finalQueryData
+          queryDataParsers['SpotPriceProper' || 'Default'](event)
+          break*/
         case 'CurrencyExchangeRate':
             finalQueryData = web3.eth.abi.decodeParameters(
               ['string', 'string'],
@@ -319,6 +329,13 @@ export const decodingMiddleware = (reportEvents) => {
           event.queryDataObj = finalQueryData
           queryDataParsers['EVMCall' || 'Default'](event)
               break
+      /*case 'GasPriceOracle':
+        finalQueryData = web3.eth.abi.decodeParameters(
+          ['string', 'string'],
+          queryDataPartial[1]
+        )
+        event.decodedValue = `${finalQueryData[0].toUpperCase()}/${finalQueryData[1].toUpperCase()}`
+            break*/ 
         case 'CurrencyExchangeRate':
             finalQueryData = web3.eth.abi.decodeParameters(
               ['string', 'string'],

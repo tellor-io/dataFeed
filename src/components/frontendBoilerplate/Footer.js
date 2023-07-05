@@ -25,7 +25,7 @@ function Footer() {
 
   return (
     <div className="Footer">
-      <p className="FooterText">&copy; 2022 Tellor, Inc.</p>
+      <p className="FooterText">&copy; 2023 Tellor, Inc.</p>
       <div className="ModeSwitcher">
         <p className="ModeSwitcherText">
           {mode && mode.mode === 'dark'

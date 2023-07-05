@@ -25,13 +25,8 @@ const clientMatic = new ApolloClient({
   cache: new InMemoryCache(),
 })
 
-const clientGoerli = new ApolloClient({
-  uri: 'https://api.thegraph.com/subgraphs/name/raynharr/tellor-autopay-goerli-graph',
-  cache: new InMemoryCache(),
-})
-
 const clientSepolia = new ApolloClient({
-  uri: 'https://api.studio.thegraph.com/query/33329/tellor-autopay-sepolia/v0.0.3',
+  uri: 'https://api.studio.thegraph.com/query/33329/tellor-autopay-sepolia/v0.0.4',
   cache: new InMemoryCache(),
 })
 
@@ -47,7 +42,6 @@ const GraphAutopay = ({ children }) => {
   const [autopayMaticData, setAutopayMaticData] = useState({})
   const [autopayMainnetData, setAutopayMainnetData] = useState({})
   const [autopayMumbaiData, setAutopayMumbaiData] = useState({})
-  const [autopayGoerliData, setAutopayGoerliData] = useState({})
   const [autopaySepoliaData, setAutopaySepoliaData] = useState({})
   const [autopayOpmainData, setAutopayOpmainData] = useState({})
   const [decodedData, setDecodedData] = useState([])
@@ -68,12 +62,6 @@ const GraphAutopay = ({ children }) => {
   //Mumbai
   const mumbai = useQuery(autopayQuery, {
     client: clientMumbai,
-    fetchPolicy: 'network-only',
-    pollInterval: 5000,
-  })
-  //Goerli
-  const goerli = useQuery(autopayQuery, {
-    client: clientGoerli,
     fetchPolicy: 'network-only',
     pollInterval: 5000,
   })
@@ -118,30 +106,18 @@ const GraphAutopay = ({ children }) => {
       setAutopayMainnetData({})
     }
   }, [mainnet.data, mainnet.loading, mainnet.error]) //eslint-disable-line*/
-    //Goerli
-    useEffect(() => {
-      if (!goerli) return
-      setAutopayGoerliData({
-        data: goerli.data,
-        loading: goerli.loading,
-        error: goerli.error,
-      })
-      return () => {
-        setAutopayGoerliData({})
-      }
-    }, [goerli.data, goerli.loading, goerli.error]) //eslint-disable-line*/
     //Sepolia
-    useEffect(() => {
-      if (!sepolia) return
-      setAutopaySepoliaData({
-        data: sepolia.data,
-        loading: sepolia.loading,
-        error: sepolia.error,
-      })
-      return () => {
-        setAutopaySepoliaData({})
-      }
-    }, [sepolia.data, sepolia.loading, sepolia.error]) //eslint-disable-line*/
+  useEffect(() => {
+    if (!sepolia) return
+    setAutopaySepoliaData({
+      data: sepolia.data,
+      loading: sepolia.loading,
+      error: sepolia.error,
+    })
+    return () => {
+      setAutopaySepoliaData({})
+    }
+  }, [sepolia.data, sepolia.loading, sepolia.error]) //eslint-disable-line*/
   //Mumbai
   useEffect(() => {
     if (!mumbai) return
@@ -171,8 +147,7 @@ const GraphAutopay = ({ children }) => {
     if (
       !autopayMaticData.data ||
       !autopayMainnetData.data ||
-      !autopayGoerliData.data ||
-      !autopaySepoliaData.data ||
+       !autopaySepoliaData.data ||
       !autopayMumbaiData.data ||
       !autopayOpmainData.data  
     )
@@ -210,16 +185,6 @@ const GraphAutopay = ({ children }) => {
       event.txnLink = `https://etherscan.com/tx/${event.txnHash}`
       eventsArray.push(event)
     })
-    autopayGoerliData.data.dataFeedEntities.forEach((event) => {
-      event.chain = 'Goerli Testnet'
-      event.txnLink = `https://goerli.etherscan.io/tx/${event.txnHash}`
-      eventsArray.push(event)
-    })
-    autopayGoerliData.data.tipAddedEntities.forEach((event) => {
-      event.chain = 'Goerli Testnet'
-      event.txnLink = `https://goerli.etherscan.io/tx/${event.txnHash}`
-      eventsArray.push(event)
-    })
     autopaySepoliaData.data.dataFeedEntities.forEach((event) => {
       event.chain = 'Sepolia Testnet'
       event.txnLink = `https://sepolia.etherscan.io/tx/${event.txnHash}`
@@ -246,7 +211,7 @@ const GraphAutopay = ({ children }) => {
     return () => {
       setAllGraphData(null)
     }
-  }, [autopayMaticData, autopayMumbaiData, autopayMainnetData, autopayGoerliData, autopaySepoliaData, autopayOpmainData])
+  }, [autopayMaticData, autopayMumbaiData, autopayMainnetData, autopaySepoliaData, autopayOpmainData])
 
 
   useEffect(() => {
@@ -261,7 +226,7 @@ const GraphAutopay = ({ children }) => {
   const GraphContextObj = {
     decodedData: decodedData,
   }
-    console.log(autopaySepoliaData)
+    console.log(autopayMaticData)
 
   return (
     <GraphAutopayContext.Provider value={GraphContextObj}>
