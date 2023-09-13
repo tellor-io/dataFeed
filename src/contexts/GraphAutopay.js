@@ -2,7 +2,7 @@ import React, { useState, createContext, useEffect } from 'react'
 //The Graph
 import { ApolloClient, InMemoryCache, useQuery } from '@apollo/client'
 //Utils
-import { autopayQuery } from '../utils/queries'
+import { autopayQuery, divaPayQuery, divaPayAdaptorQuery } from '../utils/queries'
 import { decodingAutopayMiddleware, sortDataByProperty  } from '../utils/helpers'
 //Sort
 
@@ -35,6 +35,15 @@ const clientOpmain = new ApolloClient({
   cache: new InMemoryCache(),
 })
 
+const clientDivaMumbai = new ApolloClient({
+  uri: 'https://api.thegraph.com/subgraphs/name/divaprotocol/diva-protocol-v1-polygon',
+  cache: new InMemoryCache(),
+})
+
+const clientDivaAdaptorMumbai = new ApolloClient({
+  uri: 'https://api.thegraph.com/subgraphs/name/raynharr/tellor-adaptor-divamumbai',
+  cache: new InMemoryCache(),
+})
 
 
 const GraphAutopay = ({ children }) => {
@@ -44,6 +53,8 @@ const GraphAutopay = ({ children }) => {
   const [autopayMumbaiData, setAutopayMumbaiData] = useState({})
   const [autopaySepoliaData, setAutopaySepoliaData] = useState({})
   const [autopayOpmainData, setAutopayOpmainData] = useState({})
+  const [autopayDivaMumbaiData, setAutopayDivaMumbaiData] = useState({})
+  const [autopayDivaAdaptorMumbaiData, setAutopayDivaAdaptorMumbaiData] = useState({})
   const [decodedData, setDecodedData] = useState([])
   const [allGraphData, setAllGraphData] = useState(null)
   //Context State
@@ -77,6 +88,18 @@ const GraphAutopay = ({ children }) => {
     fetchPolicy: 'network-only',
     pollInterval: 5000,
   })
+  //Diva Polygon
+  const divaMumbai = useQuery(divaPayQuery, {
+    client: clientDivaMumbai,
+    fetchPolicy: 'network-only',
+    pollInterval: 5000,
+  })
+  //console.log(divaMumbai)
+  const divaAdaptorMumbai = useQuery(divaPayAdaptorQuery, {
+    client: clientDivaAdaptorMumbai,
+    fetchPolicy: 'network-only',
+    pollInterval: 5000,
+  })
   
   //useEffects for listening to reponses
   //from ApolloClient queries
@@ -89,7 +112,7 @@ const GraphAutopay = ({ children }) => {
       error: matic.error,
     })
     return () => {
-      console.log(matic.data)
+      //console.log(matic.data)
 
       setAutopayMaticData({})
     }
@@ -142,14 +165,40 @@ const GraphAutopay = ({ children }) => {
       setAutopayOpmainData({})
     }
   }, [opmain.data, opmain.loading, opmain.error]) //eslint-disable-line
+  //Diva Mumbai
+  useEffect(() => {
+    if (!divaMumbai) return
+    setAutopayDivaMumbaiData({
+      data: divaMumbai.data,
+      loading: divaMumbai.loading,
+      error: divaMumbai.error,
+    })
+    return () => {
+      setAutopayDivaMumbaiData({})
+    }
+  }, [divaMumbai.data, divaMumbai.loading, divaMumbai.error]) //eslint-disable-line
+  //Diva Adaptor Mumbai
+  useEffect(() => {
+    if (!divaAdaptorMumbai) return
+    setAutopayDivaAdaptorMumbaiData({
+      data: divaAdaptorMumbai.data,
+      loading: divaAdaptorMumbai.loading,
+      error: divaAdaptorMumbai.error,
+    })
+    return () => {
+      setAutopayDivaAdaptorMumbaiData({})
+    }
+  }, [divaAdaptorMumbai.data, divaAdaptorMumbai.loading, divaAdaptorMumbai.error]) //eslint-disable-line
   //useEffects for decoding autopay events
   useEffect(() => {
     if (
       !autopayMaticData.data ||
       !autopayMainnetData.data ||
-       !autopaySepoliaData.data ||
+      !autopaySepoliaData.data ||
       !autopayMumbaiData.data ||
-      !autopayOpmainData.data  
+      !autopayOpmainData.data ||
+      !autopayDivaMumbaiData.data ||
+      !autopayDivaAdaptorMumbaiData.data   
     )
       return
 
@@ -205,13 +254,30 @@ const GraphAutopay = ({ children }) => {
       event.txnLink = `https://optimistic.etherscan.io/tx/${event.txnHash}`
       eventsArray.push(event)
     })
+    autopayDivaMumbaiData.data.pools.forEach((event) => {
+      if (event.dataProvider === '0x7950db13cc37774614b0aa406e42a4c4f0bf26a6') {
+        event.chain = 'Diva Polygon Mainnet'
+        event.txnLink = `https://app.diva.finance/markets`
+        eventsArray.push(event)
+      }
+    })
+   /* autopayDivaMumbaiData.data.feeRecipients.forEach((event) => {
+      event.chain = 'Diva Polygon Mainnet'
+      event.txnLink = `https://polygonscan.com/tx/${event.txnHash}`
+      eventsArray.push(event)
+    })*/
+    autopayDivaAdaptorMumbaiData.data.tipAddeds.forEach((event) => {
+      event.chain = 'Diva Polygon Mainnet'
+      event.txnLink = `https://app.diva.finance/markets`
+    })
+    
     let sorted = sortDataByProperty('_startTime', eventsArray)
     setAllGraphData(sorted)
 
     return () => {
       setAllGraphData(null)
     }
-  }, [autopayMaticData, autopayMumbaiData, autopayMainnetData, autopaySepoliaData, autopayOpmainData])
+  }, [autopayMaticData, autopayMumbaiData, autopayMainnetData, autopaySepoliaData, autopayOpmainData, autopayDivaMumbaiData, autopayDivaAdaptorMumbaiData])
 
 
   useEffect(() => {
@@ -226,7 +292,7 @@ const GraphAutopay = ({ children }) => {
   const GraphContextObj = {
     decodedData: decodedData,
   }
-    console.log(autopayMaticData)
+    //console.log(autopayDivaMumbaiData)
 
   return (
     <GraphAutopayContext.Provider value={GraphContextObj}>

@@ -6,7 +6,9 @@ import { ReactComponent as Checked } from '../assets/done.svg'
 import LinearIndeterminate from './LinearIndeterminate'
 //Contexts
 import { decodeSymbols } from '../utils/helpers'
+import { getCollateralTokenSymbol } from '../utils/helpers.js';
 import { ModeContext } from '../contexts/Mode'
+import { eventWrapper } from '@testing-library/user-event/dist/utils'
 
 function TipTable({ data, allData, setFiltering }) {
   //Component State
@@ -464,11 +466,13 @@ function TipTable({ data, allData, setFiltering }) {
     window.open(txnLink, '_blank').focus()
   }
 
+  
+
   return (
     <table className="Table">
       <thead className="TableHeaders">
         <tr className="TH__Header">
-        <th className="TH__HeaderSpecial">
+          <th className="TH__HeaderSpecial">
             <div className="TH__HeaderDiv">
               <h1>SYMBOLS</h1>
               {symbolClicked ? (
@@ -522,7 +526,7 @@ function TipTable({ data, allData, setFiltering }) {
                       )}
                     </div>
                   ))}
-              </div>             
+              </div>
               <div
                 className={
                   mode.mode === 'dark'
@@ -640,7 +644,7 @@ function TipTable({ data, allData, setFiltering }) {
             </div>
           </th>
           <th>
-            <h1>DATE(DD/MM/YY), TIME </h1>
+            <h1>DATE(DD/MM/YY), TIME</h1>
           </th>
         </tr>
       </thead>
@@ -648,29 +652,52 @@ function TipTable({ data, allData, setFiltering }) {
         {tableData && tableData.length > 0 ? (
           tableData.map((event, i) => (
             <tr
-                key={`${event.id}-${i}`}
-                className={mode.mode === 'dark' ? 'TableBody' : 'TableBodyDark'}
-                onClick={() => handleRowClick(event.txnLink)}
-              >
-                <td className="TB__Symbols">{event.decodedValue}</td>
-                <td className="TB__Value">{event.tip}</td>
-                <td className="TB__Chain">{event.chain}</td>
-                <td className="TB__Reporter">
-                  <p>{event.interval}</p>
-                </td>
-                <td className="TB__Balance">{event.balance}</td>
-                <td className="TB__DateTime">{event.startTime}</td>
+              key={`${event.id}-${i}`}
+              className={mode.mode === 'dark' ? 'TableBody' : 'TableBodyDark'}
+              onClick={() => handleRowClick(event.txnLink)}
+            >
+              <td className="TB__Symbols">
+              {event.chain === 'Diva Polygon Mainnet' && event.dataProvider === '0x7950db13cc37774614b0aa406e42a4c4f0bf26a6' ? (
+              event.referenceAsset ? (
+              event.referenceAsset.includes('ipfs') ? (
+                  <a className="GreenLink" href={event.referenceAsset} target="_blank" rel="noopener noreferrer">
+                       ipfs link
+                  </a>
+                ) : (
+                  event.referenceAsset
+               )
+                ) : (
+                  'N/A' // or any other fallback value you prefer (parseFloat(event.multipliedValue) / 10 ** 18).toString() + event.tippingToken
+                )
+              ) : (
+                event.decodedValue
+              )}
+              </td> 
+              <td className="TB__Value">{event.chain === 'Diva Polygon Mainnet' && event.dataProvider === '0x7950db13cc37774614b0aa406e42a4c4f0bf26a6' ? event.tips :event.tip}</td>             
+              <td className="TB__Chain">{event.chain}</td>
+              <td className="TB__Reporter">    
+              <p>{event.interval}</p>
+</td>
+<td className="TB__Balance">
+  {event.chain === 'Diva Polygon Mainnet' && event.dataProvider === '0x7950db13cc37774614b0aa406e42a4c4f0bf26a6' ? (
+     Math.min((((parseFloat(event.collateralBalanceGross).toString()) / (10 ** 6))  * (event.settlementFee / (10 ** 18))), 10)  + ' ' + event.symbol
+  ) : event.balance}
+</td>
+<td className="TB__DateTime">
+  {event.chain === 'Diva Polygon Mainnet' && event.dataProvider === '0x7950db13cc37774614b0aa406e42a4c4f0bf26a6' ? (
+    event.expiryTime
+  ) : event.startTime}
+</td>
             </tr>
           ))
         ) : (
           <tr className="TableBodyNoMatches">
             <LinearIndeterminate />
-         
           </tr>
         )}
       </tbody>
     </table>
-  )
+  );
 }
 
-export default TipTable
+export default TipTable;
