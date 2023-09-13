@@ -675,14 +675,12 @@ function TipTable({ data, allData, setFiltering }) {
               </td> 
               <td className="TB__Value">{event.chain === 'Diva Polygon Mainnet' && event.dataProvider === '0x7950db13cc37774614b0aa406e42a4c4f0bf26a6' ? event.tips :event.tip}</td>             
               <td className="TB__Chain">{event.chain}</td>
-              <td className="TB__Reporter">
-  {event.chain === 'Diva Polygon Mainnet' && event.dataProvider === '0x7950db13cc37774614b0aa406e42a4c4f0bf26a6' ? (
-    <p>{event.interval}</p>
-  ) : null}
+              <td className="TB__Reporter">    
+              <p>{event.interval}</p>
 </td>
 <td className="TB__Balance">
   {event.chain === 'Diva Polygon Mainnet' && event.dataProvider === '0x7950db13cc37774614b0aa406e42a4c4f0bf26a6' ? (
-    (((parseFloat(event.collateralBalanceGross).toString()) / (10 ** 6))  * (event.settlementFee / (10 ** 18)))  + ' ' + event.symbol
+     Math.min((((parseFloat(event.collateralBalanceGross).toString()) / (10 ** 6))  * (event.settlementFee / (10 ** 18))), 10)  + ' ' + event.symbol
   ) : event.balance}
 </td>
 <td className="TB__DateTime">

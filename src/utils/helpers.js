@@ -182,7 +182,7 @@ export const decodingAutopayMiddleware = (autopayEvents) => {
   
     event.interval = event._interval ? `${(event._interval / 60 / 60)} hour(s)  ` : 'One-Time Tip'
     //console.log(event._interval)
-    event.tip = event._reward ? web3.utils.fromWei(event._reward.toString() ?? '0') + event.tippingToken : web3.utils.fromWei(event._amount?.toString()  ?? '0').slice(0,6) + ' TRB' 
+    event.tip = event._reward ? web3.utils.fromWei(event._reward.toString() ?? '0') + ' TRB' : web3.utils.fromWei(event._amount?.toString()  ?? '0').slice(0,6) + ' TRB' 
     event.tips = event.tip
     console.log(event.dataProvider)
     event.balance = event._balance ? web3.utils.fromWei(event._balance.toString() ?? '0').slice(0,7) + ' TRB' : '-'
