@@ -205,9 +205,9 @@ const GraphAutopay = ({ children }) => {
     let eventsArray = []
 
     autopayMaticData.data.dataFeedEntities.forEach((event) => {
-      event.chain = 'Polygon Mainnet'
-      event.txnLink = `https://polygonscan.com/tx/${event.txnHash}`
-      eventsArray.push(event)
+      const updatedEvent = Object.assign({}, event, { chain: 'Polygon Mainnet' });
+      updatedEvent.txnLink = `https://polygonscan.com/tx/${event.txnHash}`;
+      eventsArray.push(updatedEvent);
     })
     autopayMaticData.data.tipAddedEntities.forEach((event) => {
       event.chain = 'Polygon Mainnet'
