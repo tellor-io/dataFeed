@@ -4,6 +4,8 @@ import { queryDataParsers } from './queryDataParsers'
 //Globals
 const web3 = new Web3(window.ethereum)
 
+const BN = require('bn.js');
+
 const tellorAddressMainnet = '0x88dF592F8eb5D7Bd38bFeF7dEb0fBc02cf3778a0'
 const tellorAddressPolygon = '0xE3322702BEdaaEd36CdDAb233360B939775ae5f1'
 const tellorAddressMumbai = '0xce4e32fe9d894f8185271aa990d2db425df3e6be'
@@ -164,18 +166,40 @@ export const sortDataByProperty = (prop, arr) => {
 }
 
 export const decodingAutopayMiddleware = (autopayEvents) => {
+  //console.log(autopayEvents)
   let decoded = autopayEvents.map((event) => {
     let queryDataPartial
     let queryData
     let finalQueryData
+    if (event.divaPayQuery || event.divaPayAdaptorQuery) {
+      if (event.referenceAsset !== undefined) {
+        event.decodedValue = event.referenceAsset;
+      } else {
+        event.decodedValue = '0';
+        console.error("referenceAsset is missing for event:", event);
+      }
+    }
+  
     event.interval = event._interval ? `${(event._interval / 60 / 60)} hour(s)  ` : 'One-Time Tip'
-    event.tip = event._reward ? web3.utils.fromWei(event._reward) + ' TRB' : web3.utils.fromWei(event._amount).slice(0,6) + ' TRB' 
-    event.balance = event._balance ? web3.utils.fromWei(event._balance).slice(0,7) + ' TRB' : '-'
-    console.log(event._balance)
+    //console.log(event._interval)
+    event.tip = event._reward ? web3.utils.fromWei(event._reward.toString() ?? '0') + event.tippingToken : web3.utils.fromWei(event._amount?.toString()  ?? '0').slice(0,6) + ' TRB' 
+    event.tips = event.tip
+    console.log(event.dataProvider)
+    event.balance = event._balance ? web3.utils.fromWei(event._balance.toString() ?? '0').slice(0,7) + ' TRB' : '-'
+    event.multipliedValue = event.amount ? (Number(event.amount).toFixed(7))+ (event.settlementFee * event.collateralBalanceGross) +  event.tippingToken: '0';    //console.log(event.event.tippingToken);
     event.startTime = getDate(event._startTime)
     event.window = event._window
     event.symbols = event._queryData
-
+    event.symbol = ''
+    event.floor = event.floor
+    event.expiryTime = getDate(event.expiryTime)
+    if (event.collateralToken){
+      event.symbol = event.collateralToken.symbol
+      console.log(event.symbol)
+    }
+    if (event.collateralBalanceGross) {
+      console.log(event);
+    }    
     if (event._queryData && event._queryData.length <= 104) {
       try {queryData = JSON.parse(hex2a(event._queryData))
       event.queryDataObj = queryData
@@ -224,6 +248,22 @@ export const decodingAutopayMiddleware = (autopayEvents) => {
           )
           event.decodedValue = `Mimicry NFT STAT ${finalQueryData[0].toUpperCase()}/${finalQueryData[1].toUpperCase()}`
           break
+        case 'DivaPool':
+            finalQueryData = queryDataPartial[1].data.pools[0]
+            event.queryDataObj = finalQueryData
+            event.decodedValue = finalQueryData.proposedFinalReferenceValue
+            event.pool = {
+              id: finalQueryData.pool.id.toUpperCase()
+            }
+            break
+        case 'DivaFeeRecipients':
+          finalQueryData = queryDataPartial[1].data.feeRecipients[0]
+          event.queryDataObj = finalQueryData
+          event.decodedValue = finalQueryData.collateralTokens
+          event.feeRecipient = {
+            id: finalQueryData.feeRecipient.id.toUpperCase()
+          }
+          break
         case 'EVMCall':
             finalQueryData = web3.eth.abi.decodeParameters(
               ['uint'],
@@ -255,6 +295,8 @@ export const decodingAutopayMiddleware = (autopayEvents) => {
     return event
   })
 
+
+
   let filtered = [];
   decoded.map((event) => {
     if(event.decodedValue === 'NumericApiResponse'){
@@ -263,8 +305,12 @@ export const decodingAutopayMiddleware = (autopayEvents) => {
       filtered.push(event);
     }
   })
-  console.log('filtered', filtered);
+  //console.log('filtered', filtered);
   return filtered;
+}
+
+export const getCollateralTokenSymbol = (token) => {
+  return token.collateralToken.symbol;
 }
 
 export const decodingMiddleware = (reportEvents) => {
@@ -305,6 +351,13 @@ export const decodingMiddleware = (reportEvents) => {
           event.queryDataObj = finalQueryData
           queryDataParsers['SpotPriceProper' || 'Default'](event)
           break
+        case 'DivaPay':
+          finalQueryData = web3.eth.abi.decodeParameters(
+            ['string'],
+            queryDataPartial[1]
+          )
+          event.decodedValue = `DivaPay ${finalQueryData[0]}`
+          break
       case 'MimicryNFTMarketIndex':
         finalQueryData = web3.eth.abi.decodeParameters(
           ['string', 'string'],
@@ -321,6 +374,14 @@ export const decodingMiddleware = (reportEvents) => {
         event.queryDataObj = finalQueryData
         queryDataParsers['MimicryMacroMarketMashup' || 'Default'](event)
               break
+      /*case 'DivaPool':
+        finalQueryData = web3.eth.abi.decodeParameters(
+          ['string', 'string', 'tuple(string, address)[]','tuple(string, string, address)[]'],
+            queryDataPartial[1]
+          )
+        event.queryDataObj = finalQueryData
+        queryDataParsers['DivaPool' || 'Default'](event)
+              break*/
       case 'EVMCall':
         finalQueryData = web3.eth.abi.decodeParameters(
           ['uint256', 'address', 'bytes'],
@@ -388,3 +449,4 @@ export const decodingMiddleware = (reportEvents) => {
   // console.log(decoded)
   return decoded
 }
+ 

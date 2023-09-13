@@ -80,5 +80,54 @@ export const autopayQuery = gql`
       _balance
       txnHash
     }
+    
+  }
+`
+
+export const divaPayQuery = gql`
+  query {
+    pools(orderBy: id, orderDirection: desc) {
+      id
+      referenceAsset
+      dataProvider
+      settlementFee
+      expiryTime
+      collateralBalanceGross
+      collateralToken {
+        id
+        name
+        symbol
+        decimals
+      }
+    }
+
+    feeRecipients(orderBy: id, orderDirection: desc) {
+    id
+    collateralTokens {
+      amount
+      collateralToken {
+        id
+        name
+        symbol
+        decimals
+      }
+    }
+    }
+  }
+`
+
+
+export const divaPayAdaptorQuery = gql`
+    query {
+      tipAddeds(orderBy: id, orderDirection: desc) {
+        id
+        poolId
+        tippingToken
+        amount
+        tipper
+        blockNumber
+        blockTimestamp
+        transactionHash
+    }
   }
 `

@@ -110,11 +110,19 @@ export const queryDataParsers = {
     return event;
   },
   
+
+  /*DivaPool : (event) => {
+    event.decodedValueName = `DivaPool`;
+    event.decodedValue = `${event.queryDataObj[0]}`;
+    return event;
+  },*/
+  
   EVMCall : (event) => {
     event.decodedValueName = `EVMCall`;
     event.decodedValue = `${event.queryDataObj[0]}`;
     return event;
   },
+
   
   SpotPrice: (event) => {
     switch (event.queryId) {
