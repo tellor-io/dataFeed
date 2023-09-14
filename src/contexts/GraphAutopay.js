@@ -209,67 +209,72 @@ const GraphAutopay = ({ children }) => {
       updatedEvent.txnLink = `https://polygonscan.com/tx/${event.txnHash}`;
       eventsArray.push(updatedEvent);
     })
-    autopayMaticData.data.tipAddedEntities.forEach((event) => {
-      event.chain = 'Polygon Mainnet'
-      event.txnLink = `https://polygonscan.com/tx/${event.txnHash}`
-      eventsArray.push(event)
-    })
     autopayMumbaiData.data.dataFeedEntities.forEach((event) => {
-      event.chain = 'Mumbai Testnet'
-      event.txnLink = `https://mumbai.polygonscan.com/tx/${event.txnHash}`
-      eventsArray.push(event)
-    })
+      const updatedEvent = Object.assign({}, event, { chain: 'Mumbai Testnet' });
+      updatedEvent.txnLink = `https://mumbai.polygonscan.com/tx/${event.txnHash}`;
+      eventsArray.push(updatedEvent);
+    });
+    
     autopayMumbaiData.data.tipAddedEntities.forEach((event) => {
-      event.chain = 'Mumbai Testnet'
-      event.txnLink = `https://mumbai.polygonscan.com/tx/${event.txnHash}`
-      eventsArray.push(event)
-    })
+      const updatedEvent = Object.assign({}, event, { chain: 'Mumbai Testnet' });
+      updatedEvent.txnLink = `https://mumbai.polygonscan.com/tx/${event.txnHash}`;
+      eventsArray.push(updatedEvent);
+    });
+    
     autopayMainnetData.data.dataFeedEntities.forEach((event) => {
-      event.chain = 'Ethereum Mainnet'
-      event.txnLink = `https://etherscan.com/tx/${event.txnHash}`
-      eventsArray.push(event)
-    })
+      const updatedEvent = Object.assign({}, event, { chain: 'Ethereum Mainnet' });
+      updatedEvent.txnLink = `https://etherscan.com/tx/${event.txnHash}`;
+      eventsArray.push(updatedEvent);
+    });
+    
     autopayMainnetData.data.tipAddedEntities.forEach((event) => {
-      event.chain = 'Ethereum Mainnet'
-      event.txnLink = `https://etherscan.com/tx/${event.txnHash}`
-      eventsArray.push(event)
-    })
+      const updatedEvent = Object.assign({}, event, { chain: 'Ethereum Mainnet' });
+      updatedEvent.txnLink = `https://etherscan.com/tx/${event.txnHash}`;
+      eventsArray.push(updatedEvent);
+    });
+    
     autopaySepoliaData.data.dataFeedEntities.forEach((event) => {
-      event.chain = 'Sepolia Testnet'
-      event.txnLink = `https://sepolia.etherscan.io/tx/${event.txnHash}`
-      eventsArray.push(event)
-    })
+      const updatedEvent = Object.assign({}, event, { chain: 'Sepolia Testnet' });
+      updatedEvent.txnLink = `https://sepolia.etherscan.io/tx/${event.txnHash}`;
+      eventsArray.push(updatedEvent);
+    });
+    
     autopaySepoliaData.data.tipAddedEntities.forEach((event) => {
-      event.chain = 'Sepolia Testnet'
-      event.txnLink = `https://sepolia.etherscan.io/tx/${event.txnHash}`
-      eventsArray.push(event)
-    })
+      const updatedEvent = Object.assign({}, event, { chain: 'Sepolia Testnet' });
+      updatedEvent.txnLink = `https://sepolia.etherscan.io/tx/${event.txnHash}`;
+      eventsArray.push(updatedEvent);
+    });
+    
     autopayOpmainData.data.dataFeedEntities.forEach((event) => {
-      event.chain = 'Optimism Mainnet'
-      event.txnLink = `https://optimistic.etherscan.io/tx/${event.txnHash}`
-      eventsArray.push(event)
-    })
+      const updatedEvent = Object.assign({}, event, { chain: 'Optimism Mainnet' });
+      updatedEvent.txnLink = `https://optimistic.etherscan.io/tx/${event.txnHash}`;
+      eventsArray.push(updatedEvent);
+    });
     autopayOpmainData.data.tipAddedEntities.forEach((event) => {
-      event.chain = 'Optimism Mainnet'
-      event.txnLink = `https://optimistic.etherscan.io/tx/${event.txnHash}`
-      eventsArray.push(event)
-    })
+      const updatedEvent = Object.assign({}, event, { chain: 'Optimism Mainnet' });
+      updatedEvent.txnLink = `https://optimistic.etherscan.io/tx/${event.txnHash}`;
+      eventsArray.push(updatedEvent);
+      });
+
     autopayDivaMumbaiData.data.pools.forEach((event) => {
       if (event.dataProvider === '0x7950db13cc37774614b0aa406e42a4c4f0bf26a6') {
-        event.chain = 'Diva Polygon Mainnet'
-        event.txnLink = `https://app.diva.finance/markets`
-        eventsArray.push(event)
+      const updatedEvent = Object.assign({}, event, { chain: 'Diva Polygon Mainnet' });
+      updatedEvent.txnLink = `https://app.diva.finance/markets`;
+      eventsArray.push(updatedEvent);
       }
-    })
+      });
+      
    /* autopayDivaMumbaiData.data.feeRecipients.forEach((event) => {
       event.chain = 'Diva Polygon Mainnet'
       event.txnLink = `https://polygonscan.com/tx/${event.txnHash}`
       eventsArray.push(event)
     })*/
+
     autopayDivaAdaptorMumbaiData.data.tipAddeds.forEach((event) => {
-      event.chain = 'Diva Polygon Mainnet'
-      event.txnLink = `https://app.diva.finance/markets`
-    })
+      const updatedEvent = Object.assign({}, event, { chain: 'Diva Polygon Mainnet' });
+      updatedEvent.txnLink = `https://app.diva.finance/markets`;
+      });
+      
     
     let sorted = sortDataByProperty('_startTime', eventsArray)
     setAllGraphData(sorted)
