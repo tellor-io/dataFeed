@@ -6,7 +6,6 @@ import { ReactComponent as Checked } from '../assets/done.svg'
 import LinearIndeterminate from './LinearIndeterminate'
 //Contexts
 import { decodeSymbols } from '../utils/helpers'
-import { getCollateralTokenSymbol } from '../utils/helpers.js';
 import { ModeContext } from '../contexts/Mode'
 import { eventWrapper } from '@testing-library/user-event/dist/utils'
 
