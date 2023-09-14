@@ -268,50 +268,58 @@ const Graph = ({ children }) => {
 
     let eventsArray = []
    graphMainnetData.data.newReportEntities.forEach((event) => {
-      event.chain = 'Ethereum Mainnet'
-      event.txnLink = `https://etherscan.io/tx/${event.txnHash}`
-      eventsArray.push(event)
-    })
-    graphGoerliData.data.newReportEntities.forEach((event) => {
-      event.chain = 'Goerli Testnet'
-      event.txnLink = `https://goerli.etherscan.io/tx/${event.txnHash}`
-      eventsArray.push(event)
-    })
-    graphSepoliaData.data.newReportEntities.forEach((event) => {
-      event.chain = 'Sepolia Testnet'
-      event.txnLink = `https://sepolia.etherscan.io/tx/${event.txnHash}`
-      eventsArray.push(event)
-    })
-    graphMaticData.data.newReportEntities.forEach((event) => {
-      event.chain = 'Polygon Mainnet'
-      event.txnLink = `https://polygonscan.com/tx/${event.txnHash}`
-      eventsArray.push(event)
-    })
-    graphMumbaiData.data.newReportEntities.forEach((event) => {
-      event.chain = 'Mumbai Testnet'
-      event.txnLink = `https://mumbai.polygonscan.com/tx/${event.txnHash}`
-      eventsArray.push(event)
-    })
-    graphArboneData.data.newReportEntities.forEach((event) => {
-      event.chain = 'Arbitrum Mainnet'
-      event.txnLink = `https://arbiscan.io//tx/${event.txnHash}`
-      eventsArray.push(event)
-    })
-    graphArbtestData.data.newReportEntities.forEach((event) => {
-      event.chain = 'Arbitrum Goerli'
-      event.txnLink = `https://goerli.arbiscan.io/tx/${event.txnHash}`
-      eventsArray.push(event)
-    })
-    graphGnosismainData.data.newReportEntities.forEach((event) => {
-      event.chain = 'Gnosis Mainnet'
-      event.txnLink = `https://gnosisscan.io/tx/${event.txnHash}`
-      eventsArray.push(event)
-    })
-    graphOptmainData.data.newReportEntities.forEach((event) => {
-      event.chain = 'Optimism Mainnet'
-      event.txnLink = `https://optimistic.etherscan.io/tx/${event.txnHash}`
-      eventsArray.push(event)
-    })
+  const updatedEvent = Object.assign({}, event, { chain: 'Ethereum Mainnet' });
+  updatedEvent.txnLink = `https://etherscan.io/tx/${event.txnHash}`;
+  eventsArray.push(updatedEvent);
+});
+
+graphGoerliData.data.newReportEntities.forEach((event) => {
+  const updatedEvent = Object.assign({}, event, { chain: 'Goerli Testnet' });
+  updatedEvent.txnLink = `https://goerli.etherscan.io/tx/${event.txnHash}`;
+  eventsArray.push(updatedEvent);
+});
+
+graphSepoliaData.data.newReportEntities.forEach((event) => {
+  const updatedEvent = Object.assign({}, event, { chain: 'Sepolia Testnet' });
+  updatedEvent.txnLink = `https://sepolia.etherscan.io/tx/${event.txnHash}`;
+  eventsArray.push(updatedEvent);
+});
+
+graphMaticData.data.newReportEntities.forEach((event) => {
+  const updatedEvent = Object.assign({}, event, { chain: 'Polygon Mainnet' });
+  updatedEvent.txnLink = `https://polygonscan.com/tx/${event.txnHash}`;
+  eventsArray.push(updatedEvent);
+});
+
+graphMumbaiData.data.newReportEntities.forEach((event) => {
+  const updatedEvent = Object.assign({}, event, { chain: 'Mumbai Testnet' });
+  updatedEvent.txnLink = `https://mumbai.polygonscan.com/tx/${event.txnHash}`;
+  eventsArray.push(updatedEvent);
+});
+
+graphArboneData.data.newReportEntities.forEach((event) => {
+  const updatedEvent = Object.assign({}, event, { chain: 'Arbitrum Mainnet' });
+  updatedEvent.txnLink = `https://arbiscan.io/tx/${event.txnHash}`;
+  eventsArray.push(updatedEvent);
+});
+
+graphArbtestData.data.newReportEntities.forEach((event) => {
+  const updatedEvent = Object.assign({}, event, { chain: 'Arbitrum Goerli' });
+  updatedEvent.txnLink = `https://goerli.arbiscan.io/tx/${event.txnHash}`;
+  eventsArray.push(updatedEvent);
+});
+
+graphGnosismainData.data.newReportEntities.forEach((event) => {
+const updatedEvent = Object.assign({}, event, { chain: 'Gnosis Mainnet' });
+updatedEvent.txnLink = `https://gnosisscan.io/tx/${event.txnHash}`;
+eventsArray.push(updatedEvent);
+});
+
+graphOptmainData.data.newReportEntities.forEach((event) => {
+const updatedEvent = Object.assign({}, event, { chain: 'Optimism Mainnet' });
+updatedEvent.txnLink = `https://optimistic.etherscan.io/tx/${event.txnHash}`;
+eventsArray.push(updatedEvent);
+});
     let sorted = sortDataByProperty('_time', eventsArray)
     setAllGraphData(sorted)
 
