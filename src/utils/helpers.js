@@ -184,7 +184,6 @@ export const decodingAutopayMiddleware = (autopayEvents) => {
     //console.log(event._interval)
     event.tip = event._reward ? web3.utils.fromWei(event._reward.toString() ?? '0') + ' TRB' : web3.utils.fromWei(event._amount?.toString()  ?? '0').slice(0,6) + ' TRB' 
     event.tips = event.tip
-    console.log(event.dataProvider)
     event.balance = event._balance ? web3.utils.fromWei(event._balance.toString() ?? '0').slice(0,7) + ' TRB' : '-'
     event.multipliedValue = event.amount ? (Number(event.amount).toFixed(7))+ (event.settlementFee * event.collateralBalanceGross) +  event.tippingToken: '0';    //console.log(event.event.tippingToken);
     event.startTime = getDate(event._startTime)
@@ -195,11 +194,8 @@ export const decodingAutopayMiddleware = (autopayEvents) => {
     event.expiryTime = getDate(event.expiryTime)
     if (event.collateralToken){
       event.symbol = event.collateralToken.symbol
-      console.log(event.symbol)
     }
-    if (event.collateralBalanceGross) {
-      console.log(event);
-    }    
+  
     if (event._queryData && event._queryData.length <= 104) {
       try {queryData = JSON.parse(hex2a(event._queryData))
       event.queryDataObj = queryData

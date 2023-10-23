@@ -12,6 +12,10 @@ const clientMainnet = new ApolloClient({
   uri: 'https://gateway.thegraph.com/api/ad08435a6d6c0933c9e272dbdfa21322/subgraphs/id/4mgMy9x1FC6kzjXSQisntEKJFT2U7r73qXMZy2XZ1t4R',
   cache: new InMemoryCache(),
 })
+const clientMainnet2 = new ApolloClient({
+  uri: 'https://api.thegraph.com/subgraphs/name/raynharr/tellor-flex-ethmain-graph2',
+  cache: new InMemoryCache(),
+})
 const clientGoerli = new ApolloClient({
   uri: 'https://api.goldsky.com/api/public/project_clf8nopuy59a93stya1d02ev6/subgraphs/tellor-oracle-goerli/v0.0.1/gn',
   //'https://api.goldsky.com/api/public/project_clf8nopuy59a93stya1d02ev6/subgraphs/tellor-oracle-goerli/v0.0.1/gn',
@@ -21,13 +25,20 @@ const clientSepolia = new ApolloClient({
   uri: 'https://api.studio.thegraph.com/query/33329/tellor-oracle-sepolia/v0.0.2',
   cache: new InMemoryCache(),
 })
-
+const clientSepolia2 = new ApolloClient({
+  uri: 'https://api.studio.thegraph.com/query/33329/tellor-flex-sepolia-subgraph2/v0.0.2',
+  cache: new InMemoryCache(),
+})
 const clientMatic = new ApolloClient({
   uri: 'https://api.thegraph.com/subgraphs/name/tellor-io/tellorflexoraclematichgraph',
   cache: new InMemoryCache(),
 })
 const clientMumbai = new ApolloClient({
   uri: 'https://api.thegraph.com/subgraphs/name/tellor-io/tellorflexoraclemumbaihgraph',
+  cache: new InMemoryCache(),
+})
+const clientMumbai2 = new ApolloClient({
+  uri: 'https://api.thegraph.com/subgraphs/name/raynharr/tellor-360-mumbai-subgraph',
   cache: new InMemoryCache(),
 })
 const clientArbone = new ApolloClient({
@@ -70,11 +81,16 @@ const Graph = ({ children }) => {
     fetchPolicy: 'network-only',
     pollInterval: 5000,
   })
-  const mainPay = useQuery(autopayQuery, {
-    client: clientMainnet,
+  const mainnet2 = useQuery(reporterQuery, {
+    client: clientMainnet2,
     fetchPolicy: 'network-only',
     pollInterval: 5000,
   })
+  /*const mainPay = useQuery(autopayQuery, {
+    client: clientMainnet,
+    fetchPolicy: 'network-only',
+    pollInterval: 5000,
+  })*/
 
    //Goerli
    const goerli = useQuery(reporterQuery, {
@@ -93,6 +109,12 @@ const Graph = ({ children }) => {
     fetchPolicy: 'network-only',
     pollInterval: 5000,
   })
+  console.log(sepolia);
+  const sepolia2 = useQuery(reporterQuery, {
+    client: clientSepolia2,
+    fetchPolicy: 'network-only',
+    pollInterval: 5000,
+  })
   //Matic
   const matic = useQuery(reporterQuery, {
     client: clientMatic,
@@ -105,6 +127,12 @@ const Graph = ({ children }) => {
     fetchPolicy: 'network-only',
     pollInterval: 5000,
   })
+  const mumbai2 = useQuery(reporterQuery, {
+    client: clientMumbai2,
+    fetchPolicy: 'network-only',
+    pollInterval: 5000,
+  })
+
   //Arbitrum One (Main)
   const arbone = useQuery(reporterQuery, {
     client: clientArbone,
@@ -134,16 +162,25 @@ const Graph = ({ children }) => {
   //from ApolloClient queries
   //Mainnet
   useEffect(() => {
-    if (!mainnet) return
+    if (!mainnet.data && !mainnet2.data) return
+    const combinedData = {
+      ...mainnet.data,
+      ...mainnet2.data,
+      newReportEntities: [
+        ...(mainnet.data?.newReportEntities || []),
+        ...(mainnet2.data?.newReportEntities || [])
+      ]
+    }
     setGraphMainnetData({
-      data: mainnet.data,
-      loading: mainnet.loading,
-      error: mainnet.error,
+      data: combinedData,
+      loading: mainnet.loading || mainnet2.loading,
+      error: mainnet.error || mainnet2.error,
     })
+  
     return () => {
       setGraphMainnetData({})
     }
-  }, [mainnet.data, mainnet.loading, mainnet.error]) //eslint-disable-line
+  }, [mainnet.data, mainnet.loading, mainnet.error, mainnet2.data, mainnet2.loading, mainnet2.error]) //eslint-disable-line
 
     //Goerli
     useEffect(() => {
@@ -160,18 +197,25 @@ const Graph = ({ children }) => {
     }, [goerli.data, goerli.loading, goerli.error]) //eslint-disable-line
     //Sepolia
     useEffect(() => {
-      if (!sepolia) return
+      if (!sepolia.data && !sepolia2.data) return
+      const combinedData = {
+        ...sepolia.data,
+        ...sepolia2.data,
+        newReportEntities: [
+          ...(sepolia.data?.newReportEntities || []),
+          ...(sepolia2.data?.newReportEntities || [])
+        ]
+      }
       setGraphSepoliaData({
-        data: sepolia.data,
-        loading: sepolia.loading,
-        error: sepolia.error,
+        data: combinedData,
+        loading: sepolia.loading || sepolia2.loading,
+        error: sepolia.error || sepolia2.error,
       })
-  
+    
       return () => {
         setGraphSepoliaData({})
-        console.log(setGraphSepoliaData)
       }
-    }, [sepolia.data, sepolia.loading, sepolia.error]) //eslint-disable-line
+    }, [sepolia.data, sepolia.loading, sepolia.error, sepolia2.data, sepolia2.loading, sepolia2.error]) //eslint-disable-line
   //Matic
   useEffect(() => {
     if (!matic) return
@@ -187,17 +231,25 @@ const Graph = ({ children }) => {
   }, [matic.data, matic.loading, matic.error]) //eslint-disable-line
   //Mumbai
   useEffect(() => {
-    if (!mumbai) return
+    if (!mumbai.data && !mumbai2.data) return
+    const combinedData = {
+      ...mumbai.data,
+      ...mumbai2.data,
+      newReportEntities: [
+        ...(mumbai.data?.newReportEntities || []),
+        ...(mumbai2.data?.newReportEntities || [])
+      ]
+    }
     setGraphMumbaiData({
-      data: mumbai.data,
-      loading: mumbai.loading,
-      error: mumbai.error,
+      data: combinedData,
+      loading: mumbai.loading || mumbai2.loading,
+      error: mumbai.error || mumbai2.error,
     })
-
+  
     return () => {
       setGraphMumbaiData({})
     }
-  }, [mumbai.data, mumbai.loading, mumbai.error]) //eslint-disable-line
+  }, [mumbai.data, mumbai.loading, mumbai.error, mumbai2.data, mumbai2.loading, mumbai2.error]) //eslint-disable-line
    //Arbitrum One
    useEffect(() => {
     if (!arbone) return
@@ -267,11 +319,13 @@ const Graph = ({ children }) => {
       return
 
     let eventsArray = []
-   graphMainnetData.data.newReportEntities.forEach((event) => {
-  const updatedEvent = Object.assign({}, event, { chain: 'Ethereum Mainnet' });
-  updatedEvent.txnLink = `https://etherscan.io/tx/${event.txnHash}`;
-  eventsArray.push(updatedEvent);
-});
+  if (graphMainnetData.data && graphMainnetData.data.newReportEntities) {
+  graphMainnetData.data.newReportEntities.forEach((event) => {
+    const updatedEvent = Object.assign({}, event, { chain: 'Ethereum Mainnet' });
+    updatedEvent.txnLink = `https://etherscan.io/tx/${event.txnHash}`;
+    eventsArray.push(updatedEvent);
+  });
+}
 
 graphGoerliData.data.newReportEntities.forEach((event) => {
   const updatedEvent = Object.assign({}, event, { chain: 'Goerli Testnet' });
@@ -279,11 +333,13 @@ graphGoerliData.data.newReportEntities.forEach((event) => {
   eventsArray.push(updatedEvent);
 });
 
-graphSepoliaData.data.newReportEntities.forEach((event) => {
-  const updatedEvent = Object.assign({}, event, { chain: 'Sepolia Testnet' });
-  updatedEvent.txnLink = `https://sepolia.etherscan.io/tx/${event.txnHash}`;
-  eventsArray.push(updatedEvent);
-});
+if (graphSepoliaData.data && graphSepoliaData.data.newReportEntities) {
+  graphSepoliaData.data.newReportEntities.forEach((event) => {
+   const updatedEvent = Object.assign({}, event, { chain: 'Sepolia Testnet' });
+    updatedEvent.txnLink = `https://sepolia.etherscan.io/tx/${event.txnHash}`;
+    eventsArray.push(updatedEvent);
+  });
+} 
 
 graphMaticData.data.newReportEntities.forEach((event) => {
   const updatedEvent = Object.assign({}, event, { chain: 'Polygon Mainnet' });
@@ -291,11 +347,13 @@ graphMaticData.data.newReportEntities.forEach((event) => {
   eventsArray.push(updatedEvent);
 });
 
-graphMumbaiData.data.newReportEntities.forEach((event) => {
-  const updatedEvent = Object.assign({}, event, { chain: 'Mumbai Testnet' });
-  updatedEvent.txnLink = `https://mumbai.polygonscan.com/tx/${event.txnHash}`;
-  eventsArray.push(updatedEvent);
-});
+if (graphMumbaiData.data && graphMumbaiData.data.newReportEntities) {
+  graphMumbaiData.data.newReportEntities.forEach((event) => {
+    const updatedEvent = Object.assign({}, event, { chain: 'Mumbai Testnet' });
+    updatedEvent.txnLink = `https://mumbai.polygonscan.com/tx/${event.txnHash}`;
+    eventsArray.push(updatedEvent);
+  });
+}
 
 graphArboneData.data.newReportEntities.forEach((event) => {
   const updatedEvent = Object.assign({}, event, { chain: 'Arbitrum Mainnet' });
@@ -341,7 +399,7 @@ eventsArray.push(updatedEvent);
     decodedData: decodedData,
   }
 
-   // console.log(graphArboneData)
+   console.log(graphSepoliaData)
 
   return (
     <GraphContext.Provider value={GraphContextObj}>
