@@ -26,7 +26,7 @@ const clientMatic = new ApolloClient({
 })
 
 const clientSepolia = new ApolloClient({
-  uri: 'https://api.studio.thegraph.com/query/33329/tellor-autopay-sepolia/v0.0.4',
+  uri: 'https://api.studio.thegraph.com/query/33329/tellor-autopay-sepolia/v0.0.5',
   cache: new InMemoryCache(),
 })
 
