@@ -12,7 +12,7 @@ function AllTips() {
   const autoPayData = useContext(GraphAutopayContext)
   const mode = useContext(ModeContext)
   //Component State
-  const [clippedData, setClippedData] = useState(null)
+  const [clippedData, setClippedData] = useState([])
   const [loadMoreClicks, setLoadMoreClicks] = useState(1)
   const [viewing, setViewing] = useState(null)
   const [loadMoreButton, setLoadMoreButton] = useState(true)
@@ -20,10 +20,13 @@ function AllTips() {
 
   useEffect(() => {
     if (!autoPayData.decodedData) return
-    setClippedData(autoPayData.decodedData.slice(0, 50))
-    return () => {
-      setClippedData(null)
-    }
+    const newData = autoPayData.decodedData.slice(0, 50);
+    setClippedData(prevData => {
+      if (JSON.stringify(newData) !== JSON.stringify(prevData)) {
+        return [...prevData, ...newData]
+      }
+      return prevData;
+    })
   }, [autoPayData.decodedData])
 
   useEffect(() => {

@@ -37,7 +37,14 @@ function Table({ data, allData, setFiltering }) {
   // console.log(data)
   //useEffect for tableData
   useEffect(() => {
-    setTableData(data)
+    if (!data) return;
+    setTableData(prevData => {
+      const newData = data.slice(prevData.length);
+      if (JSON.stringify(newData) !== JSON.stringify([])) {
+        return [...prevData, ...newData]
+      }
+      return prevData;
+    })
   }, [data])
 
   //useEffect for populating

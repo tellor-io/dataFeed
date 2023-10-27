@@ -12,7 +12,7 @@ function AllFeeds() {
   const graphData = useContext(GraphContext)
   const mode = useContext(ModeContext)
   //Component State
-  const [clippedData, setClippedData] = useState(null)
+  const [clippedData, setClippedData] = useState([])
   const [loadMoreClicks, setLoadMoreClicks] = useState(1)
   const [viewing, setViewing] = useState(null)
   const [loadMoreButton, setLoadMoreButton] = useState(true)
@@ -20,11 +20,13 @@ function AllFeeds() {
 
   useEffect(() => {
     if (!graphData.decodedData) return
-    setClippedData(graphData.decodedData.slice(0, 50))
-
-    return () => {
-      setClippedData(null)
-    }
+    const newData = graphData.decodedData.slice(0, 50);
+    setClippedData(prevData => {
+      if (JSON.stringify(newData) !== JSON.stringify(prevData)) {
+        return [...prevData, ...newData]
+      }
+      return prevData;
+    })
   }, [graphData.decodedData])
 
   useEffect(() => {

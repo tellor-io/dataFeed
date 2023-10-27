@@ -34,7 +34,14 @@ function TipTable({ data, allData, setFiltering }) {
   const mode = useContext(ModeContext)
 
   useEffect(() => {
-    setTableData(data)
+    if (!data) return;
+    setTableData(prevData => {
+      const newData = data.slice(prevData.length);
+      if (JSON.stringify(newData) !== JSON.stringify([])) {
+        return [...prevData, ...newData]
+      }
+      return prevData;
+    })
   }, [data])
   
   useEffect(() => {
