@@ -14,6 +14,11 @@
   display: flex;
   align-items: center;
   margin-top: 20px;
+  flex: 0.2;
+  min-width: 100px; /* Replace with the minimum width you want */
+  overflow: hidden; /* This will cut off the content that overflows the box */
+  padding-right: 10px; /* Add space to the right inside the element */
+  box-sizing: border-box; /* Include padding and border in element's total width and height */
 }
 .TH__HeaderSpecial {
   display: flex;
@@ -192,19 +197,32 @@
 }
 .TB__Symbols {
   flex: 0.2;
+  min-width: 100px; /* Replace with the minimum width you want */
+  overflow: hidden; /* This will cut off the content that overflows the box */
+  padding-right: 10px; /* Add space to the right inside the element */
 }
 .TB__Value {
   flex: 0.2;
+  min-width: 100px; /* Replace with the minimum width you want */
+  overflow: hidden; /* This will cut off the content that overflows the box */
+  padding-left: 10px; /* Add space to the right inside the element */
+
 }
 .TB__Balance {
   flex: 0.2;
+  min-width: 100px; /* Replace with the minimum width you want */
+  overflow: hidden; /* This will cut off the content that overflows the box */
 }
 .TB__Chain {
   flex: 0.2;
+  min-width: 100px; /* Replace with the minimum width you want */
+  overflow: hidden; /* This will cut off the content that overflows the box */
 }
 .TB__Reporter {
   flex: 0.2;
   display: flex;
+  min-width: 100px; /* Replace with the minimum width you want */
+  overflow: hidden; /* This will cut off the content that overflows the box */
 }
 .Table__Jazzicon {
   width: 18px;
@@ -213,6 +231,8 @@
 }
 .TB__DateTime {
   flex: 0.2;
+  min-width: 170px; /* Replace with the minimum width you want */
+
 }
 
 /* TABLE GLOBAL CLASSES */
