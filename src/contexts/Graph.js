@@ -33,6 +33,10 @@ const clientMatic = new ApolloClient({
   uri: 'https://api.thegraph.com/subgraphs/name/tellor-io/tellorflexoraclematichgraph',
   cache: new InMemoryCache(),
 })
+const clientMatic2 = new ApolloClient({
+  uri: 'https://api.thegraph.com/subgraphs/name/raynharr/tellor-flex-matic-graph2',
+  cache: new InMemoryCache(),
+})
 const clientMumbai = new ApolloClient({
   uri: 'https://api.thegraph.com/subgraphs/name/tellor-io/tellorflexoraclemumbaihgraph',
   cache: new InMemoryCache(),
@@ -57,6 +61,10 @@ const clientGnosismain = new ApolloClient({
 })
 const clientOptmain = new ApolloClient({
   uri: 'https://api.thegraph.com/subgraphs/name/tellor-io/tellor-oracle-optimism-main',
+  cache: new InMemoryCache(),
+})
+const clientOptmain2 = new ApolloClient({
+  uri: 'https://api.thegraph.com/subgraphs/name/raynharr/tellor-flex-optmain-graph2',
   cache: new InMemoryCache(),
 })
 
@@ -121,6 +129,12 @@ const Graph = ({ children }) => {
     fetchPolicy: 'network-only',
     pollInterval: 5000,
   })
+  //Matic
+  const matic2 = useQuery(reporterQuery, {
+    client: clientMatic2,
+    fetchPolicy: 'network-only',
+    pollInterval: 5000,
+  })
   //Mumbai
   const mumbai = useQuery(reporterQuery, {
     client: clientMumbai,
@@ -154,6 +168,12 @@ const Graph = ({ children }) => {
   //optimism(mainnet)
   const optmain = useQuery(reporterQuery, {
     client: clientOptmain,
+    fetchPolicy: 'network-only',
+    pollInterval: 5000,
+  })
+   //optimism(mainnet)
+   const optmain2 = useQuery(reporterQuery, {
+    client: clientOptmain2,
     fetchPolicy: 'network-only',
     pollInterval: 5000,
   })
@@ -218,17 +238,25 @@ const Graph = ({ children }) => {
     }, [sepolia.data, sepolia.loading, sepolia.error, sepolia2.data, sepolia2.loading, sepolia2.error]) //eslint-disable-line
   //Matic
   useEffect(() => {
-    if (!matic) return
+    if (!matic && !matic2.data) return
+    const combinedData = {
+      ...matic.data,
+      ...matic2.data,
+      newReportEntities: [
+        ...(matic.data?.newReportEntities || []),
+        ...(matic2.data?.newReportEntities || [])
+      ]
+    }
     setGraphMaticData({
-      data: matic.data,
-      loading: matic.loading,
-      error: matic.error,
+      data: combinedData,
+      loading: matic.loading || matic2.loading,
+      error: matic.error || matic2.error,
     })
 
     return () => {
       setGraphMaticData({})
     }
-  }, [matic.data, matic.loading, matic.error]) //eslint-disable-line
+  }, [matic.data, matic.loading, matic.error, matic2.data, matic2.loading, matic2.error]) //eslint-disable-line
   //Mumbai
   useEffect(() => {
     if (!mumbai.data && !mumbai2.data) return
@@ -289,19 +317,27 @@ const Graph = ({ children }) => {
       setGraphGnosismainData({})
     }
   }, [gnosismain.data, gnosismain.loading, gnosismain.error]) //eslint-disable-line 
-  //Optmain
+   //Optmain
   useEffect(() => {
-    if (!optmain) return
+    if (!optmain.data && !optmain2.data) return
+    const combinedData = {
+      ...optmain.data,
+      ...optmain2.data,
+      newReportEntities: [
+        ...(optmain.data?.newReportEntities || []),
+        ...(optmain2.data?.newReportEntities || [])
+      ]
+    }
     setGraphOptmainData({
-      data: optmain.data,
-      loading: optmain.loading,
-      error: optmain.error,
+      data: combinedData,
+      loading: optmain.loading || optmain2.loading,
+      error: optmain.error || optmain2.error,
     })
-
+  
     return () => {
       setGraphOptmainData({})
     }
-  }, [optmain.data, optmain.loading, optmain.error]) //eslint-disable-line
+  }, [optmain.data, optmain.loading, optmain.error, optmain2.data, optmain2.loading, optmain2.error]) //eslint-disable-line
 
   //For conglomerating data
   useEffect(() => {
@@ -341,11 +377,13 @@ if (graphSepoliaData.data && graphSepoliaData.data.newReportEntities) {
   });
 } 
 
+if (graphMaticData.data && graphMaticData.data.newReportEntities) {
 graphMaticData.data.newReportEntities.forEach((event) => {
   const updatedEvent = Object.assign({}, event, { chain: 'Polygon Mainnet' });
   updatedEvent.txnLink = `https://polygonscan.com/tx/${event.txnHash}`;
   eventsArray.push(updatedEvent);
 });
+}
 
 if (graphMumbaiData.data && graphMumbaiData.data.newReportEntities) {
   graphMumbaiData.data.newReportEntities.forEach((event) => {
@@ -373,11 +411,13 @@ updatedEvent.txnLink = `https://gnosisscan.io/tx/${event.txnHash}`;
 eventsArray.push(updatedEvent);
 });
 
+if (graphOptmainData.data && graphOptmainData.data.newReportEntities) {
 graphOptmainData.data.newReportEntities.forEach((event) => {
 const updatedEvent = Object.assign({}, event, { chain: 'Optimism Mainnet' });
 updatedEvent.txnLink = `https://optimistic.etherscan.io/tx/${event.txnHash}`;
 eventsArray.push(updatedEvent);
 });
+}
     let sorted = sortDataByProperty('_time', eventsArray)
     setAllGraphData(sorted)
 
