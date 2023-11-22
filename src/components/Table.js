@@ -21,7 +21,8 @@ function Table({ data, allData, setFiltering }) {
   const [reportedSymbols, setReportedSymbols] = useState(null)
   const [reportedChains, setReportedChains] = useState(null)
   const [reportedReporters, setReportedReporters] = useState(null)
-  const [searchTerm, setSearchTerm] = useState("");
+  const [symbolSearchTerm, setSymbolSearchTerm] = useState("");
+  const [reporterSearchTerm, setReporterSearchTerm] = useState("");
   //
   const [allFilters, setAllFilters] = useState([])
   const [symbolFilters, setSymbolFilters] = useState([])
@@ -508,9 +509,16 @@ function Table({ data, allData, setFiltering }) {
               ref={symbolRef}
             >
               <h3>filter by symbol</h3>
+              <input
+  type="text"
+  placeholder="Search..."
+  value={symbolSearchTerm}
+  onChange={(e) => setSymbolSearchTerm(e.target.value)}
+/>
               <div className="DropdownResults">
                 {reportedSymbols &&
-                  reportedSymbols.map((symbol) => (
+                  reportedSymbols.filter((symbol) => symbol.toLowerCase().includes(symbolSearchTerm.toLowerCase()))
+                  .map((symbol) => (
                     <div
                       key={symbol}
                       className={
@@ -672,13 +680,13 @@ function Table({ data, allData, setFiltering }) {
               <input
   type="text"
   placeholder="Search..."
-  value={searchTerm}
-  onChange={(e) => setSearchTerm(e.target.value)}
+  value={reporterSearchTerm}
+  onChange={(e) => setReporterSearchTerm(e.target.value)}
 />
               <div className="DropdownResults">
                 {reportedReporters &&
   reportedReporters
-  .filter((reporter) => reporter.toLowerCase().includes(searchTerm.toLowerCase()))
+  .filter((reporter) => reporter.toLowerCase().includes(reporterSearchTerm.toLowerCase()))
     .map((reporter) => (
                     <div
                       key={reporter}
