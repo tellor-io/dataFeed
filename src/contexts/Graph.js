@@ -9,26 +9,26 @@ export const GraphContext = createContext()
 
 //ApolloClients
 const clientMainnet = new ApolloClient({
-  uri: 'https://gateway.thegraph.com/api/ad08435a6d6c0933c9e272dbdfa21322/subgraphs/id/4mgMy9x1FC6kzjXSQisntEKJFT2U7r73qXMZy2XZ1t4R',
+  uri: 'https://gateway-arbitrum.network.thegraph.com/api/ad08435a6d6c0933c9e272dbdfa21322/subgraphs/id/5vJKyvzkSDv6kc5vCbyohvXq1KgCczsSVr58jUaPih6S',
   cache: new InMemoryCache(),
 })
-const clientMainnet2 = new ApolloClient({
-  uri: 'https://api.thegraph.com/subgraphs/name/raynharr/tellor-flex-ethmain-graph2',
+/*const clientMainnet2 = new ApolloClient({
+  uri: 'https://api.studio.thegraph.com/query/33329/tellororaclemainhgraph/version/latest',
   cache: new InMemoryCache(),
-})
+})*/ 
 const clientGoerli = new ApolloClient({
   uri: 'https://api.goldsky.com/api/public/project_clf8nopuy59a93stya1d02ev6/subgraphs/tellor-oracle-goerli/v0.0.1/gn',
   //'https://api.goldsky.com/api/public/project_clf8nopuy59a93stya1d02ev6/subgraphs/tellor-oracle-goerli/v0.0.1/gn',
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache(), 
 })
 const clientSepolia = new ApolloClient({
-  uri: 'https://api.studio.thegraph.com/query/33329/tellor-oracle-sepolia/v0.0.2',
+  uri: 'https://gateway-arbitrum.network.thegraph.com/api/ad08435a6d6c0933c9e272dbdfa21322/subgraphs/id/EVBJPDb3Cv5CQiWQetL9voCs95YP5tgozPyxuXq4iZhN',
   cache: new InMemoryCache(),
 })
-const clientSepolia2 = new ApolloClient({
+/*const clientSepolia2 = new ApolloClient({
   uri: 'https://api.studio.thegraph.com/query/33329/tellor-flex-sepolia-subgraph2/v0.0.2',
   cache: new InMemoryCache(),
-})
+})*/
 const clientMatic = new ApolloClient({
   uri: 'https://api.thegraph.com/subgraphs/name/tellor-io/tellorflexoraclematichgraph',
   cache: new InMemoryCache(),
@@ -89,40 +89,38 @@ const Graph = ({ children }) => {
     fetchPolicy: 'network-only',
     pollInterval: 5000,
   })
-  const mainnet2 = useQuery(reporterQuery, {
+  /*const mainnet2 = useQuery(reporterQuery, {
     client: clientMainnet2,
     fetchPolicy: 'network-only',
     pollInterval: 5000,
-  })
-  /*const mainPay = useQuery(autopayQuery, {
+  }))*/
+  const mainPay = useQuery(autopayQuery, {
     client: clientMainnet,
     fetchPolicy: 'network-only',
     pollInterval: 5000,
-  })*/
-
+  })
    //Goerli
    const goerli = useQuery(reporterQuery, {
     client: clientGoerli,
     fetchPolicy: 'network-only',
     pollInterval: 5000,
   })
-  /*const goerliPay = useQuery(autopayQuery, {
+  const goerliPay = useQuery(autopayQuery, {
     client: clientGoerli,
     fetchPolicy: 'network-only',
     pollInterval: 5000,
-  })*/
+  })
   //Sepolia
   const sepolia = useQuery(reporterQuery, {
     client: clientSepolia,
     fetchPolicy: 'network-only',
     pollInterval: 5000,
   })
-  console.log(sepolia);
-  const sepolia2 = useQuery(reporterQuery, {
+  /*const sepolia2 = useQuery(reporterQuery, {
     client: clientSepolia2,
     fetchPolicy: 'network-only',
     pollInterval: 5000,
-  })
+  })*/
   //Matic
   const matic = useQuery(reporterQuery, {
     client: clientMatic,
@@ -182,25 +180,17 @@ const Graph = ({ children }) => {
   //from ApolloClient queries
   //Mainnet
   useEffect(() => {
-    if (!mainnet.data && !mainnet2.data) return
-    const combinedData = {
-      ...mainnet.data,
-      ...mainnet2.data,
-      newReportEntities: [
-        ...(mainnet.data?.newReportEntities || []),
-        ...(mainnet2.data?.newReportEntities || [])
-      ]
-    }
+    if (!mainnet) return
     setGraphMainnetData({
-      data: combinedData,
-      loading: mainnet.loading || mainnet2.loading,
-      error: mainnet.error || mainnet2.error,
+      data: mainnet.data,
+      loading: mainnet.loading,
+      error: mainnet.error,
     })
-  
+
     return () => {
       setGraphMainnetData({})
     }
-  }, [mainnet.data, mainnet.loading, mainnet.error, mainnet2.data, mainnet2.loading, mainnet2.error]) //eslint-disable-line
+  }, [mainnet.data, mainnet.loading, mainnet.error]) //eslint-disable-line
 
     //Goerli
     useEffect(() => {
@@ -217,25 +207,17 @@ const Graph = ({ children }) => {
     }, [goerli.data, goerli.loading, goerli.error]) //eslint-disable-line
     //Sepolia
     useEffect(() => {
-      if (!sepolia.data && !sepolia2.data) return
-      const combinedData = {
-        ...sepolia.data,
-        ...sepolia2.data,
-        newReportEntities: [
-          ...(sepolia.data?.newReportEntities || []),
-          ...(sepolia2.data?.newReportEntities || [])
-        ]
-      }
+      if (!sepolia) return
       setGraphSepoliaData({
-        data: combinedData,
-        loading: sepolia.loading || sepolia2.loading,
-        error: sepolia.error || sepolia2.error,
+        data: sepolia.data,
+        loading: sepolia.loading,
+        error: sepolia.error,
       })
-    
+  
       return () => {
         setGraphSepoliaData({})
       }
-    }, [sepolia.data, sepolia.loading, sepolia.error, sepolia2.data, sepolia2.loading, sepolia2.error]) //eslint-disable-line
+    }, [sepolia.data, sepolia.loading, sepolia.error]) //eslint-disable-line
   //Matic
   useEffect(() => {
     if (!matic && !matic2.data) return
@@ -375,7 +357,7 @@ if (graphSepoliaData.data && graphSepoliaData.data.newReportEntities) {
     updatedEvent.txnLink = `https://sepolia.etherscan.io/tx/${event.txnHash}`;
     eventsArray.push(updatedEvent);
   });
-} 
+}
 
 if (graphMaticData.data && graphMaticData.data.newReportEntities) {
 graphMaticData.data.newReportEntities.forEach((event) => {
@@ -438,8 +420,6 @@ eventsArray.push(updatedEvent);
   const GraphContextObj = {
     decodedData: decodedData,
   }
-
-   console.log(graphSepoliaData)
 
   return (
     <GraphContext.Provider value={GraphContextObj}>
