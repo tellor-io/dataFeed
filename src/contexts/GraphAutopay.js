@@ -264,17 +264,17 @@ const GraphAutopay = ({ children }) => {
       }
       });
       
-   /* autopayDivaMumbaiData.data.feeRecipients.forEach((event) => {
+    /*autopayDivaMumbaiData.data.feeRecipients.forEach((event) => {
       event.chain = 'Diva Polygon Mainnet'
       event.txnLink = `https://polygonscan.com/tx/${event.txnHash}`
       eventsArray.push(event)
-    })*/
+    })
 
     autopayDivaAdaptorMumbaiData.data.tipAddeds.forEach((event) => {
       const updatedEvent = Object.assign({}, event, { chain: 'Diva Polygon Mainnet' });
       updatedEvent.txnLink = `https://app.diva.finance/markets`;
       });
-      
+      */
     
     let sorted = sortDataByProperty('_startTime', eventsArray)
     setAllGraphData(sorted)
@@ -297,7 +297,7 @@ const GraphAutopay = ({ children }) => {
   const GraphContextObj = {
     decodedData: decodedData,
   }
-    //console.log(autopayDivaMumbaiData)
+    console.log(autopayDivaMumbaiData)
 
   return (
     <GraphAutopayContext.Provider value={GraphContextObj}>
