@@ -320,7 +320,12 @@ export const decodingMiddleware = (reportEvents) => {
     event.decodedReporter = web3.utils.toChecksumAddress(event._reporter)
     event.queryId = parseInt(Number(event._queryId), 10)
 
-    
+    try {
+      // The following line is where the overflow error might occur
+      queryDataPartial = web3.eth.abi.decodeParameters(
+        ['string', 'bytes'],
+        event._queryData
+      );
     
     if (event._queryData && event._queryData.length <= 104) {
       try {queryData = JSON.parse(hex2a(event._queryData))
@@ -339,7 +344,15 @@ export const decodingMiddleware = (reportEvents) => {
           event.queryId = parseInt(Number(queryDataPartial[1]), 10)
           queryDataParsers[queryDataPartial[0] || 'Default'](event)
           break
-        case 'SpotPrice':
+          case 'AmpleforthCustomSpotPrice':
+            finalQueryData = web3.eth.abi.decodeParameters(
+              ['string', 'string'],
+              queryDataPartial[1]
+            )
+            event.queryDataObj = finalQueryData
+            queryDataParsers['AmpleforthCustomSpotPrice' || 'Default'](event)
+              break
+          case 'SpotPrice':
           finalQueryData = web3.eth.abi.decodeParameters(
             ['string', 'string'],
             queryDataPartial[1]
@@ -431,15 +444,25 @@ export const decodingMiddleware = (reportEvents) => {
           return event
         // queryDataParsers['Snapshot' || 'Default'](event)
         // break
+
+        
         default:
           queryDataParsers['Default'](event)
           return event
       }
     }
 
-    if (event.queryId == "STEH/BTC") {
-
+  } catch (error) {
+    if (error.message.includes('overflow')) {
+      // Handle the overflow error
+      console.error('Overflow error occurred during decoding:', error);
+      // You can set a default value or perform other error handling here
+      queryDataPartial = { '0': 'Error', '1': 'Error' };
+    } else {
+      // Re-throw the error if it's not an overflow error
+      throw error;
     }
+  }
     return event
   })
   // console.log(decoded)

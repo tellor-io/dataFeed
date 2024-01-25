@@ -1,26 +1,26 @@
 {
   "files": {
-    "main.css": "/static/css/main.89dd7443.chunk.css",
-    "main.js": "/static/js/main.edc069fc.chunk.js",
-    "main.js.map": "/static/js/main.edc069fc.chunk.js.map",
-    "runtime-main.js": "/static/js/runtime-main.6dfbb4b1.js",
-    "runtime-main.js.map": "/static/js/runtime-main.6dfbb4b1.js.map",
-    "static/js/2.6f127f4b.chunk.js": "/static/js/2.6f127f4b.chunk.js",
-    "static/js/2.6f127f4b.chunk.js.map": "/static/js/2.6f127f4b.chunk.js.map",
+    "main.css": "/static/css/main.a4679f90.chunk.css",
+    "main.js": "/static/js/main.fba79d64.chunk.js",
+    "main.js.map": "/static/js/main.fba79d64.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.1e8241d4.js",
+    "runtime-main.js.map": "/static/js/runtime-main.1e8241d4.js.map",
+    "static/js/2.f98c37d9.chunk.js": "/static/js/2.f98c37d9.chunk.js",
+    "static/js/2.f98c37d9.chunk.js.map": "/static/js/2.f98c37d9.chunk.js.map",
     "index.html": "/index.html",
-    "static/css/main.89dd7443.chunk.css.map": "/static/css/main.89dd7443.chunk.css.map",
-    "static/js/2.6f127f4b.chunk.js.LICENSE.txt": "/static/js/2.6f127f4b.chunk.js.LICENSE.txt",
+    "static/css/main.a4679f90.chunk.css.map": "/static/css/main.a4679f90.chunk.css.map",
+    "static/js/2.f98c37d9.chunk.js.LICENSE.txt": "/static/js/2.f98c37d9.chunk.js.LICENSE.txt",
     "static/media/index.css": "/static/media/Montserrat-Bold.a3f009a2.woff",
-    "static/media/done.3e6bfe38.svg": "/static/media/done.3e6bfe38.svg",
-    "static/media/filter.11b581e6.svg": "/static/media/filter.11b581e6.svg",
-    "static/media/filter_outline.b8515040.svg": "/static/media/filter_outline.b8515040.svg",
-    "static/media/tellor.88465ca4.svg": "/static/media/tellor.88465ca4.svg",
-    "static/media/tellor_white.d665a575.svg": "/static/media/tellor_white.d665a575.svg"
+    "static/media/done.62fd101c.svg": "/static/media/done.62fd101c.svg",
+    "static/media/filter.913fff00.svg": "/static/media/filter.913fff00.svg",
+    "static/media/filter_outline.8b97acfd.svg": "/static/media/filter_outline.8b97acfd.svg",
+    "static/media/tellor.a85cc955.svg": "/static/media/tellor.a85cc955.svg",
+    "static/media/tellor_white.4a00555c.svg": "/static/media/tellor_white.4a00555c.svg"
   },
   "entrypoints": [
-    "static/js/runtime-main.6dfbb4b1.js",
-    "static/js/2.6f127f4b.chunk.js",
-    "static/css/main.89dd7443.chunk.css",
-    "static/js/main.edc069fc.chunk.js"
+    "static/js/runtime-main.1e8241d4.js",
+    "static/js/2.f98c37d9.chunk.js",
+    "static/css/main.a4679f90.chunk.css",
+    "static/js/main.fba79d64.chunk.js"
   ]
 }
