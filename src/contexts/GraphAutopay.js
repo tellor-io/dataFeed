@@ -297,7 +297,6 @@ const GraphAutopay = ({ children }) => {
   const GraphContextObj = {
     decodedData: decodedData,
   }
-    console.log(autopayDivaMumbaiData)
 
   return (
     <GraphAutopayContext.Provider value={GraphContextObj}>

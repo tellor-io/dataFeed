@@ -109,6 +109,17 @@ export const queryDataParsers = {
     event.decodedValue = formattedValue;
     return event;
   },
+  AmpleforthCustomSpotPrice: (event) => {
+    event.decodedValueName = `AMPL/USD`
+
+    const valueInWei = parseInt(event._value, 16) / 10 ** 18;
+    const formattedValue = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    }).format(valueInWei);
+    event.decodedValue = formattedValue;
+    return event;
+  },
   
 
   /*DivaPool : (event) => {
