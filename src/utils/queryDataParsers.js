@@ -120,7 +120,26 @@ export const queryDataParsers = {
     event.decodedValue = formattedValue;
     return event;
   },
+  FileCID: (event) => {
+    event.decodedValueName = `FileCID`;
   
+    // Extracting the first 3 and last 3 characters of event._value
+    const value = event._value;
+    const firstThree = value.substring(0, 4);
+    const lastThree = value.substring(64, 68);
+    event.decodedValue = firstThree + '...' + lastThree + '...';
+    return event;
+  },
+
+  EVMBalance: (event) => {
+    event.decodedValueName = web3.eth.abi.decodeParameters(['string', 'bytes'], event._queryData)[0]
+    let value = parseInt(event._value) / eighteenDecimals;
+  // Round up after 5 decimals
+  let roundedValue = Math.ceil(value * 100000) / 100000;
+  event.decodedValue = roundedValue.toFixed(5) + ' [chain:' + `${event.queryDataObj[0]}`+']';
+    return event;
+  },
+
 
   /*DivaPool : (event) => {
     event.decodedValueName = `DivaPool`;
