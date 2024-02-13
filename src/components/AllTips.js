@@ -5,6 +5,8 @@ import TipTable from './TipTable'
 import {  GraphAutopayContext } from '../contexts/GraphAutopay'
 import { ModeContext } from '../contexts/Mode'
 import LinearIndeterminate from './LinearIndeterminate'
+import ErrorBoundary from './ErrorBoundary'; // Import ErrorBoundary
+
 //Components
 
 function AllTips() {
@@ -55,12 +57,15 @@ function AllTips() {
     <>
       {autoPayData && autoPayData.decodedData ? (
         <div className="AllFeedsView">
-         
+                   <ErrorBoundary> {/* Wrap TipTable with ErrorBoundary */}
+
           <TipTable
             data={viewing}
             allData={autoPayData}
             setFiltering={setFiltering}
           />
+                    </ErrorBoundary>
+
           <button
             className={
               mode.mode === 'dark' ? 'AllFeeds__Button' : 'AllFeeds__ButtonDark'

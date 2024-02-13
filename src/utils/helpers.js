@@ -166,6 +166,8 @@ export const sortDataByProperty = (prop, arr) => {
 }
 
 export const decodingAutopayMiddleware = (autopayEvents) => {
+  try {
+
   //console.log(autopayEvents)
   let decoded = autopayEvents.map((event) => {
     let queryDataPartial
@@ -261,13 +263,19 @@ export const decodingAutopayMiddleware = (autopayEvents) => {
             id: finalQueryData.feeRecipient.id.toUpperCase()
           }
           break
-        case 'EVMCall':
-            finalQueryData = web3.eth.abi.decodeParameters(
-              ['uint'],
-              queryDataPartial[1]
-            )
-            event.decodedValue = `EVMCall ${finalQueryData[0]}`
-            return event
+          case 'EVMCall':
+  try {
+    // Attempt to decode the transaction
+    finalQueryData = web3.eth.abi.decodeParameters(['uint'], queryDataPartial[1]);
+    event.decodedValue = `EVMCall ${finalQueryData[0]}`;
+  } catch (error) {
+    console.error("Error decoding EVMCall data:", error);
+    // Optionally, set a flag or a specific value to indicate a decoding error
+    event.decodedValue = "Decoding Error";
+    // Continue to the next transaction without throwing the error
+    return event;
+  }
+  return event;
 
         /*case 'GasPriceOracle':
           finalQueryData = web3.eth.abi.decodeParameters(
@@ -295,6 +303,7 @@ export const decodingAutopayMiddleware = (autopayEvents) => {
 
 
 
+
   let filtered = [];
   decoded.map((event) => {
     if(event.decodedValue === 'NumericApiResponse'){
@@ -305,7 +314,14 @@ export const decodingAutopayMiddleware = (autopayEvents) => {
   })
   //console.log('filtered', filtered);
   return filtered;
+} catch (error) {
+  console.error("Error decoding data:", error);
+  // Handle the error appropriately
+  // You might want to return an empty array or a default value depending on your application's needs
+  return [];
 }
+}
+
 
 export const getCollateralTokenSymbol = (token) => {
   return token.collateralToken.symbol;
@@ -464,19 +480,18 @@ export const decodingMiddleware = (reportEvents) => {
     }
 
   } catch (error) {
-    if (error.message.includes('overflow')) {
-      // Handle the overflow error
-      console.error('Overflow error occurred during decoding:', error);
-      // You can set a default value or perform other error handling here
-      queryDataPartial = { '0': 'Error', '1': 'Error' };
-    } else {
-      // Re-throw the error if it's not an overflow error
-      throw error;
-    }
+    console.error("Error decoding data for event:", event, error);
+    // Handle the error, e.g., by setting a default error message or value
+    event.decodedValue = "Decoding Error";
+    // Optionally, you can add more error-specific handling here
   }
-    return event
-  })
-  // console.log(decoded)
-  return decoded
+  return event;
+});
+
+// Filter out or keep events with decoding errors based on your needs
+// For example, to exclude them:
+// let filteredDecoded = decoded.filter(event => event.decodedValue !== "Decoding Error");
+
+return decoded; // Or return filteredDecoded if you filtered the list
 }
  
