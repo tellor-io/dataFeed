@@ -370,6 +370,20 @@ export const decodingMiddleware = (reportEvents) => {
           event.queryDataObj = finalQueryData
           queryDataParsers['AmpleforthCustomSpotPrice' || 'Default'](event)
           break
+        case 'StringQuery':
+          console.log("Complete event data:", event);
+
+          finalQueryData = web3.eth.abi.decodeParameters(
+            ['string'],
+            queryDataPartial[1]
+          )
+          console.log("Encoded data:", queryDataPartial[2]);
+          console.log("Decoded data:", finalQueryData); // Log the entire decoded data object
+        
+          // Assign the decoded string to queryDataObj
+          event.queryDataObj = finalQueryData
+          queryDataParsers['StringQuery' || 'Default'](event)
+          break
         case 'FileCID':
             finalQueryData = web3.eth.abi.decodeParameters(
               ['string'],
@@ -379,6 +393,7 @@ export const decodingMiddleware = (reportEvents) => {
             queryDataParsers['FileCID' || 'Default'](event)
           break
         case 'SpotPrice':
+
           finalQueryData = web3.eth.abi.decodeParameters(
             ['string', 'string'],
             queryDataPartial[1]
