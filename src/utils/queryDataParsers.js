@@ -1,11 +1,15 @@
+
 import { psrLookup } from './psrLookup'
 import Web3 from 'web3'
+
+
 
 const eighteenDecimals = 1000000000000000000
 
 const web3 = new Web3(window.ethereum)
 
 export const queryDataParsers = {
+  
   LegacyRequest: (event) => {
     switch (event.queryId) {
       case 1:
@@ -88,7 +92,10 @@ export const queryDataParsers = {
     event.decodedValue = formattedValue;
     return event;
   },
+
   MimicryMacroMarketMashup: (event) => {
+    console.log(event);
+
     event.decodedValueName = `MIMICRY NFT MASHUP (${event.queryDataObj[3][0][1].toUpperCase()})`
     const valueInWei = parseInt(event._value, 16) / 1;
     const formattedValue = new Intl.NumberFormat('en-US', {
@@ -120,6 +127,7 @@ export const queryDataParsers = {
     event.decodedValue = formattedValue;
     return event;
   },
+  
   FileCID: (event) => {
     event.decodedValueName = `FileCID`;
   
@@ -139,6 +147,17 @@ export const queryDataParsers = {
   event.decodedValue = roundedValue.toFixed(5) + ' [chain:' + `${event.queryDataObj[0]}`+']';
     return event;
   },
+  StringQuery: (event) => {
+    console.log(event.queryDataObj)
+    event.decodedValueName = `${event.queryDataObj[0]}`
+  // Decode the hexadecimal string to ASCII
+  const decodedString = web3.utils.hexToAscii(event._value);
+
+  // Remove padding and non-printable characters
+  event.decodedValue = decodedString.replace(/\u0000/g, '').trim();
+
+  return event;
+  },
 
 
   /*DivaPool : (event) => {
@@ -155,6 +174,7 @@ export const queryDataParsers = {
 
   
   SpotPrice: (event) => {
+    console.log(event)
     switch (event.queryId) {
 
       case 5:
