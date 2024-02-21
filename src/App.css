@@ -13,10 +13,12 @@
 }
 .HeroContainer {
   width: 92%;
+  justify-content: stretch;
   min-height: calc(80vh - 100px);
   display: flex;
   flex-direction: column;
   background-color: #262626;
+  overflow-x: auto; /* Allow horizontal scrolling */
   margin-bottom: 100px;
   transition: 0.3s;
 }
@@ -41,6 +43,8 @@
   display: flex;
   flex-direction: column;
   background-color: #fafafa;
+  overflow-x: auto; /* Allow horizontal scrolling */
+
   margin-bottom: 100px;
   transition: 0.3s;
 }

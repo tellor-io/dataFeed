@@ -2,6 +2,7 @@
   display: flex;
   flex-direction: column;
   user-select: none;
+  
 }
 .TH__Header {
   width: 100%;
@@ -160,13 +161,16 @@
 }
 .TableBody {
   width: 100%;
+  justify-content: stretch;
   display: flex;
   flex-direction: row;
   text-align: left;
   padding: 14px 0px 10px 0px;
+  box-sizing: border-box;
   border-bottom: 1px solid #ffffff;
   transition: 0.2s;
   animation: fadeIn 1.5s forwards;
+
 }
 .TableBody:hover {
   background-color: #363636;
@@ -181,6 +185,7 @@
   border-bottom: 1px solid #262626;
   transition: 0.2s;
   animation: fadeIn 1.5s forwards;
+  box-sizing: border-box; /* This line ensures padding is included in the element's dimensions */
 }
 .TableBodyDark:hover {
   background-color: #ececec;
@@ -252,4 +257,13 @@
 
 .GreenLink {
   color: #20f092;
+}
+
+@media (max-width: 768px) and (orientation: portrait) {
+  .TableBody, .TableBodyDark {
+    padding: 10px 600px 10px 0px; /* Adjusted for portrait mode */
+    margin-left: -0px;
+  }
+
+  /* Add any other adjustments specific to portrait mode here */
 }
