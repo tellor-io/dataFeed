@@ -163,7 +163,8 @@
   display: flex;
   flex-direction: row;
   text-align: left;
-  padding: 14px 0px 10px 0px;
+  padding: 14px 400px 10px 0px;
+  box-sizing: border-box;
   border-bottom: 1px solid #ffffff;
   transition: 0.2s;
   animation: fadeIn 1.5s forwards;
@@ -177,10 +178,12 @@
   display: flex;
   flex-direction: row;
   text-align: left;
-  padding: 14px 0px 10px 0px;
+  padding: 14px 400px 10px 0px;
+
   border-bottom: 1px solid #262626;
   transition: 0.2s;
   animation: fadeIn 1.5s forwards;
+  box-sizing: border-box; /* This line ensures padding is included in the element's dimensions */
 }
 .TableBodyDark:hover {
   background-color: #ececec;
