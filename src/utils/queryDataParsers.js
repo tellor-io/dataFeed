@@ -138,14 +138,40 @@ export const queryDataParsers = {
     event.decodedValue = firstThree + '...' + lastThree + '...';
     return event;
   },
-
-  EVMBalance: (event) => {
-    event.decodedValueName = web3.eth.abi.decodeParameters(['string', 'bytes'], event._queryData)[0]
-    let value = parseInt(event._value) / eighteenDecimals;
-  // Round up after 5 decimals
-  let roundedValue = Math.ceil(value * 100000) / 100000;
-  event.decodedValue = roundedValue.toFixed(5) + ' [chain:' + `${event.queryDataObj[0]}`+']';
-    return event;
+  EVMBalanceCurrent: (event) => {
+    console.log(event);
+    event.decodedValueName = web3.eth.abi.decodeParameters(['string', 'bytes'], event._queryData)[0];
+  
+    // Decode the provided string to get the two uint256 values
+    const decodedValues = web3.eth.abi.decodeParameters(['uint256', 'uint256'], event._value);
+  
+    // Convert it from Wei to Ether
+    const valueInEther = web3.utils.fromWei(decodedValues[0], 'ether');
+    
+    // Trim the value to 4 decimal places and convert it back to a number
+    const trimmedValue = parseFloat(valueInEther).toFixed(6);
+    
+ // Check if queryDataObj[0] equals '80001' and map it to 'MATIC', otherwise use its original value
+ const chainName = event.queryDataObj[0] === '80001' ? ' MATIC' : ' chainId:' + event.queryDataObj[0];
+  
+ // Append the mapped chain name to the trimmed value
+ event.decodedValue = trimmedValue  + chainName ; // Concatenate the values    return event;
+  },
+  BTCBalanceCurrent: (event) => {
+    console.log(event);
+    event.decodedValueName = web3.eth.abi.decodeParameters(['string', 'bytes'], event._queryData)[0];
+  
+    // Decode the provided string to get the two uint256 values
+    const decodedValues = web3.eth.abi.decodeParameters(['uint256', 'uint256'], event._value);
+  
+    // Convert it from Wei to Ether
+    const valueInEther = web3.utils.fromWei(decodedValues[0], 'ether');
+    
+    // Trim the value to 4 decimal places and convert it back to a number
+    const trimmedValue = parseFloat(valueInEther).toFixed(6);
+  
+ // Append the mapped chain name to the trimmed value
+ event.decodedValue = trimmedValue  + ' BTC' ; // Concatenate the values    return event;
   },
   StringQuery: (event) => {
     console.log(event.queryDataObj)
