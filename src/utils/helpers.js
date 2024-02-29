@@ -377,8 +377,6 @@ export const decodingMiddleware = (reportEvents) => {
             ['string'],
             queryDataPartial[1]
           )
-          console.log("Encoded data:", queryDataPartial[2]);
-          console.log("Decoded data:", finalQueryData); // Log the entire decoded data object
         
           // Assign the decoded string to queryDataObj
           event.queryDataObj = finalQueryData
@@ -401,16 +399,24 @@ export const decodingMiddleware = (reportEvents) => {
           event.queryDataObj = finalQueryData
           queryDataParsers['SpotPriceProper' || 'Default'](event)
           break
-        case 'EVMBalance':
+        case 'EVMBalanceCurrent':
           finalQueryData = web3.eth.abi.decodeParameters(
-            ['uint256', 'address', 'uint256'],
+            ['uint256', 'address'],
             queryDataPartial[1]
           )
           console.log(finalQueryData)
           event.queryDataObj = finalQueryData
-          queryDataParsers['EVMBalance' || 'Default'](event)
+          queryDataParsers['EVMBalanceCurrent' || 'Default'](event)
           break
-
+          case 'BTCBalanceCurrent':
+            finalQueryData = web3.eth.abi.decodeParameters(
+              ['uint256', 'address'],
+              queryDataPartial[1]
+            )
+            console.log(finalQueryData)
+            event.queryDataObj = finalQueryData
+            queryDataParsers['BTCBalanceCurrent' || 'Default'](event)
+            break
         case 'DivaPay':
           finalQueryData = web3.eth.abi.decodeParameters(
             ['string'],
