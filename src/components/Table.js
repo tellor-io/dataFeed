@@ -17,25 +17,29 @@ function Table({ data, allData, setFiltering }) {
   const [symbolClicked, setSymbolClicked] = useState(false)
   const [chainClicked, setChainClicked] = useState(false)
   const [reporterClicked, setReporterClicked] = useState(false)
+  const [dateClicked, setDateClicked] = useState(false)
   //
   const [reportedSymbols, setReportedSymbols] = useState(null)
   const [reportedChains, setReportedChains] = useState(null)
   const [reportedReporters, setReportedReporters] = useState(null)
+  const [reportedDates, setReportedDates] = useState(null)
   const [symbolSearchTerm, setSymbolSearchTerm] = useState("");
   const [reporterSearchTerm, setReporterSearchTerm] = useState("");
+  const [dateSearchTerm, setDateSearchTerm] = useState("");
   //
   const [allFilters, setAllFilters] = useState([])
   const [symbolFilters, setSymbolFilters] = useState([])
   const [chainFilters, setChainFilters] = useState([])
   const [reporterFilters, setReporterFilters] = useState([])
+  const [dateFilters, setDateFilters] = useState([])
   //Refs
   const symbolRef = useRef()
   const chainRef = useRef()
   const reporterRef = useRef()
+  const dateRef = useRef()
   //Contexts
   const mode = useContext(ModeContext)
 
-  // console.log(data)
   //useEffect for tableData
   useEffect(() => {
     if (!data) return;
@@ -55,6 +59,7 @@ function Table({ data, allData, setFiltering }) {
     let symbols = []
     let chains = []
     let reporters = []
+    let dates = []
     allData.decodedData.forEach((event) => {
       if (!symbols.includes(event.decodedValueName) && event.decodedValueName) {
         if (event.feedType === 'Snapshot' && !symbols.includes('Snapshot')) {
@@ -69,15 +74,20 @@ function Table({ data, allData, setFiltering }) {
       if (!reporters.includes(event.decodedReporter) && event.decodedReporter) {
         reporters.push(event.decodedReporter)
       }
+      if (!dates.includes(event.decodedTime.split(',')[0].trim()) && event.decodedTime) {
+        dates.push(event.decodedTime.split(',')[0].trim())
+      }
     })
     setReportedSymbols(symbols)
     setReportedChains(chains)
     setReportedReporters(reporters)
+    setReportedDates(dates)
 
     return () => {
       setReportedSymbols(null)
       setReportedChains(null)
       setReportedReporters(null)
+      setReportedDates(null)
     }
   }, [allData])
 
@@ -96,6 +106,10 @@ function Table({ data, allData, setFiltering }) {
         setReporterClicked(true)
         reporterRef.current.classList.add('display')
         break
+      case 'date':
+        setDateClicked(true)
+        dateRef.current.classList.add('display')
+        break
       default:
         return
     }
@@ -113,6 +127,10 @@ function Table({ data, allData, setFiltering }) {
       case 'reporter':
         setReporterClicked(false)
         reporterRef.current.classList.remove('display')
+        break
+      case 'date':
+        setDateClicked(false)
+        dateRef.current.classList.remove('display')
         break
       default:
         return
@@ -163,285 +181,57 @@ function Table({ data, allData, setFiltering }) {
           setAllFilters([...allFilters, allFiltersObj])
         }
         break
-      default:
-        return
-    }
-  }
-  const handleFilterApply = (filterType, cleared) => {
-    let filteredData = []
-    let symbolFilter = false
-    let symbols = []
-    let chainFilter = false
-    let chains = []
-    let reporterFilter = false
-    let reporters = []
-    //
-    let makesTheCut = []
-
-    if (cleared) {
-      if (cleared.length > 0) {
-        allData.decodedData.forEach((event) => {
-          cleared.forEach((filter) => {
-            if (filter.filterType === 'symbol') {
-              symbolFilter = true
-              if (!symbols.includes(filter.filterValue)) {
-                symbols.push(filter.filterValue)
-              }
-            } else if (filter.filterType === 'chain') {
-              chainFilter = true
-              if (!chains.includes(filter.filterValue)) {
-                chains.push(filter.filterValue)
-              }
-            } else if (filter.filterType === 'reporter') {
-              reporterFilter = true
-              if (!reporters.includes(filter.filterValue)) {
-                reporters.push(filter.filterValue)
-              }
-            }
-
-            switch (true) {
-              //For all 3 filterTypes
-              case symbolFilter && chainFilter && reporterFilter:
-                symbols.forEach((symbol) => {
-                  chains.forEach((chain) => {
-                    reporters.forEach((reporter) => {
-                      if (
-                        (filter.filterValue === event.decodedValueName ||
-                          filter.filterValue === event.feedType) &&
-                        event.chain === chain &&
-                        event.decodedReporter === reporter
-                      ) {
-                        if (makesTheCut.includes(event)) {
-                        } else {
-                          makesTheCut.push(event)
-                        }
-                      }
-                    })
-                  })
-                })
-                break
-              //For 2 filterTypes
-              case symbolFilter && chainFilter:
-                symbols.forEach((symbol) => {
-                  chains.forEach((chain) => {
-                    if (
-                      (filter.filterValue === event.decodedValueName ||
-                        filter.filterValue === event.feedType) &&
-                      event.chain === chain
-                    ) {
-                      if (makesTheCut.includes(event)) {
-                      } else {
-                        makesTheCut.push(event)
-                      }
-                    }
-                  })
-                })
-                break
-              case symbolFilter && reporterFilter:
-                symbols.forEach((symbol) => {
-                  reporters.forEach((reporter) => {
-                    if (
-                      (filter.filterValue === event.decodedValueName ||
-                        filter.filterValue === event.feedType) &&
-                      event.decodedReporter === reporter
-                    ) {
-                      if (makesTheCut.includes(event)) {
-                      } else {
-                        makesTheCut.push(event)
-                      }
-                    }
-                  })
-                })
-                break
-              case chainFilter && reporterFilter:
-                chains.forEach((chain) => {
-                  reporters.forEach((reporter) => {
-                    if (
-                      event.chain === chain &&
-                      event.decodedReporter === reporter
-                    ) {
-                      if (makesTheCut.includes(event)) {
-                      } else {
-                        makesTheCut.push(event)
-                      }
-                    }
-                  })
-                })
-                break
-              //For single category filterTypes
-              case symbolFilter:
-                if (
-                  filter.filterValue === event.decodedValueName ||
-                  filter.filterValue === event.feedType
-                ) {
-                  filteredData.push(event)
-                }
-                break
-              case chainFilter:
-                if (filter.filterValue === event.chain) {
-                  filteredData.push(event)
-                }
-                break
-              case reporterFilter:
-                if (filter.filterValue === event.decodedReporter) {
-                  filteredData.push(event)
-                }
-                break
-              default:
-                return
-            }
-          })
-        })
-        if (makesTheCut.length > 0) {
-          setTableData(makesTheCut)
+      case 'date':
+        if (dateFilters.includes(filterValue)) {
+          temp = dateFilters.filter((filters) => filters !== filterValue)
+          allFiltersTemp = allFilters.filter(
+            (filters) => filters.filterValue !== filterValue
+          )
+          setDateFilters(temp)
+          setAllFilters(allFiltersTemp)
         } else {
-          setTableData(filteredData)
+          setDateFilters([...dateFilters, filterValue])
+          setAllFilters([...allFilters, allFiltersObj])
         }
-        setFiltering(true)
-      } else {
-        setTableData(data)
-        setFiltering(false)
-      }
-    } else {
-      if (allFilters.length > 0) {
-        allData.decodedData.forEach((event) => {
-          allFilters.forEach((filter) => {
-            if (filter.filterType === 'symbol') {
-              symbolFilter = true
-              if (!symbols.includes(filter.filterValue)) {
-                symbols.push(filter.filterValue)
-              }
-            } else if (filter.filterType === 'chain') {
-              chainFilter = true
-              if (!chains.includes(filter.filterValue)) {
-                chains.push(filter.filterValue)
-              }
-            } else if (filter.filterType === 'reporter') {
-              reporterFilter = true
-              if (!reporters.includes(filter.filterValue)) {
-                reporters.push(filter.filterValue)
-              }
-            }
-
-            switch (true) {
-              //For all 3 filterTypes
-              case symbolFilter && chainFilter && reporterFilter:
-                symbols.forEach((symbol) => {
-                  chains.forEach((chain) => {
-                    reporters.forEach((reporter) => {
-                      if (
-                        (event.decodedValueName === symbol ||
-                          event.feedType === symbol) &&
-                        event.chain === chain &&
-                        event.decodedReporter === reporter
-                      ) {
-                        if (makesTheCut.includes(event)) {
-                        } else {
-                          makesTheCut.push(event)
-                        }
-                      }
-                    })
-                  })
-                })
-                break
-              //For 2 filterTypes
-              case symbolFilter && chainFilter:
-                symbols.forEach((symbol) => {
-                  chains.forEach((chain) => {
-                    if (
-                      (event.decodedValueName === symbol ||
-                        event.feedType === symbol) &&
-                      event.chain === chain
-                    ) {
-                      if (makesTheCut.includes(event)) {
-                      } else {
-                        makesTheCut.push(event)
-                      }
-                    }
-                  })
-                })
-                break
-              case symbolFilter && reporterFilter:
-                symbols.forEach((symbol) => {
-                  reporters.forEach((reporter) => {
-                    if (
-                      (event.decodedValueName === symbol ||
-                        event.feedType === symbol) &&
-                      event.decodedReporter === reporter
-                    ) {
-                      if (makesTheCut.includes(event)) {
-                      } else {
-                        makesTheCut.push(event)
-                      }
-                    }
-                  })
-                })
-                break
-              case chainFilter && reporterFilter:
-                chains.forEach((chain) => {
-                  reporters.forEach((reporter) => {
-                    if (
-                      event.chain === chain &&
-                      event.decodedReporter === reporter
-                    ) {
-                      if (makesTheCut.includes(event)) {
-                      } else {
-                        makesTheCut.push(event)
-                      }
-                    }
-                  })
-                })
-                break
-              //For single category filterTypes
-              case symbolFilter:
-                if (
-                  filter.filterValue === event.decodedValueName ||
-                  filter.filterValue === event.feedType
-                ) {
-                  filteredData.push(event)
-                }
-                break
-              case chainFilter:
-                if (filter.filterValue === event.chain) {
-                  filteredData.push(event)
-                }
-                break
-              case reporterFilter:
-                if (filter.filterValue === event.decodedReporter) {
-                  filteredData.push(event)
-                }
-                break
-              default:
-                return
-            }
-          })
-        })
-        if (makesTheCut.length > 0) {
-          setTableData(makesTheCut)
-        } else {
-          setTableData(filteredData)
-        }
-        setFiltering(true)
-      } else {
-        setTableData(data)
-        setFiltering(false)
-      }
-    }
-
-    switch (filterType) {
-      case 'symbol':
-        handleClose('symbol')
-        break
-      case 'chain':
-        handleClose('chain')
-        break
-      case 'reporter':
-        handleClose('reporter')
         break
       default:
         return
     }
   }
+  const handleFilterApply = () => {
+    let filteredData = allData.decodedData.filter(event => {
+      const symbolMatch = symbolFilters.length === 0 || symbolFilters.includes(event.decodedValueName);
+      const chainMatch = chainFilters.length === 0 || chainFilters.includes(event.chain);
+      const reporterMatch = reporterFilters.length === 0 || reporterFilters.includes(event.decodedReporter);
+      
+      // Convert dateSearchTerm from YYYY-MM-DD to DD/MM/YYYY for comparison
+      let formattedDateSearchTerm = "";
+      if (dateSearchTerm) {
+        const [year, month, day] = dateSearchTerm.split('-');
+        formattedDateSearchTerm = `${day}/${month}/${year}`;
+      }
+
+      // Direct comparison with event.decodedTime (assuming it's in DD/MM/YYYY format)
+      const dateMatch = dateSearchTerm ? event.decodedTime.startsWith(formattedDateSearchTerm) : dateFilters.length === 0 || dateFilters.some(filterDate => event.decodedTime.startsWith(filterDate));
+
+      return symbolMatch && chainMatch && reporterMatch && dateMatch;
+    });
+
+    setTableData(filteredData);
+    setFiltering(filteredData.length > 0);
+
+    // Close the filter dropdowns for active filters
+    if (symbolFilters.length > 0) handleClose('symbol');
+    if (chainFilters.length > 0) handleClose('chain');
+    if (reporterFilters.length > 0) handleClose('reporter');
+    if (dateFilters.length > 0 || dateSearchTerm) handleClose('date');
+  };
+
+  // Effect hook to re-apply filters when any filter changes or the initial dataset updates
+  useEffect(() => {
+    handleFilterApply();
+  }, [symbolFilters, chainFilters, reporterFilters, dateFilters, allData, dateSearchTerm]);
+
   const handleFilterClear = (filterType) => {
     let cleared
     switch (filterType) {
@@ -450,7 +240,7 @@ function Table({ data, allData, setFiltering }) {
           (filters) => filters.filterType !== filterType
         )
         setAllFilters(cleared)
-        handleFilterApply('symbol', cleared)
+        handleFilterApply()
         setSymbolFilters([])
         break
       case 'chain':
@@ -458,7 +248,7 @@ function Table({ data, allData, setFiltering }) {
           (filters) => filters.filterType !== filterType
         )
         setAllFilters(cleared)
-        handleFilterApply('chain', cleared)
+        handleFilterApply()
         setChainFilters([])
         break
       case 'reporter':
@@ -466,11 +256,20 @@ function Table({ data, allData, setFiltering }) {
           (filters) => filters.filterType !== filterType
         )
         setAllFilters(cleared)
-        handleFilterApply('reporter', cleared)
+        handleFilterApply()
         setReporterFilters([])
         break
-      default:
-        return
+        case 'date':
+          cleared = allFilters.filter(
+            (filters) => filters.filterType !== filterType
+          )
+          setAllFilters(cleared)
+          setDateSearchTerm("") // Clear the date search term
+          handleFilterApply()
+          setDateFilters([])
+          break
+        default:
+          return
     }
   }
   const handleRowClick = (txnLink) => {
@@ -552,7 +351,7 @@ function Table({ data, allData, setFiltering }) {
               >
                 <button
                   className="DropdownApply"
-                  onClick={() => handleFilterApply('symbol')}
+                  onClick={() => handleFilterApply()}
                 >
                   Apply
                 </button>
@@ -634,7 +433,7 @@ function Table({ data, allData, setFiltering }) {
               >
                 <button
                   className="DropdownApply"
-                  onClick={() => handleFilterApply('chain')}
+                  onClick={() => handleFilterApply()}
                 >
                   Apply
                 </button>
@@ -721,7 +520,7 @@ function Table({ data, allData, setFiltering }) {
               >
                 <button
                   className="DropdownApply"
-                  onClick={() => handleFilterApply('reporter')}
+                  onClick={() => handleFilterApply()}
                 >
                   Apply
                 </button>
@@ -736,8 +535,91 @@ function Table({ data, allData, setFiltering }) {
               </div>
             </div>
           </th>
-          <th>
-            <h1>DATE(DD/MM/YY), TIME</h1>
+          <th className="TH__HeaderSpecial">
+            <div className="TH__HeaderDiv">
+              <h1>DATE(DD/MM/YY), TIME</h1>
+              {dateClicked ? (
+                <FilterIconFilled
+                  className={
+                    mode.mode === 'dark' ? 'FilterIcon' : 'FilterIconDark'
+                  }
+                  onClick={() => handleClose('date')}
+                />
+              ) : (
+                <FilterIcon
+                  className={
+                    mode.mode === 'dark' ? 'FilterIcon' : 'FilterIconDark'
+                  }
+                  onClick={() => handleClick('date')}
+                />
+              )}
+            </div>
+            <div
+              className={
+                mode.mode === 'dark'
+                  ? 'TableFilterDropdown'
+                  : 'TableFilterDropdownDark'
+              }
+              ref={dateRef}
+            >
+              <h3>filter by date</h3>
+              <input
+                 type="date"
+                 placeholder="Search..."
+                 value={dateSearchTerm}
+                 onChange={(e) => setDateSearchTerm(e.target.value)}
+               />
+              <div className="DropdownResults">
+                {reportedDates &&
+                  reportedDates.filter((date) => date.toLowerCase().includes(dateSearchTerm.toLowerCase()))
+                  .map((date) => (
+                    <div
+                      key={date}
+                      className={
+                        mode.mode === 'dark'
+                          ? 'DropdownDataRow'
+                          : 'DropdownDataRowDark'
+                      }
+                      onClick={() => handleFilter('date', date)}
+                    >
+                      {dateFilters.includes(date) ? (
+                        <>
+                          <p>{date}</p>
+                          <Checked
+                            className={
+                              mode.mode === 'dark' ? '' : 'DropdownCheckDark'
+                            }
+                          />
+                        </>
+                      ) : (
+                        <p>{date}</p>
+                      )}
+                    </div>
+                  ))}
+              </div>
+              <div
+                className={
+                  mode.mode === 'dark'
+                    ? 'DropdownButtons'
+                    : 'DropdownButtonsDark'
+                }
+              >
+                <button
+                  className="DropdownApply"
+                  onClick={() => handleFilterApply()}
+                >
+                  Apply
+                </button>
+                <button
+                  className={
+                    mode.mode === 'dark' ? 'DropdownClear' : 'DropdownClearDark'
+                  }
+                  onClick={() => handleFilterClear('date')}
+                >
+                  Clear
+                </button>
+              </div>
+            </div>
           </th>
         </tr>
       </thead>
