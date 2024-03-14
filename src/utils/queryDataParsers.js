@@ -158,7 +158,6 @@ export const queryDataParsers = {
  event.decodedValue = trimmedValue  + chainName ; // Concatenate the values    return event;
   },
   BTCBalanceCurrent: (event) => {
-    console.log(event);
     event.decodedValueName = web3.eth.abi.decodeParameters(['string', 'bytes'], event._queryData)[0];
   
     // Decode the provided string to get the two uint256 values
