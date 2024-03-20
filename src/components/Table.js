@@ -241,7 +241,7 @@ function Table({ data, allData, setFiltering }) {
           (filters) => filters.filterType !== filterType
         )
         setAllFilters(cleared)
-        handleFilterApply()
+        //handleFilterApply()
         setSymbolFilters([])
         break
       case 'chain':

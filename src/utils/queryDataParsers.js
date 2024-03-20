@@ -1,4 +1,3 @@
-
 import { psrLookup } from './psrLookup'
 import Web3 from 'web3'
 
@@ -193,7 +192,10 @@ export const queryDataParsers = {
   
   EVMCall : (event) => {
     event.decodedValueName = `EVMCall`;
-    event.decodedValue = `${event.queryDataObj[0]}`;
+
+    // Directly assign the raw data to decodedValue
+    event.decodedValue = 'Chain id:' + event.queryDataObj[0] || "No Data Available";
+
     return event;
   },
 

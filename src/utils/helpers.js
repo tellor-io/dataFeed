@@ -263,20 +263,22 @@ export const decodingAutopayMiddleware = (autopayEvents) => {
             id: finalQueryData.feeRecipient.id.toUpperCase()
           }
           break
-          case 'EVMCall':
-  try {
-    // Attempt to decode the transaction
-    finalQueryData = web3.eth.abi.decodeParameters(['uint'], queryDataPartial[1]);
-    event.decodedValue = `EVMCall ${finalQueryData[0]}`;
-  } catch (error) {
-    console.error("Error decoding EVMCall data:", error);
-    // Optionally, set a flag or a specific value to indicate a decoding error
-    event.decodedValue = "Decoding Error";
-    // Continue to the next transaction without throwing the error
-    return event;
+        case 'EVMCall':
+              try {
+                // Log the raw data to console for inspection
+                //console.log("Raw EVMCall data:", queryDataPartial[1]);
+
+                // Attempt to decode the transaction
+                finalQueryData = web3.eth.abi.decodeParameters(['uint'], queryDataPartial[1]);
+                event.decodedValue = `EVMCall ${finalQueryData[0]}`;
+              } catch (error) {
+                //console.error("Error decoding EVMCall data:", error, "Raw data:", queryDataPartial[1]);
+                // Optionally, set a flag or a specific value to indicate a decoding error
+                event.decodedValue = "Decoding Error";
+                // Continue to the next transaction without throwing the error
+                return event;
   }
   return event;
-
         /*case 'GasPriceOracle':
           finalQueryData = web3.eth.abi.decodeParameters(
             ['string', 'string'],
@@ -413,7 +415,7 @@ export const decodingMiddleware = (reportEvents) => {
               ['uint256', 'address'],
               queryDataPartial[1]
             )
-            console.log(finalQueryData)
+            //console.log(finalQueryData)
             event.queryDataObj = finalQueryData
             queryDataParsers['BTCBalanceCurrent' || 'Default'](event)
             break
@@ -440,7 +442,16 @@ export const decodingMiddleware = (reportEvents) => {
         event.queryDataObj = finalQueryData
         queryDataParsers['MimicryMacroMarketMashup' || 'Default'](event)
               break
+      case 'EVMCall':
+        finalQueryData = web3.eth.abi.decodeParameters(
+          ['uint256', 'address', 'bytes'],
+             queryDataPartial[1]
+          )
+          //console.log("EVMCall decoded data:", finalQueryData); // This line logs the decoded data
 
+        event.queryDataObj = finalQueryData
+        queryDataParsers['EVMCall' || 'Default'](event)
+              break
       /*case 'DivaPool':
         finalQueryData = web3.eth.abi.decodeParameters(
           ['string', 'string', 'tuple(string, address)[]','tuple(string, string, address)[]'],
