@@ -47,6 +47,7 @@ function Table({ data, allData, setFiltering }) {
       const newData = data.slice(prevData.length);
       if (JSON.stringify(newData) !== JSON.stringify([])) {
         return [...prevData, ...newData]
+        
       }
       return prevData;
     })
@@ -217,7 +218,7 @@ function Table({ data, allData, setFiltering }) {
       return symbolMatch && chainMatch && reporterMatch && dateMatch;
     });
 
-    setTableData(filteredData);
+    setTableData(filteredData.slice(0, 6)); // Limit to first 6 items
     setFiltering(filteredData.length > 0);
 
     // Close the filter dropdowns for active filters
