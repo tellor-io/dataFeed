@@ -220,12 +220,6 @@ function Table({ data, allData, setFiltering }) {
 
     setTableData(filteredData.slice(0, 6)); // Limit to first 6 items
     setFiltering(filteredData.length > 0);
-
-    // Close the filter dropdowns for active filters
-    if (symbolFilters.length > 0) handleClose('symbol');
-    if (chainFilters.length > 0) handleClose('chain');
-    if (reporterFilters.length > 0) handleClose('reporter');
-    if (dateFilters.length > 0 || dateSearchTerm) handleClose('date');
   };
 
   // Effect hook to re-apply filters when any filter changes or the initial dataset updates
@@ -351,12 +345,6 @@ function Table({ data, allData, setFiltering }) {
                 }
               >
                 <button
-                  className="DropdownApply"
-                  onClick={() => handleFilterApply()}
-                >
-                  Apply
-                </button>
-                <button
                   className={
                     mode.mode === 'dark' ? 'DropdownClear' : 'DropdownClearDark'
                   }
@@ -432,12 +420,6 @@ function Table({ data, allData, setFiltering }) {
                     : 'DropdownButtonsDark'
                 }
               >
-                <button
-                  className="DropdownApply"
-                  onClick={() => handleFilterApply()}
-                >
-                  Apply
-                </button>
                 <button
                   className={
                     mode.mode === 'dark' ? 'DropdownClear' : 'DropdownClearDark'
@@ -519,12 +501,7 @@ function Table({ data, allData, setFiltering }) {
                     : 'DropdownButtonsDark'
                 }
               >
-                <button
-                  className="DropdownApply"
-                  onClick={() => handleFilterApply()}
-                >
-                  Apply
-                </button>
+
                 <button
                   className={
                     mode.mode === 'dark' ? 'DropdownClear' : 'DropdownClearDark'
@@ -605,12 +582,7 @@ function Table({ data, allData, setFiltering }) {
                     : 'DropdownButtonsDark'
                 }
               >
-                <button
-                  className="DropdownApply"
-                  onClick={() => handleFilterApply()}
-                >
-                  Apply
-                </button>
+
                 <button
                   className={
                     mode.mode === 'dark' ? 'DropdownClear' : 'DropdownClearDark'
