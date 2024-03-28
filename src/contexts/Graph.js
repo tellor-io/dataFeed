@@ -16,9 +16,8 @@ const clientMainnet = new ApolloClient({
   uri: 'https://api.studio.thegraph.com/query/33329/tellororaclemainhgraph/version/latest',
   cache: new InMemoryCache(),
 })*/ 
-const clientGoerli = new ApolloClient({
-  uri: 'https://api.goldsky.com/api/public/project_clf8nopuy59a93stya1d02ev6/subgraphs/tellor-oracle-goerli/v0.0.1/gn',
-  //'https://api.goldsky.com/api/public/project_clf8nopuy59a93stya1d02ev6/subgraphs/tellor-oracle-goerli/v0.0.1/gn',
+const clientLinea = new ApolloClient({
+  uri: 'https://api.studio.thegraph.com/query/33329/tellor-oracle-linea-main/v0.0.1',
   cache: new InMemoryCache(), 
 })
 const clientSepolia = new ApolloClient({
@@ -67,11 +66,14 @@ const clientOptmain2 = new ApolloClient({
   uri: 'https://api.thegraph.com/subgraphs/name/raynharr/tellor-flex-optmain-graph2',
   cache: new InMemoryCache(),
 })
+const clientPolygonzk = new ApolloClient({
+  uri: 'https://api.studio.thegraph.com/query/33329/tellor-oracle-polygonzk-main/v0.0.1',
+  cache: new InMemoryCache(),
+})
 
 const Graph = ({ children }) => {
   //Component State
   const [graphMainnetData, setGraphMainnetData] = useState({})
-  const [graphGoerliData, setGraphGoerliData] = useState({})
   const [graphSepoliaData, setGraphSepoliaData] = useState({})
   const [graphMaticData, setGraphMaticData] = useState({})
   const [graphMumbaiData, setGraphMumbaiData] = useState({})
@@ -79,6 +81,8 @@ const Graph = ({ children }) => {
   const [graphArbtestData, setGraphArbtestData] = useState({})
   const [graphGnosismainData, setGraphGnosismainData] = useState({})
   const [graphOptmainData, setGraphOptmainData] = useState({})
+  const [graphLineaData, setGraphLineaData] = useState({})
+  const [graphPolygonzkData, setGraphPolygonzkData] = useState({})
   const [allGraphData, setAllGraphData] = useState(null)
   const [decodedData, setDecodedData] = useState(null)
 
@@ -99,17 +103,17 @@ const Graph = ({ children }) => {
     fetchPolicy: 'network-only',
     pollInterval: 5000,
   })
-   //Goerli
-   const goerli = useQuery(reporterQuery, {
-    client: clientGoerli,
+   //Linea
+   const linea = useQuery(reporterQuery, {
+    client: clientLinea,
     fetchPolicy: 'network-only',
     pollInterval: 5000,
   })
-  const goerliPay = useQuery(autopayQuery, {
+  /*const goerliPay = useQuery(autopayQuery, {
     client: clientGoerli,
     fetchPolicy: 'network-only',
     pollInterval: 5000,
-  })
+  })*/
   //Sepolia
   const sepolia = useQuery(reporterQuery, {
     client: clientSepolia,
@@ -175,6 +179,12 @@ const Graph = ({ children }) => {
     fetchPolicy: 'network-only',
     pollInterval: 5000,
   })
+     //polygonzkevm
+     const polygonzk = useQuery(reporterQuery, {
+      client: clientPolygonzk,
+      fetchPolicy: 'network-only',
+      pollInterval: 5000,
+    })
 
   //useEffects for listening to reponses
   //from ApolloClient queries
@@ -192,19 +202,19 @@ const Graph = ({ children }) => {
     }
   }, [mainnet.data, mainnet.loading, mainnet.error]) //eslint-disable-line
 
-    //Goerli
+    //Linea
     useEffect(() => {
-      if (!goerli) return
-      setGraphGoerliData({
-        data: goerli.data,
-        loading: goerli.loading,
-        error: goerli.error,
+      if (!linea) return
+      setGraphLineaData({
+        data: linea.data,
+        loading: linea.loading,
+        error: linea.error,
       })
   
       return () => {
-        setGraphGoerliData({})
+        setGraphLineaData({})
       }
-    }, [goerli.data, goerli.loading, goerli.error]) //eslint-disable-line
+    }, [linea.data, linea.loading, linea.error]) //eslint-disable-line
     //Sepolia
     useEffect(() => {
       if (!sepolia) return
@@ -320,19 +330,33 @@ const Graph = ({ children }) => {
       setGraphOptmainData({})
     }
   }, [optmain.data, optmain.loading, optmain.error, optmain2.data, optmain2.loading, optmain2.error]) //eslint-disable-line
+  //Polygonzk
+  useEffect(() => {
+    if (!polygonzk) return
+    setGraphPolygonzkData({
+      data: polygonzk.data,
+      loading: polygonzk.loading,
+      error: polygonzk.error,
+    })
+
+    return () => {
+      setGraphPolygonzkData({})
+    }
+  }, [polygonzk.data, polygonzk.loading, polygonzk.error]) //eslint-disable-line 
 
   //For conglomerating data
   useEffect(() => {
     if (
       !graphMainnetData.data ||
-      !graphGoerliData.data ||
+      !graphLineaData.data ||
       !graphSepoliaData.data ||
       !graphMaticData.data ||
       !graphMumbaiData.data ||
       !graphArboneData.data ||
       !graphArbtestData.data ||
       !graphGnosismainData.data ||
-      !graphOptmainData.data
+      !graphOptmainData.data ||
+      !graphPolygonzkData.data
     )
       return
 
@@ -345,9 +369,9 @@ const Graph = ({ children }) => {
   });
 }
 
-graphGoerliData.data.newReportEntities.forEach((event) => {
-  const updatedEvent = Object.assign({}, event, { chain: 'Goerli Testnet' });
-  updatedEvent.txnLink = `https://goerli.etherscan.io/tx/${event.txnHash}`;
+graphLineaData.data.newReportEntities.forEach((event) => {
+  const updatedEvent = Object.assign({}, event, { chain: 'Linea Mainnet' });
+  updatedEvent.txnLink = `https://lineascan.build/tx/${event.txnHash}`;
   eventsArray.push(updatedEvent);
 });
 
@@ -399,6 +423,12 @@ const updatedEvent = Object.assign({}, event, { chain: 'Optimism Mainnet' });
 updatedEvent.txnLink = `https://optimistic.etherscan.io/tx/${event.txnHash}`;
 eventsArray.push(updatedEvent);
 });
+
+graphPolygonzkData.data.newReportEntities.forEach((event) => {
+  const updatedEvent = Object.assign({}, event, { chain: 'Polygon zkEVM Mainnet' });
+  updatedEvent.txnLink = `https://zkevm.polygonscan.com/${event.txnHash}`;
+  eventsArray.push(updatedEvent);
+});
 }
     let sorted = sortDataByProperty('_time', eventsArray)
     setAllGraphData(sorted)
@@ -406,7 +436,7 @@ eventsArray.push(updatedEvent);
     return () => {
       setAllGraphData(null)
     }
-  }, [graphMainnetData, graphGoerliData, graphSepoliaData, graphMaticData, graphMumbaiData, graphArboneData, graphArbtestData, graphGnosismainData, graphOptmainData])
+  }, [graphMainnetData, graphLineaData, graphSepoliaData, graphMaticData, graphMumbaiData, graphArboneData, graphArbtestData, graphGnosismainData, graphOptmainData, graphPolygonzkData])
 
   useEffect(() => {
     if (!allGraphData) return
