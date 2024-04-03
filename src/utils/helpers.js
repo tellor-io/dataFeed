@@ -373,8 +373,6 @@ export const decodingMiddleware = (reportEvents) => {
           queryDataParsers['AmpleforthCustomSpotPrice' || 'Default'](event)
           break
         case 'StringQuery':
-          console.log("Complete event data:", event);
-
           finalQueryData = web3.eth.abi.decodeParameters(
             ['string'],
             queryDataPartial[1]

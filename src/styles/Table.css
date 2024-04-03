@@ -267,3 +267,15 @@
 
   /* Add any other adjustments specific to portrait mode here */
 }
+
+.input-text {
+  width: 100px; /* Example width for text inputs */
+  height: 30px; /* Example height for text inputs */
+  /* Add any other styling properties you need */
+}
+
+.input-date {
+  width: 120px; /* Example width for date inputs */
+  height: 35px; /* Example height for date inputs */
+  /* Add any other styling properties you need */
+}
