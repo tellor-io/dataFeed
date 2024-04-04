@@ -25,7 +25,8 @@ function Table({ data, allData, setFiltering }) {
   const [reportedDates, setReportedDates] = useState(null)
   const [symbolSearchTerm, setSymbolSearchTerm] = useState("");
   const [reporterSearchTerm, setReporterSearchTerm] = useState("");
-  const [dateSearchTerm, setDateSearchTerm] = useState("");
+  const [startDateSearchTerm, setStartDateSearchTerm] = useState("");
+  const [endDateSearchTerm, setEndDateSearchTerm] = useState("");
   //
   const [allFilters, setAllFilters] = useState([])
   const [symbolFilters, setSymbolFilters] = useState([])
@@ -205,27 +206,32 @@ function Table({ data, allData, setFiltering }) {
       const chainMatch = chainFilters.length === 0 || chainFilters.includes(event.chain);
       const reporterMatch = reporterFilters.length === 0 || reporterFilters.includes(event.decodedReporter);
       
-      // Convert dateSearchTerm from YYYY-MM-DD to DD/MM/YYYY for comparison
-      let formattedDateSearchTerm = "";
-      if (dateSearchTerm) {
-        const [year, month, day] = dateSearchTerm.split('-');
-        formattedDateSearchTerm = `${day}/${month}/${year}`;
-      }
+      let startDate = new Date(startDateSearchTerm);
+      let endDate = new Date(endDateSearchTerm);
+      let eventDate = new Date(event.decodedTime.split(',')[0].trim().split('/').reverse().join('-'));
 
-      // Direct comparison with event.decodedTime (assuming it's in DD/MM/YYYY format)
-      const dateMatch = dateSearchTerm ? event.decodedTime.startsWith(formattedDateSearchTerm) : dateFilters.length === 0 || dateFilters.some(filterDate => event.decodedTime.startsWith(filterDate));
-
+      const dateMatch = startDateSearchTerm && endDateSearchTerm ? (eventDate >= startDate && eventDate <= endDate) : dateFilters.length === 0 || dateFilters.some(filterDate => event.decodedTime.startsWith(filterDate));
+  
       return symbolMatch && chainMatch && reporterMatch && dateMatch;
     });
-
-    setTableData(filteredData.slice(0, 6)); // Limit to first 6 items
+  
+    // Check if any filters are applied
+    const areFiltersApplied = symbolFilters.length > 0 || chainFilters.length > 0 || reporterFilters.length > 0 || dateFilters.length > 0 || (startDateSearchTerm && endDateSearchTerm);
+  
+    // If filters are applied, show all matching data, otherwise limit to first 6 items
+    if (areFiltersApplied) {
+      setTableData(filteredData); // Show all filtered items
+    } else {
+      setTableData(filteredData.slice(0, 6)); // Limit to first 6 items for initial load
+    }
+  
     setFiltering(filteredData.length > 0);
   };
 
   // Effect hook to re-apply filters when any filter changes or the initial dataset updates
   useEffect(() => {
     handleFilterApply();
-  }, [symbolFilters, chainFilters, reporterFilters, dateFilters, allData, dateSearchTerm]);
+  }, [symbolFilters, chainFilters, reporterFilters, dateFilters, allData, startDateSearchTerm, endDateSearchTerm]);
 
   const handleFilterClear = (filterType) => {
     let cleared
@@ -259,7 +265,8 @@ function Table({ data, allData, setFiltering }) {
             (filters) => filters.filterType !== filterType
           )
           setAllFilters(cleared)
-          setDateSearchTerm("") // Clear the date search term
+          setStartDateSearchTerm("") // Clear the start date search term
+          setEndDateSearchTerm("") // Clear the end date search term
           handleFilterApply()
           setDateFilters([])
           break
@@ -541,15 +548,27 @@ function Table({ data, allData, setFiltering }) {
               ref={dateRef}
             >
               <h3>filter by date</h3>
+              <p>Start</p>
               <input
                  type="date"
-                 placeholder="Search..."
-                 value={dateSearchTerm}
-                 onChange={(e) => setDateSearchTerm(e.target.value)}
+                 placeholder="Start Date..."
+                 value={startDateSearchTerm}
+                 onChange={(e) => setStartDateSearchTerm(e.target.value)}
+                 className="input-date" // Add this line
+
+               />
+                 <p>End</p>
+              <input
+                 type="date"
+                 placeholder="End Date..."
+                 value={endDateSearchTerm}
+                 onChange={(e) => setEndDateSearchTerm(e.target.value)}
+                 className="input-date" // Add this line
+
                />
               <div className="DropdownResults">
                 {reportedDates &&
-                  reportedDates.filter((date) => date.toLowerCase().includes(dateSearchTerm.toLowerCase()))
+                  reportedDates.filter((date) => date.toLowerCase().includes(startDateSearchTerm.toLowerCase()) || date.toLowerCase().includes(endDateSearchTerm.toLowerCase()))
                   .map((date) => (
                     <div
                       key={date}

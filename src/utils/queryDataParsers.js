@@ -172,7 +172,6 @@ export const queryDataParsers = {
  event.decodedValue = trimmedValue  + ' BTC' ; // Concatenate the values    return event;
   },
   StringQuery: (event) => {
-    console.log(event.queryDataObj)
     event.decodedValueName = `${event.queryDataObj[0]}`
   // Decode the hexadecimal string to ASCII
   const decodedString = web3.utils.hexToAscii(event._value);
