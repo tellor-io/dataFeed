@@ -426,7 +426,7 @@ eventsArray.push(updatedEvent);
 
 graphPolygonzkData.data.newReportEntities.forEach((event) => {
   const updatedEvent = Object.assign({}, event, { chain: 'Polygon zkEVM Mainnet' });
-  updatedEvent.txnLink = `https://zkevm.polygonscan.com/${event.txnHash}`;
+  updatedEvent.txnLink = `https://zkevm.polygonscan.com/tx/${event.txnHash}`;
   eventsArray.push(updatedEvent);
 });
 }
