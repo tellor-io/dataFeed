@@ -70,6 +70,14 @@ const clientPolygonzk = new ApolloClient({
   uri: 'https://api.studio.thegraph.com/query/33329/tellor-oracle-polygonzk-main/v0.0.1',
   cache: new InMemoryCache(),
 })
+const clientZksyncmain = new ApolloClient({
+  uri: 'https://api.studio.thegraph.com/query/33329/tellor-oracle-zksync-main-subg/version/latest',
+  cache: new InMemoryCache(),
+})
+const clientZksynctest = new ApolloClient({
+  uri: 'https://api.studio.thegraph.com/query/33329/tellor-oracle-zksync-test-subg/version/latest',
+  cache: new InMemoryCache(),
+})
 
 const Graph = ({ children }) => {
   //Component State
@@ -83,6 +91,8 @@ const Graph = ({ children }) => {
   const [graphOptmainData, setGraphOptmainData] = useState({})
   const [graphLineaData, setGraphLineaData] = useState({})
   const [graphPolygonzkData, setGraphPolygonzkData] = useState({})
+  const [graphZksyncMainData, setGraphZksyncMainData] = useState({})
+  const [graphZksyncTestData, setGraphZksyncTestData] = useState({})
   const [allGraphData, setAllGraphData] = useState(null)
   const [decodedData, setDecodedData] = useState(null)
 
@@ -184,7 +194,18 @@ const Graph = ({ children }) => {
       fetchPolicy: 'network-only',
       pollInterval: 5000,
     })
-
+    //ZkSyncMainnet
+    const zksyncmain = useQuery(reporterQuery, {
+      client: clientZksyncmain,
+      fetchPolicy: 'network-only',
+      pollInterval: 5000,
+    })
+    //ZkSyncTestnet
+    const zksynctest = useQuery(reporterQuery, {
+    client: clientZksynctest,
+    fetchPolicy: 'network-only',
+    pollInterval: 5000,
+  })
   //useEffects for listening to reponses
   //from ApolloClient queries
   //Mainnet
@@ -342,6 +363,34 @@ const Graph = ({ children }) => {
       setGraphPolygonzkData({})
     }
   }, [polygonzk.data, polygonzk.loading, polygonzk.error]) //eslint-disable-line 
+  
+  //ZkSyncMain
+   useEffect(() => {
+    if (!zksyncmain) return
+    setGraphZksyncMainData({
+      data: zksyncmain.data,
+      loading: zksyncmain.loading,
+      error: zksyncmain.error,
+    })
+
+    return () => {
+      setGraphZksyncTestData({})
+    }
+  }, [zksyncmain.data, zksyncmain.loading, zksyncmain.error]) //eslint-disable-line 
+
+  //ZkSyncTest
+  useEffect(() => {
+    if (!zksynctest) return
+    setGraphZksyncTestData({
+      data: zksynctest.data,
+      loading: zksynctest.loading,
+      error: zksynctest.error,
+    })
+
+    return () => {
+      setGraphZksyncTestData({})
+    }
+  }, [zksynctest.data, zksynctest.loading, zksynctest.error]) //eslint-disable-line 
 
   //For conglomerating data
   useEffect(() => {
@@ -355,7 +404,9 @@ const Graph = ({ children }) => {
       !graphArbtestData.data ||
       !graphGnosismainData.data ||
       !graphOptmainData.data ||
-      !graphPolygonzkData.data
+      !graphPolygonzkData.data ||
+      !graphZksyncMainData.data ||
+      !graphZksyncTestData.data
     )
       return
 
@@ -424,8 +475,18 @@ eventsArray.push(updatedEvent);
 });
 
 graphPolygonzkData.data.newReportEntities.forEach((event) => {
-  const updatedEvent = Object.assign({}, event, { chain: 'Polygon zkEVM Mainnet' });
+  const updatedEvent = Object.assign({}, event, { chain: 'Polygon zkEVM Main' });
   updatedEvent.txnLink = `https://zkevm.polygonscan.com/tx/${event.txnHash}`;
+  eventsArray.push(updatedEvent);
+});
+graphZksyncMainData.data.newReportEntities.forEach((event) => {
+  const updatedEvent = Object.assign({}, event, { chain: 'ZkSync Mainnet' });
+  updatedEvent.txnLink = `https://explorer.zksync.io/tx/${event.txnHash}`;
+  eventsArray.push(updatedEvent);
+});
+graphZksyncTestData.data.newReportEntities.forEach((event) => {
+  const updatedEvent = Object.assign({}, event, { chain: 'ZkSync Sepolia' });
+  updatedEvent.txnLink = `https://sepolia.explorer.zksync.io/tx/${event.txnHash}`;
   eventsArray.push(updatedEvent);
 });
 }
@@ -435,7 +496,7 @@ graphPolygonzkData.data.newReportEntities.forEach((event) => {
     return () => {
       setAllGraphData(null)
     }
-  }, [graphMainnetData, graphLineaData, graphSepoliaData, graphMaticData, graphAmoyData, graphArboneData, graphArbtestData, graphGnosismainData, graphOptmainData, graphPolygonzkData])
+  }, [graphMainnetData, graphLineaData, graphSepoliaData, graphMaticData, graphAmoyData, graphArboneData, graphArbtestData, graphGnosismainData, graphOptmainData, graphPolygonzkData, graphZksyncMainData, graphZksyncTestData])
 
   useEffect(() => {
     if (!allGraphData) return
