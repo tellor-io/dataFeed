@@ -36,8 +36,8 @@ const clientMatic2 = new ApolloClient({
   uri: 'https://api.thegraph.com/subgraphs/name/raynharr/tellor-flex-matic-graph2',
   cache: new InMemoryCache(),
 })
-const clientMumbai = new ApolloClient({
-  uri: 'https://api.thegraph.com/subgraphs/name/tellor-io/tellorflexoraclemumbaihgraph',
+const clientAmoy = new ApolloClient({
+  uri: 'https://api.studio.thegraph.com/query/33329/tellor-oracle-amoy-test-subgr/version/latest',
   cache: new InMemoryCache(),
 })
 const clientMumbai2 = new ApolloClient({
@@ -76,7 +76,7 @@ const Graph = ({ children }) => {
   const [graphMainnetData, setGraphMainnetData] = useState({})
   const [graphSepoliaData, setGraphSepoliaData] = useState({})
   const [graphMaticData, setGraphMaticData] = useState({})
-  const [graphMumbaiData, setGraphMumbaiData] = useState({})
+  const [graphAmoyData, setGraphAmoyData] = useState({})
   const [graphArboneData, setGraphArboneData] = useState({})
   const [graphArbtestData, setGraphArbtestData] = useState({})
   const [graphGnosismainData, setGraphGnosismainData] = useState({})
@@ -137,9 +137,9 @@ const Graph = ({ children }) => {
     fetchPolicy: 'network-only',
     pollInterval: 5000,
   })
-  //Mumbai
-  const mumbai = useQuery(reporterQuery, {
-    client: clientMumbai,
+  //Amoy
+  const amoy = useQuery(reporterQuery, {
+    client: clientAmoy,
     fetchPolicy: 'network-only',
     pollInterval: 5000,
   })
@@ -148,7 +148,6 @@ const Graph = ({ children }) => {
     fetchPolicy: 'network-only',
     pollInterval: 5000,
   })
-
   //Arbitrum One (Main)
   const arbone = useQuery(reporterQuery, {
     client: clientArbone,
@@ -249,27 +248,27 @@ const Graph = ({ children }) => {
       setGraphMaticData({})
     }
   }, [matic.data, matic.loading, matic.error, matic2.data, matic2.loading, matic2.error]) //eslint-disable-line
-  //Mumbai
+  //Amoy
   useEffect(() => {
-    if (!mumbai.data && !mumbai2.data) return
+    if (!amoy.data && !mumbai2.data) return
     const combinedData = {
-      ...mumbai.data,
+      ...amoy.data,
       ...mumbai2.data,
       newReportEntities: [
-        ...(mumbai.data?.newReportEntities || []),
+        ...(amoy.data?.newReportEntities || []),
         ...(mumbai2.data?.newReportEntities || [])
       ]
     }
-    setGraphMumbaiData({
+    setGraphAmoyData({
       data: combinedData,
-      loading: mumbai.loading || mumbai2.loading,
-      error: mumbai.error || mumbai2.error,
+      loading: amoy.loading || mumbai2.loading,
+      error: amoy.error || mumbai2.error,
     })
   
     return () => {
-      setGraphMumbaiData({})
+      setGraphAmoyData({})
     }
-  }, [mumbai.data, mumbai.loading, mumbai.error, mumbai2.data, mumbai2.loading, mumbai2.error]) //eslint-disable-line
+  }, [amoy.data, amoy.loading, amoy.error, mumbai2.data, mumbai2.loading, mumbai2.error]) //eslint-disable-line
    //Arbitrum One
    useEffect(() => {
     if (!arbone) return
@@ -351,7 +350,7 @@ const Graph = ({ children }) => {
       !graphLineaData.data ||
       !graphSepoliaData.data ||
       !graphMaticData.data ||
-      !graphMumbaiData.data ||
+      !graphAmoyData.data ||
       !graphArboneData.data ||
       !graphArbtestData.data ||
       !graphGnosismainData.data ||
@@ -391,10 +390,10 @@ graphMaticData.data.newReportEntities.forEach((event) => {
 });
 }
 
-if (graphMumbaiData.data && graphMumbaiData.data.newReportEntities) {
-  graphMumbaiData.data.newReportEntities.forEach((event) => {
-    const updatedEvent = Object.assign({}, event, { chain: 'Mumbai Testnet' });
-    updatedEvent.txnLink = `https://mumbai.polygonscan.com/tx/${event.txnHash}`;
+if (graphAmoyData.data && graphAmoyData.data.newReportEntities) {
+  graphAmoyData.data.newReportEntities.forEach((event) => {
+    const updatedEvent = Object.assign({}, event, { chain: 'Amoy Testnet' });
+    updatedEvent.txnLink = `https://amoy.polygonscan.com/tx/${event.txnHash}`;
     eventsArray.push(updatedEvent);
   });
 }
@@ -436,7 +435,7 @@ graphPolygonzkData.data.newReportEntities.forEach((event) => {
     return () => {
       setAllGraphData(null)
     }
-  }, [graphMainnetData, graphLineaData, graphSepoliaData, graphMaticData, graphMumbaiData, graphArboneData, graphArbtestData, graphGnosismainData, graphOptmainData, graphPolygonzkData])
+  }, [graphMainnetData, graphLineaData, graphSepoliaData, graphMaticData, graphAmoyData, graphArboneData, graphArbtestData, graphGnosismainData, graphOptmainData, graphPolygonzkData])
 
   useEffect(() => {
     if (!allGraphData) return
