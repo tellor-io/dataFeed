@@ -10,8 +10,8 @@ export const GraphAutopayContext = createContext()
 
 //ApolloClients
 
-const clientMumbai = new ApolloClient({
-  uri: 'https://api.thegraph.com/subgraphs/name/tellor-io/tellorautopaymumbaihgraph',
+const clientAmoy = new ApolloClient({
+  uri: 'https://api.studio.thegraph.com/query/33329/tellor-autopay-amoy-graph/version/latest',
   cache: new InMemoryCache(),
 })
 
@@ -50,7 +50,7 @@ const GraphAutopay = ({ children }) => {
   //Component State
   const [autopayMaticData, setAutopayMaticData] = useState({})
   const [autopayMainnetData, setAutopayMainnetData] = useState({})
-  const [autopayMumbaiData, setAutopayMumbaiData] = useState({})
+  const [autopayAmoyData, setAutopayAmoyData] = useState({})
   const [autopaySepoliaData, setAutopaySepoliaData] = useState({})
   const [autopayOpmainData, setAutopayOpmainData] = useState({})
   const [autopayDivaMumbaiData, setAutopayDivaMumbaiData] = useState({})
@@ -70,9 +70,9 @@ const GraphAutopay = ({ children }) => {
     fetchPolicy: 'network-only',
     pollInterval: 5000,
   })
-  //Mumbai
-  const mumbai = useQuery(autopayQuery, {
-    client: clientMumbai,
+  //Amoy
+  const amoy = useQuery(autopayQuery, {
+    client: clientAmoy,
     fetchPolicy: 'network-only',
     pollInterval: 5000,
   })
@@ -141,18 +141,18 @@ const GraphAutopay = ({ children }) => {
       setAutopaySepoliaData({})
     }
   }, [sepolia.data, sepolia.loading, sepolia.error]) //eslint-disable-line*/
-  //Mumbai
+  //Amoy
   useEffect(() => {
-    if (!mumbai) return
-    setAutopayMumbaiData({
-      data: mumbai.data,
-      loading: mumbai.loading,
-      error: mumbai.error,
+    if (!amoy) return
+    setAutopayAmoyData({
+      data: amoy.data,
+      loading: amoy.loading,
+      error: amoy.error,
     })
     return () => {
-      setAutopayMumbaiData({})
+      setAutopayAmoyData({})
     }
-  }, [mumbai.data, mumbai.loading, mumbai.error]) //eslint-disable-line
+  }, [amoy.data, amoy.loading, amoy.error]) //eslint-disable-line
   //Optimism
   useEffect(() => {
     if (!opmain) return
@@ -195,7 +195,7 @@ const GraphAutopay = ({ children }) => {
       !autopayMaticData.data ||
       !autopayMainnetData.data ||
       !autopaySepoliaData.data ||
-      !autopayMumbaiData.data ||
+      !autopayAmoyData.data ||
       !autopayOpmainData.data ||
       !autopayDivaMumbaiData.data ||
       !autopayDivaAdaptorMumbaiData.data   
@@ -209,15 +209,15 @@ const GraphAutopay = ({ children }) => {
       updatedEvent.txnLink = `https://polygonscan.com/tx/${event.txnHash}`;
       eventsArray.push(updatedEvent);
     })
-    autopayMumbaiData.data.dataFeedEntities.forEach((event) => {
-      const updatedEvent = Object.assign({}, event, { chain: 'Mumbai Testnet' });
-      updatedEvent.txnLink = `https://mumbai.polygonscan.com/tx/${event.txnHash}`;
+    autopayAmoyData.data.dataFeedEntities.forEach((event) => {
+      const updatedEvent = Object.assign({}, event, { chain: 'Amoy Testnet' });
+      updatedEvent.txnLink = `https://amoy.polygonscan.com/tx/${event.txnHash}`;
       eventsArray.push(updatedEvent);
     });
     
-    autopayMumbaiData.data.tipAddedEntities.forEach((event) => {
-      const updatedEvent = Object.assign({}, event, { chain: 'Mumbai Testnet' });
-      updatedEvent.txnLink = `https://mumbai.polygonscan.com/tx/${event.txnHash}`;
+    autopayAmoyData.data.tipAddedEntities.forEach((event) => {
+      const updatedEvent = Object.assign({}, event, { chain: 'Amoy Testnet' });
+      updatedEvent.txnLink = `https://amoy.polygonscan.com/tx/${event.txnHash}`;
       eventsArray.push(updatedEvent);
     });
     
@@ -282,7 +282,7 @@ const GraphAutopay = ({ children }) => {
     return () => {
       setAllGraphData(null)
     }
-  }, [autopayMaticData, autopayMumbaiData, autopayMainnetData, autopaySepoliaData, autopayOpmainData, autopayDivaMumbaiData, autopayDivaAdaptorMumbaiData])
+  }, [autopayMaticData, autopayAmoyData, autopayMainnetData, autopaySepoliaData, autopayOpmainData, autopayDivaMumbaiData, autopayDivaAdaptorMumbaiData])
 
 
   useEffect(() => {
