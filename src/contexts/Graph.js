@@ -16,10 +16,6 @@ const clientMainnet = new ApolloClient({
   uri: 'https://api.studio.thegraph.com/query/33329/tellororaclemainhgraph/version/latest',
   cache: new InMemoryCache(),
 })*/ 
-const clientLinea = new ApolloClient({
-  uri: 'https://api.studio.thegraph.com/query/33329/tellor-oracle-linea-main/v0.0.1',
-  cache: new InMemoryCache(), 
-})
 const clientSepolia = new ApolloClient({
   uri: 'https://gateway-arbitrum.network.thegraph.com/api/ad08435a6d6c0933c9e272dbdfa21322/subgraphs/id/EVBJPDb3Cv5CQiWQetL9voCs95YP5tgozPyxuXq4iZhN',
   cache: new InMemoryCache(),
@@ -66,6 +62,14 @@ const clientOptmain2 = new ApolloClient({
   uri: 'https://api.thegraph.com/subgraphs/name/raynharr/tellor-flex-optmain-graph2',
   cache: new InMemoryCache(),
 })
+const clientLinea = new ApolloClient({
+  uri: 'https://api.studio.thegraph.com/query/33329/tellor-oracle-linea-main/v0.0.1',
+  cache: new InMemoryCache(), 
+})
+const clientLineaTest = new ApolloClient({
+  uri: 'https://api.studio.thegraph.com/query/33329/tellor-oracle-linea-tesnet/version/latest',
+  cache: new InMemoryCache(), 
+})
 const clientPolygonzk = new ApolloClient({
   uri: 'https://api.studio.thegraph.com/query/33329/tellor-oracle-polygonzk-main/v0.0.1',
   cache: new InMemoryCache(),
@@ -90,6 +94,7 @@ const Graph = ({ children }) => {
   const [graphGnosismainData, setGraphGnosismainData] = useState({})
   const [graphOptmainData, setGraphOptmainData] = useState({})
   const [graphLineaData, setGraphLineaData] = useState({})
+  const [graphLineaTestData, setGraphLineaTestData] = useState({})
   const [graphPolygonzkData, setGraphPolygonzkData] = useState({})
   const [graphZksyncMainData, setGraphZksyncMainData] = useState({})
   const [graphZksyncTestData, setGraphZksyncTestData] = useState({})
@@ -110,12 +115,6 @@ const Graph = ({ children }) => {
   }))*/
   const mainPay = useQuery(autopayQuery, {
     client: clientMainnet,
-    fetchPolicy: 'network-only',
-    pollInterval: 5000,
-  })
-   //Linea
-   const linea = useQuery(reporterQuery, {
-    client: clientLinea,
     fetchPolicy: 'network-only',
     pollInterval: 5000,
   })
@@ -188,6 +187,18 @@ const Graph = ({ children }) => {
     fetchPolicy: 'network-only',
     pollInterval: 5000,
   })
+  //Linea
+  const linea = useQuery(reporterQuery, {
+    client: clientLinea,
+    fetchPolicy: 'network-only',
+    pollInterval: 5000,
+  })
+  //Linea Testnet
+     const lineaTest = useQuery(reporterQuery, {
+      client: clientLineaTest,
+      fetchPolicy: 'network-only',
+      pollInterval: 5000,
+    })
      //polygonzkevm
      const polygonzk = useQuery(reporterQuery, {
       client: clientPolygonzk,
@@ -235,6 +246,19 @@ const Graph = ({ children }) => {
         setGraphLineaData({})
       }
     }, [linea.data, linea.loading, linea.error]) //eslint-disable-line
+  //Linea Test
+  useEffect(() => {
+    if (!lineaTest) return
+    setGraphLineaTestData({
+      data: lineaTest.data,
+      loading: lineaTest.loading,
+      error: lineaTest.error,
+    })
+
+    return () => {
+      setGraphLineaTestData({})
+    }
+  }, [lineaTest.data, lineaTest.loading, lineaTest.error]) //eslint-disable-line
     //Sepolia
     useEffect(() => {
       if (!sepolia) return
@@ -397,6 +421,7 @@ const Graph = ({ children }) => {
     if (
       !graphMainnetData.data ||
       !graphLineaData.data ||
+      !graphLineaTestData.data ||
       !graphSepoliaData.data ||
       !graphMaticData.data ||
       !graphAmoyData.data ||
@@ -418,13 +443,6 @@ const Graph = ({ children }) => {
     eventsArray.push(updatedEvent);
   });
 }
-
-graphLineaData.data.newReportEntities.forEach((event) => {
-  const updatedEvent = Object.assign({}, event, { chain: 'Linea Mainnet' });
-  updatedEvent.txnLink = `https://lineascan.build/tx/${event.txnHash}`;
-  eventsArray.push(updatedEvent);
-});
-
 if (graphSepoliaData.data && graphSepoliaData.data.newReportEntities) {
   graphSepoliaData.data.newReportEntities.forEach((event) => {
    const updatedEvent = Object.assign({}, event, { chain: 'Sepolia Testnet' });
@@ -474,16 +492,30 @@ updatedEvent.txnLink = `https://optimistic.etherscan.io/tx/${event.txnHash}`;
 eventsArray.push(updatedEvent);
 });
 
+graphLineaData.data.newReportEntities.forEach((event) => {
+  const updatedEvent = Object.assign({}, event, { chain: 'Linea Mainnet' });
+  updatedEvent.txnLink = `https://lineascan.build/tx/${event.txnHash}`;
+  eventsArray.push(updatedEvent);
+});
+
+graphLineaTestData.data.newReportEntities.forEach((event) => {
+  const updatedEvent = Object.assign({}, event, { chain: 'Linea Testnet' });
+  updatedEvent.txnLink = `https://sepolia.lineascan.build/tx/${event.txnHash}`;
+  eventsArray.push(updatedEvent);
+});
+
 graphPolygonzkData.data.newReportEntities.forEach((event) => {
   const updatedEvent = Object.assign({}, event, { chain: 'Polygon zkEVM Main' });
   updatedEvent.txnLink = `https://zkevm.polygonscan.com/tx/${event.txnHash}`;
   eventsArray.push(updatedEvent);
 });
+
 graphZksyncMainData.data.newReportEntities.forEach((event) => {
   const updatedEvent = Object.assign({}, event, { chain: 'ZkSync Mainnet' });
   updatedEvent.txnLink = `https://explorer.zksync.io/tx/${event.txnHash}`;
   eventsArray.push(updatedEvent);
 });
+
 graphZksyncTestData.data.newReportEntities.forEach((event) => {
   const updatedEvent = Object.assign({}, event, { chain: 'ZkSync Sepolia' });
   updatedEvent.txnLink = `https://sepolia.explorer.zksync.io/tx/${event.txnHash}`;
@@ -496,7 +528,7 @@ graphZksyncTestData.data.newReportEntities.forEach((event) => {
     return () => {
       setAllGraphData(null)
     }
-  }, [graphMainnetData, graphLineaData, graphSepoliaData, graphMaticData, graphAmoyData, graphArboneData, graphArbtestData, graphGnosismainData, graphOptmainData, graphPolygonzkData, graphZksyncMainData, graphZksyncTestData])
+  }, [graphMainnetData, graphSepoliaData, graphMaticData, graphAmoyData, graphArboneData, graphArbtestData, graphGnosismainData, graphOptmainData, graphLineaData, graphLineaTestData, graphPolygonzkData, graphZksyncMainData, graphZksyncTestData])
 
   useEffect(() => {
     if (!allGraphData) return
