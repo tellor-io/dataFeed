@@ -54,12 +54,12 @@ const clientGnosismain = new ApolloClient({
   uri: 'https://gateway.thegraph.com/api/ad08435a6d6c0933c9e272dbdfa21322/subgraphs/id/A614VZr6wqD4B8wNwiZTqrV6StP1Kvmp2AgG2EdJF31k',
   cache: new InMemoryCache(),
 })
-const clientOptmain = new ApolloClient({
+const clientOptMain = new ApolloClient({
   uri: 'https://api.thegraph.com/subgraphs/name/tellor-io/tellor-oracle-optimism-main',
   cache: new InMemoryCache(),
 })
-const clientOptmain2 = new ApolloClient({
-  uri: 'https://api.thegraph.com/subgraphs/name/raynharr/tellor-flex-optmain-graph2',
+const clientOptTest = new ApolloClient({
+  uri: 'https://api.studio.thegraph.com/query/33329/tellor-oracle-optimism-testnet/version/latest',
   cache: new InMemoryCache(),
 })
 const clientLinea = new ApolloClient({
@@ -92,7 +92,8 @@ const Graph = ({ children }) => {
   const [graphArboneData, setGraphArboneData] = useState({})
   const [graphArbtestData, setGraphArbtestData] = useState({})
   const [graphGnosismainData, setGraphGnosismainData] = useState({})
-  const [graphOptmainData, setGraphOptmainData] = useState({})
+  const [graphOptMainData, setGraphOptMainData] = useState({})
+  const [graphOptTestData, setGraphOptTestData] = useState({})
   const [graphLineaData, setGraphLineaData] = useState({})
   const [graphLineaTestData, setGraphLineaTestData] = useState({})
   const [graphPolygonzkData, setGraphPolygonzkData] = useState({})
@@ -177,13 +178,13 @@ const Graph = ({ children }) => {
   })
   //optimism(mainnet)
   const optmain = useQuery(reporterQuery, {
-    client: clientOptmain,
+    client: clientOptMain,
     fetchPolicy: 'network-only',
     pollInterval: 5000,
   })
-   //optimism(mainnet)
-   const optmain2 = useQuery(reporterQuery, {
-    client: clientOptmain2,
+   //optimism(testnet)
+   const opttest = useQuery(reporterQuery, {
+    client: clientOptTest,
     fetchPolicy: 'network-only',
     pollInterval: 5000,
   })
@@ -354,26 +355,31 @@ const Graph = ({ children }) => {
     }
   }, [gnosismain.data, gnosismain.loading, gnosismain.error]) //eslint-disable-line 
    //Optmain
-  useEffect(() => {
-    if (!optmain.data && !optmain2.data) return
-    const combinedData = {
-      ...optmain.data,
-      ...optmain2.data,
-      newReportEntities: [
-        ...(optmain.data?.newReportEntities || []),
-        ...(optmain2.data?.newReportEntities || [])
-      ]
-    }
-    setGraphOptmainData({
-      data: combinedData,
-      loading: optmain.loading || optmain2.loading,
-      error: optmain.error || optmain2.error,
+   useEffect(() => {
+    if (!optmain) return
+    setGraphOptMainData({
+      data: optmain.data,
+      loading: optmain.loading,
+      error: optmain.error,
     })
-  
+
     return () => {
-      setGraphOptmainData({})
+      setGraphOptMainData({})
     }
-  }, [optmain.data, optmain.loading, optmain.error, optmain2.data, optmain2.loading, optmain2.error]) //eslint-disable-line
+  }, [optmain.data, optmain.loading, optmain.error]) //eslint-disable-line  
+  //Optimism Test
+  useEffect(() => {
+    if (!opttest) return
+    setGraphOptTestData({
+      data: opttest.data,
+      loading: opttest.loading,
+      error: opttest.error,
+    })
+
+    return () => {
+      setGraphOptTestData({})
+    }
+  }, [opttest.data, opttest.loading, opttest.error]) //eslint-disable-line  
   //Polygonzk
   useEffect(() => {
     if (!polygonzk) return
@@ -428,7 +434,8 @@ const Graph = ({ children }) => {
       !graphArboneData.data ||
       !graphArbtestData.data ||
       !graphGnosismainData.data ||
-      !graphOptmainData.data ||
+      !graphOptMainData.data ||
+      !graphOptTestData.data ||
       !graphPolygonzkData.data ||
       !graphZksyncMainData.data ||
       !graphZksyncTestData.data
@@ -450,7 +457,6 @@ if (graphSepoliaData.data && graphSepoliaData.data.newReportEntities) {
     eventsArray.push(updatedEvent);
   });
 }
-
 if (graphMaticData.data && graphMaticData.data.newReportEntities) {
 graphMaticData.data.newReportEntities.forEach((event) => {
   const updatedEvent = Object.assign({}, event, { chain: 'Polygon Mainnet' });
@@ -458,7 +464,6 @@ graphMaticData.data.newReportEntities.forEach((event) => {
   eventsArray.push(updatedEvent);
 });
 }
-
 if (graphAmoyData.data && graphAmoyData.data.newReportEntities) {
   graphAmoyData.data.newReportEntities.forEach((event) => {
     const updatedEvent = Object.assign({}, event, { chain: 'Amoy Testnet' });
@@ -466,56 +471,57 @@ if (graphAmoyData.data && graphAmoyData.data.newReportEntities) {
     eventsArray.push(updatedEvent);
   });
 }
-
 graphArboneData.data.newReportEntities.forEach((event) => {
   const updatedEvent = Object.assign({}, event, { chain: 'Arbitrum Mainnet' });
   updatedEvent.txnLink = `https://arbiscan.io/tx/${event.txnHash}`;
   eventsArray.push(updatedEvent);
 });
-
 graphArbtestData.data.newReportEntities.forEach((event) => {
   const updatedEvent = Object.assign({}, event, { chain: 'Arbitrum Goerli' });
   updatedEvent.txnLink = `https://goerli.arbiscan.io/tx/${event.txnHash}`;
   eventsArray.push(updatedEvent);
 });
-
 graphGnosismainData.data.newReportEntities.forEach((event) => {
 const updatedEvent = Object.assign({}, event, { chain: 'Gnosis Mainnet' });
 updatedEvent.txnLink = `https://gnosisscan.io/tx/${event.txnHash}`;
 eventsArray.push(updatedEvent);
 });
-
-if (graphOptmainData.data && graphOptmainData.data.newReportEntities) {
-graphOptmainData.data.newReportEntities.forEach((event) => {
-const updatedEvent = Object.assign({}, event, { chain: 'Optimism Mainnet' });
-updatedEvent.txnLink = `https://optimistic.etherscan.io/tx/${event.txnHash}`;
-eventsArray.push(updatedEvent);
+if (graphOptMainData.data && graphOptMainData.data.newReportEntities) {
+  graphOptMainData.data.newReportEntities.forEach((event) => {
+  const updatedEvent = Object.assign({}, event, { chain: 'Optimism Mainnet' });
+  updatedEvent.txnLink = `https://optimistic.etherscan.io/tx/${event.txnHash}`;
+  eventsArray.push(updatedEvent);
+  });
+graphOptMainData.data.newReportEntities.forEach((event) => {
+  const updatedEvent = Object.assign({}, event, { chain: 'Optimism Mainnet' });
+  updatedEvent.txnLink = `https://optimistic.etherscan./tx/${event.txnHash}`;
+  eventsArray.push(updatedEvent);
 });
-
+graphOptTestData.data.newReportEntities.forEach((event) => {
+  const updatedEvent = Object.assign({}, event, { chain: 'Optimism Testnet' });
+  updatedEvent.txnLink = `https://sepolia-optimism.etherscan..build/tx/${event.txnHash}`;
+  eventsArray.push(updatedEvent);
+});
 graphLineaData.data.newReportEntities.forEach((event) => {
   const updatedEvent = Object.assign({}, event, { chain: 'Linea Mainnet' });
   updatedEvent.txnLink = `https://lineascan.build/tx/${event.txnHash}`;
   eventsArray.push(updatedEvent);
 });
-
 graphLineaTestData.data.newReportEntities.forEach((event) => {
   const updatedEvent = Object.assign({}, event, { chain: 'Linea Testnet' });
   updatedEvent.txnLink = `https://sepolia.lineascan.build/tx/${event.txnHash}`;
   eventsArray.push(updatedEvent);
 });
-
 graphPolygonzkData.data.newReportEntities.forEach((event) => {
   const updatedEvent = Object.assign({}, event, { chain: 'Polygon zkEVM Main' });
   updatedEvent.txnLink = `https://zkevm.polygonscan.com/tx/${event.txnHash}`;
   eventsArray.push(updatedEvent);
 });
-
 graphZksyncMainData.data.newReportEntities.forEach((event) => {
   const updatedEvent = Object.assign({}, event, { chain: 'ZkSync Mainnet' });
   updatedEvent.txnLink = `https://explorer.zksync.io/tx/${event.txnHash}`;
   eventsArray.push(updatedEvent);
 });
-
 graphZksyncTestData.data.newReportEntities.forEach((event) => {
   const updatedEvent = Object.assign({}, event, { chain: 'ZkSync Sepolia' });
   updatedEvent.txnLink = `https://sepolia.explorer.zksync.io/tx/${event.txnHash}`;
@@ -528,7 +534,7 @@ graphZksyncTestData.data.newReportEntities.forEach((event) => {
     return () => {
       setAllGraphData(null)
     }
-  }, [graphMainnetData, graphSepoliaData, graphMaticData, graphAmoyData, graphArboneData, graphArbtestData, graphGnosismainData, graphOptmainData, graphLineaData, graphLineaTestData, graphPolygonzkData, graphZksyncMainData, graphZksyncTestData])
+  }, [graphMainnetData, graphSepoliaData, graphMaticData, graphAmoyData, graphArboneData, graphArbtestData, graphGnosismainData, graphOptMainData, graphOptTestData, graphLineaData, graphLineaTestData, graphPolygonzkData, graphZksyncMainData, graphZksyncTestData]);
 
   useEffect(() => {
     if (!allGraphData) return
