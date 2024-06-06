@@ -25,11 +25,11 @@ const clientSepolia = new ApolloClient({
   cache: new InMemoryCache(),
 })*/
 const clientMatic = new ApolloClient({
-  uri: 'https://api.thegraph.com/subgraphs/name/tellor-io/tellorflexoraclematichgraph',
+  uri: '',
   cache: new InMemoryCache(),
 })
 const clientMatic2 = new ApolloClient({
-  uri: 'https://api.thegraph.com/subgraphs/name/raynharr/tellor-flex-matic-graph2',
+  uri: 'https://api.studio.thegraph.com/query/33329/tellor-flex-matic-graph2/version/latest',
   cache: new InMemoryCache(),
 })
 const clientAmoy = new ApolloClient({
@@ -41,8 +41,7 @@ const clientMumbai2 = new ApolloClient({
   cache: new InMemoryCache(),
 })
 const clientArbone = new ApolloClient({
-  uri: //'https://api.zondax.ch/fil/data/v1/mainnet/transactions/address/f1bkgyshmwpji4sltshvtyzf6yb7uraxr2pkwlamq?page=1',
-  'https://api.thegraph.com/subgraphs/name/raynharr/tellor-flex-arbitrummain-graph',
+  uri: 'https://api.studio.thegraph.com/query/33329/tellor-flex-arbitrummain-graph/version/latest',
   cache: new InMemoryCache(),
 })
 const clientArbtest = new ApolloClient({
@@ -55,7 +54,7 @@ const clientGnosismain = new ApolloClient({
   cache: new InMemoryCache(),
 })
 const clientOptMain = new ApolloClient({
-  uri: 'https://api.thegraph.com/subgraphs/name/tellor-io/tellor-oracle-optimism-main',
+  uri: 'https://api.studio.thegraph.com/query/33329/tellor-flex-optmain-graph2/version/latest',
   cache: new InMemoryCache(),
 })
 const clientOptTest = new ApolloClient({
