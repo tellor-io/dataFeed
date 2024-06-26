@@ -9,26 +9,16 @@ export const GraphContext = createContext()
 
 //ApolloClients
 const clientMainnet = new ApolloClient({
-  uri: 'https://gateway-arbitrum.network.thegraph.com/api/ad08435a6d6c0933c9e272dbdfa21322/subgraphs/id/5vJKyvzkSDv6kc5vCbyohvXq1KgCczsSVr58jUaPih6S',
-  cache: new InMemoryCache(),
-})
-/*const clientMainnet2 = new ApolloClient({
   uri: 'https://api.studio.thegraph.com/query/33329/tellororaclemainhgraph/version/latest',
   cache: new InMemoryCache(),
-})*/ 
+})
+
 const clientSepolia = new ApolloClient({
-  uri: 'https://gateway-arbitrum.network.thegraph.com/api/ad08435a6d6c0933c9e272dbdfa21322/subgraphs/id/EVBJPDb3Cv5CQiWQetL9voCs95YP5tgozPyxuXq4iZhN',
+  uri: 'https://api.studio.thegraph.com/query/33329/tellor-oracle-sepolia-graph/version/latest',
   cache: new InMemoryCache(),
 })
-/*const clientSepolia2 = new ApolloClient({
-  uri: 'https://api.studio.thegraph.com/query/33329/tellor-flex-sepolia-subgraph2/v0.0.2',
-  cache: new InMemoryCache(),
-})*/
+
 const clientMatic = new ApolloClient({
-  uri: '',
-  cache: new InMemoryCache(),
-})
-const clientMatic2 = new ApolloClient({
   uri: 'https://api.studio.thegraph.com/query/33329/tellor-flex-matic-graph2/version/latest',
   cache: new InMemoryCache(),
 })
@@ -36,21 +26,14 @@ const clientAmoy = new ApolloClient({
   uri: 'https://api.studio.thegraph.com/query/33329/tellor-oracle-amoy-test-subgr/version/latest',
   cache: new InMemoryCache(),
 })
-const clientMumbai2 = new ApolloClient({
-  uri: 'https://api.thegraph.com/subgraphs/name/raynharr/tellor-360-mumbai-subgraph',
-  cache: new InMemoryCache(),
-})
+
 const clientArbone = new ApolloClient({
   uri: 'https://api.studio.thegraph.com/query/33329/tellor-flex-arbitrummain-graph/version/latest',
   cache: new InMemoryCache(),
 })
-const clientArbtest = new ApolloClient({
-  uri: 'https://api.thegraph.com/subgraphs/name/tellor-io/tellor-oracle-arbitrum-goerli',
-  //'https://api.goldsky.com/api/public/project_clf8nopuy59a93stya1d02ev6/subgraphs/tellor-oracle-arbitrumtest/v0.0.1/gn',
-  cache: new InMemoryCache(),
-})
+
 const clientGnosismain = new ApolloClient({
-  uri: 'https://gateway.thegraph.com/api/ad08435a6d6c0933c9e272dbdfa21322/subgraphs/id/A614VZr6wqD4B8wNwiZTqrV6StP1Kvmp2AgG2EdJF31k',
+  uri: 'https://api.studio.thegraph.com/query/33329/tellor-flex-matic-graph2/version/latest',
   cache: new InMemoryCache(),
 })
 const clientOptMain = new ApolloClient({
@@ -89,7 +72,6 @@ const Graph = ({ children }) => {
   const [graphMaticData, setGraphMaticData] = useState({})
   const [graphAmoyData, setGraphAmoyData] = useState({})
   const [graphArboneData, setGraphArboneData] = useState({})
-  const [graphArbtestData, setGraphArbtestData] = useState({})
   const [graphGnosismainData, setGraphGnosismainData] = useState({})
   const [graphOptMainData, setGraphOptMainData] = useState({})
   const [graphOptTestData, setGraphOptTestData] = useState({})
@@ -108,41 +90,20 @@ const Graph = ({ children }) => {
     fetchPolicy: 'network-only',
     pollInterval: 5000,
   })
-  /*const mainnet2 = useQuery(reporterQuery, {
-    client: clientMainnet2,
-    fetchPolicy: 'network-only',
-    pollInterval: 5000,
-  }))*/
   const mainPay = useQuery(autopayQuery, {
     client: clientMainnet,
     fetchPolicy: 'network-only',
     pollInterval: 5000,
   })
-  /*const goerliPay = useQuery(autopayQuery, {
-    client: clientGoerli,
-    fetchPolicy: 'network-only',
-    pollInterval: 5000,
-  })*/
   //Sepolia
   const sepolia = useQuery(reporterQuery, {
     client: clientSepolia,
     fetchPolicy: 'network-only',
     pollInterval: 5000,
   })
-  /*const sepolia2 = useQuery(reporterQuery, {
-    client: clientSepolia2,
-    fetchPolicy: 'network-only',
-    pollInterval: 5000,
-  })*/
   //Matic
   const matic = useQuery(reporterQuery, {
     client: clientMatic,
-    fetchPolicy: 'network-only',
-    pollInterval: 5000,
-  })
-  //Matic
-  const matic2 = useQuery(reporterQuery, {
-    client: clientMatic2,
     fetchPolicy: 'network-only',
     pollInterval: 5000,
   })
@@ -152,20 +113,9 @@ const Graph = ({ children }) => {
     fetchPolicy: 'network-only',
     pollInterval: 5000,
   })
-  const mumbai2 = useQuery(reporterQuery, {
-    client: clientMumbai2,
-    fetchPolicy: 'network-only',
-    pollInterval: 5000,
-  })
   //Arbitrum One (Main)
   const arbone = useQuery(reporterQuery, {
     client: clientArbone,
-    fetchPolicy: 'network-only',
-    pollInterval: 5000,
-  })
-    //Arbitrum Test (Goerli)
-  const arbtest = useQuery(reporterQuery, {
-    client: clientArbtest,
     fetchPolicy: 'network-only',
     pollInterval: 5000,
   })
@@ -274,46 +224,31 @@ const Graph = ({ children }) => {
     }, [sepolia.data, sepolia.loading, sepolia.error]) //eslint-disable-line
   //Matic
   useEffect(() => {
-    if (!matic && !matic2.data) return
-    const combinedData = {
-      ...matic.data,
-      ...matic2.data,
-      newReportEntities: [
-        ...(matic.data?.newReportEntities || []),
-        ...(matic2.data?.newReportEntities || [])
-      ]
-    }
+    if (!matic) return
     setGraphMaticData({
-      data: combinedData,
-      loading: matic.loading || matic2.loading,
-      error: matic.error || matic2.error,
+      data: matic.data,
+      loading: matic.loading,
+      error: matic.error,
     })
 
     return () => {
       setGraphMaticData({})
     }
-  }, [matic.data, matic.loading, matic.error, matic2.data, matic2.loading, matic2.error]) //eslint-disable-line
+  }, [matic.data, matic.loading, matic.error]) //eslint-disable-line
+
   //Amoy
   useEffect(() => {
-    if (!amoy.data && !mumbai2.data) return
-    const combinedData = {
-      ...amoy.data,
-      ...mumbai2.data,
-      newReportEntities: [
-        ...(amoy.data?.newReportEntities || []),
-        ...(mumbai2.data?.newReportEntities || [])
-      ]
-    }
+    if (!amoy.data) return
     setGraphAmoyData({
-      data: combinedData,
-      loading: amoy.loading || mumbai2.loading,
-      error: amoy.error || mumbai2.error,
+      data: amoy.data,
+      loading: amoy.loading,
+      error: amoy.error
     })
   
     return () => {
       setGraphAmoyData({})
     }
-  }, [amoy.data, amoy.loading, amoy.error, mumbai2.data, mumbai2.loading, mumbai2.error]) //eslint-disable-line
+  }, [amoy.data, amoy.loading, amoy.error]) //eslint-disable-line
    //Arbitrum One
    useEffect(() => {
     if (!arbone) return
@@ -327,19 +262,7 @@ const Graph = ({ children }) => {
       setGraphArboneData({})
     }
   }, [arbone.data, arbone.loading, arbone.error]) //eslint-disable-line  
-     //Arbitrum Test
-     useEffect(() => {
-      if (!arbtest) return
-      setGraphArbtestData({
-        data: arbtest.data,
-        loading: arbtest.loading,
-        error: arbtest.error,
-      })
-  
-      return () => {
-        setGraphArbtestData({})
-      }
-    }, [arbtest.data, arbtest.loading, arbtest.error]) //eslint-disable-line  
+
   //Gnosis Main
   useEffect(() => {
     if (!gnosismain) return
@@ -431,7 +354,6 @@ const Graph = ({ children }) => {
       !graphMaticData.data ||
       !graphAmoyData.data ||
       !graphArboneData.data ||
-      !graphArbtestData.data ||
       !graphGnosismainData.data ||
       !graphOptMainData.data ||
       !graphOptTestData.data ||
@@ -442,98 +364,100 @@ const Graph = ({ children }) => {
       return
 
     let eventsArray = []
-  if (graphMainnetData.data && graphMainnetData.data.newReportEntities) {
-  graphMainnetData.data.newReportEntities.forEach((event) => {
+
+graphMainnetData.data.newReportEntities.forEach((event) => {
     const updatedEvent = Object.assign({}, event, { chain: 'Ethereum Mainnet' });
     updatedEvent.txnLink = `https://etherscan.io/tx/${event.txnHash}`;
     eventsArray.push(updatedEvent);
   });
-}
-if (graphSepoliaData.data && graphSepoliaData.data.newReportEntities) {
-  graphSepoliaData.data.newReportEntities.forEach((event) => {
+  
+graphSepoliaData.data.newReportEntities.forEach((event) => {
    const updatedEvent = Object.assign({}, event, { chain: 'Sepolia Testnet' });
     updatedEvent.txnLink = `https://sepolia.etherscan.io/tx/${event.txnHash}`;
     eventsArray.push(updatedEvent);
   });
-}
-if (graphMaticData.data && graphMaticData.data.newReportEntities) {
+
 graphMaticData.data.newReportEntities.forEach((event) => {
   const updatedEvent = Object.assign({}, event, { chain: 'Polygon Mainnet' });
   updatedEvent.txnLink = `https://polygonscan.com/tx/${event.txnHash}`;
   eventsArray.push(updatedEvent);
 });
-}
-if (graphAmoyData.data && graphAmoyData.data.newReportEntities) {
-  graphAmoyData.data.newReportEntities.forEach((event) => {
+
+graphAmoyData.data.newReportEntities.forEach((event) => {
     const updatedEvent = Object.assign({}, event, { chain: 'Amoy Testnet' });
     updatedEvent.txnLink = `https://amoy.polygonscan.com/tx/${event.txnHash}`;
     eventsArray.push(updatedEvent);
   });
-}
+
 graphArboneData.data.newReportEntities.forEach((event) => {
   const updatedEvent = Object.assign({}, event, { chain: 'Arbitrum Mainnet' });
   updatedEvent.txnLink = `https://arbiscan.io/tx/${event.txnHash}`;
   eventsArray.push(updatedEvent);
 });
-graphArbtestData.data.newReportEntities.forEach((event) => {
-  const updatedEvent = Object.assign({}, event, { chain: 'Arbitrum Goerli' });
-  updatedEvent.txnLink = `https://goerli.arbiscan.io/tx/${event.txnHash}`;
-  eventsArray.push(updatedEvent);
-});
+
+
 graphGnosismainData.data.newReportEntities.forEach((event) => {
 const updatedEvent = Object.assign({}, event, { chain: 'Gnosis Mainnet' });
 updatedEvent.txnLink = `https://gnosisscan.io/tx/${event.txnHash}`;
 eventsArray.push(updatedEvent);
 });
-if (graphOptMainData.data && graphOptMainData.data.newReportEntities) {
-  graphOptMainData.data.newReportEntities.forEach((event) => {
-  const updatedEvent = Object.assign({}, event, { chain: 'Optimism Mainnet' });
-  updatedEvent.txnLink = `https://optimistic.etherscan.io/tx/${event.txnHash}`;
-  eventsArray.push(updatedEvent);
-  });
+
+
+graphOptMainData.data.newReportEntities.forEach((event) => {
+const updatedEvent = Object.assign({}, event, { chain: 'Optimism Mainnet' });
+updatedEvent.txnLink = `https://optimistic.etherscan.io/tx/${event.txnHash}`;
+eventsArray.push(updatedEvent);
+});
+
 graphOptMainData.data.newReportEntities.forEach((event) => {
   const updatedEvent = Object.assign({}, event, { chain: 'Optimism Mainnet' });
   updatedEvent.txnLink = `https://optimistic.etherscan./tx/${event.txnHash}`;
   eventsArray.push(updatedEvent);
 });
+
 graphOptTestData.data.newReportEntities.forEach((event) => {
   const updatedEvent = Object.assign({}, event, { chain: 'Optimism Testnet' });
   updatedEvent.txnLink = `https://sepolia-optimism.etherscan..build/tx/${event.txnHash}`;
   eventsArray.push(updatedEvent);
 });
+
 graphLineaData.data.newReportEntities.forEach((event) => {
   const updatedEvent = Object.assign({}, event, { chain: 'Linea Mainnet' });
   updatedEvent.txnLink = `https://lineascan.build/tx/${event.txnHash}`;
   eventsArray.push(updatedEvent);
 });
+
 graphLineaTestData.data.newReportEntities.forEach((event) => {
   const updatedEvent = Object.assign({}, event, { chain: 'Linea Testnet' });
   updatedEvent.txnLink = `https://sepolia.lineascan.build/tx/${event.txnHash}`;
   eventsArray.push(updatedEvent);
 });
+
 graphPolygonzkData.data.newReportEntities.forEach((event) => {
   const updatedEvent = Object.assign({}, event, { chain: 'Polygon zkEVM Main' });
   updatedEvent.txnLink = `https://zkevm.polygonscan.com/tx/${event.txnHash}`;
   eventsArray.push(updatedEvent);
 });
+
 graphZksyncMainData.data.newReportEntities.forEach((event) => {
   const updatedEvent = Object.assign({}, event, { chain: 'ZkSync Mainnet' });
   updatedEvent.txnLink = `https://explorer.zksync.io/tx/${event.txnHash}`;
   eventsArray.push(updatedEvent);
 });
+
 graphZksyncTestData.data.newReportEntities.forEach((event) => {
   const updatedEvent = Object.assign({}, event, { chain: 'ZkSync Sepolia' });
   updatedEvent.txnLink = `https://sepolia.explorer.zksync.io/tx/${event.txnHash}`;
   eventsArray.push(updatedEvent);
 });
-}
+
     let sorted = sortDataByProperty('_time', eventsArray)
     setAllGraphData(sorted)
 
     return () => {
       setAllGraphData(null)
     }
-  }, [graphMainnetData, graphSepoliaData, graphMaticData, graphAmoyData, graphArboneData, graphArbtestData, graphGnosismainData, graphOptMainData, graphOptTestData, graphLineaData, graphLineaTestData, graphPolygonzkData, graphZksyncMainData, graphZksyncTestData]);
+  }, [graphMainnetData, graphSepoliaData, graphMaticData, graphAmoyData, graphArboneData, graphGnosismainData, graphOptMainData, graphOptTestData, graphLineaData, graphLineaTestData, graphPolygonzkData, graphZksyncMainData, graphZksyncTestData]);
 
   useEffect(() => {
     if (!allGraphData) return
