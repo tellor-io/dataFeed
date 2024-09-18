@@ -65,6 +65,11 @@ const clientZksynctest = new ApolloClient({
   cache: new InMemoryCache(),
 })
 
+const clientScroll = new ApolloClient({
+  uri: 'https://api.studio.thegraph.com/query/33329/tellor-oracle-scroll/version/latest',
+  cache: new InMemoryCache(),
+})
+
 const Graph = ({ children }) => {
   //Component State
   const [graphMainnetData, setGraphMainnetData] = useState({})
@@ -80,6 +85,7 @@ const Graph = ({ children }) => {
   const [graphPolygonzkData, setGraphPolygonzkData] = useState({})
   const [graphZksyncMainData, setGraphZksyncMainData] = useState({})
   const [graphZksyncTestData, setGraphZksyncTestData] = useState({})
+  const [graphScrollData, setGraphScrollData] = useState({})
   const [allGraphData, setAllGraphData] = useState(null)
   const [decodedData, setDecodedData] = useState(null)
 
@@ -167,6 +173,13 @@ const Graph = ({ children }) => {
     fetchPolicy: 'network-only',
     pollInterval: 5000,
   })
+  //Scroll
+  const scroll = useQuery(reporterQuery, {
+    client: clientScroll,
+    fetchPolicy: 'network-only',
+    pollInterval: 5000,
+  })
+
   //useEffects for listening to reponses
   //from ApolloClient queries
   //Mainnet
@@ -344,6 +357,20 @@ const Graph = ({ children }) => {
     }
   }, [zksynctest.data, zksynctest.loading, zksynctest.error]) //eslint-disable-line 
 
+  //Scroll
+  useEffect(() => {
+    if (!scroll) return
+    setGraphScrollData({
+      data: scroll.data,
+      loading: scroll.loading,
+      error: scroll.error,
+    })
+
+    return () => {
+      setGraphScrollData({})
+    }
+  }, [scroll.data, scroll.loading, scroll.error]) //eslint-disable-line
+
   //For conglomerating data
   useEffect(() => {
     if (
@@ -359,7 +386,8 @@ const Graph = ({ children }) => {
       !graphOptTestData.data ||
       !graphPolygonzkData.data ||
       !graphZksyncMainData.data ||
-      !graphZksyncTestData.data
+      !graphZksyncTestData.data ||
+      !graphScrollData.data
     )
       return
 
@@ -451,13 +479,19 @@ graphZksyncTestData.data.newReportEntities.forEach((event) => {
   eventsArray.push(updatedEvent);
 });
 
+graphScrollData.data.newReportEntities.forEach((event) => {
+  const updatedEvent = Object.assign({}, event, { chain: 'Scroll Mainnet' });
+  updatedEvent.txnLink = `https://scrollscan.com/tx/${event.txnHash}`;
+  eventsArray.push(updatedEvent);
+});
+
     let sorted = sortDataByProperty('_time', eventsArray)
     setAllGraphData(sorted)
 
     return () => {
       setAllGraphData(null)
     }
-  }, [graphMainnetData, graphSepoliaData, graphMaticData, graphAmoyData, graphArboneData, graphGnosismainData, graphOptMainData, graphOptTestData, graphLineaData, graphLineaTestData, graphPolygonzkData, graphZksyncMainData, graphZksyncTestData]);
+  }, [graphMainnetData, graphSepoliaData, graphMaticData, graphAmoyData, graphArboneData, graphGnosismainData, graphOptMainData, graphOptTestData, graphLineaData, graphLineaTestData, graphPolygonzkData, graphZksyncMainData, graphZksyncTestData, graphScrollData]);
 
   useEffect(() => {
     if (!allGraphData) return
