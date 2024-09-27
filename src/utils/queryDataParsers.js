@@ -105,7 +105,7 @@ export const queryDataParsers = {
     return event;
   },
   MimicryCollectionStat : (event) => {
-    event.decodedValueName = `MimicryCollectionStat ${event.queryDataObj[0].toUpperCase(),event.queryDataObj[1],event.queryDataObj[2]}`
+    event.decodedValueName = `MimicryCollectionStat ${event.queryDataObj[0].toUpperCase()} ${event.queryDataObj[1]} ${event.queryDataObj[2]}`
     
     const valueInWei = parseInt(event._value, 16) / 10 ** 18;
     const formattedValue = new Intl.NumberFormat('en-US', {
@@ -176,8 +176,8 @@ export const queryDataParsers = {
   // Decode the hexadecimal string to ASCII
   const decodedString = web3.utils.hexToAscii(event._value);
 
-  // Remove padding and non-printable characters
-  event.decodedValue = decodedString.replace(/\u0000/g, '').trim();
+  // Remove non-printable characters using a safe regular expression
+  event.decodedValue = decodedString.replace(/[^\x20-\x7E]/g, '').trim();
 
   return event;
   },

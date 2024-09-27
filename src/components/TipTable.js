@@ -5,9 +5,7 @@ import { ReactComponent as FilterIconFilled } from '../assets/filter.svg'
 import { ReactComponent as Checked } from '../assets/done.svg'
 import LinearIndeterminate from './LinearIndeterminate'
 //Contexts
-import { decodeSymbols } from '../utils/helpers'
 import { ModeContext } from '../contexts/Mode'
-import { eventWrapper } from '@testing-library/user-event/dist/utils'
 
 function TipTable({ data, allData, setFiltering }) {
   //Component State
@@ -15,21 +13,17 @@ function TipTable({ data, allData, setFiltering }) {
   //
   const [symbolClicked, setSymbolClicked] = useState(false)
   const [chainClicked, setChainClicked] = useState(false)
-  const [reporterClicked, setReporterClicked] = useState(false)
   //
   const [reportedSymbols, setReportedSymbols] = useState(null)
   const [reportedChains, setReportedChains] = useState(null)
-  const [reportedReporters, setReportedReporters] = useState(null)
 
   //
   const [allFilters, setAllFilters] = useState([])
   const [symbolFilters, setSymbolFilters] = useState([])
   const [chainFilters, setChainFilters] = useState([])
-  const [reporterFilters, setReporterFilters] = useState([])
   //Refs
   const symbolRef = useRef()
   const chainRef = useRef()
-  const reporterRef = useRef()
   //Contexts
   const mode = useContext(ModeContext)
 
@@ -48,7 +42,6 @@ function TipTable({ data, allData, setFiltering }) {
     if (!allData && !allData.decodedData) return
     let symbols = []
     let chains = []
-    let reporters = []
     allData.decodedData.forEach((event) => {
       if (!symbols.includes(event.decodedValue) && event.decodedValue) {
         if (event.feedType === 'Snapshot' && !symbols.includes('Snapshot')) {
@@ -60,18 +53,13 @@ function TipTable({ data, allData, setFiltering }) {
       if (!chains.includes(event.chain)) {
         chains.push(event.chain)
       }
-      if (!reporters.includes(event.decodedReporter) && event.decodedReporter) {
-        reporters.push(event.decodedReporter)
-      }
     })
     setReportedSymbols(symbols)
     setReportedChains(chains)
-    setReportedReporters(reporters)
 
     return () => {
       setReportedSymbols(null)
       setReportedChains(null)
-      setReportedReporters(null)
     }
   }, [allData])
 
@@ -86,10 +74,6 @@ function TipTable({ data, allData, setFiltering }) {
         setChainClicked(true)
         chainRef.current.classList.add('display')
         break
-      case 'reporter':
-        setReporterClicked(true)
-        reporterRef.current.classList.add('display')
-        break
       default:
         return
     }
@@ -103,10 +87,6 @@ function TipTable({ data, allData, setFiltering }) {
       case 'chain':
         setChainClicked(false)
         chainRef.current.classList.remove('display')
-        break
-      case 'reporter':
-        setReporterClicked(false)
-        reporterRef.current.classList.remove('display')
         break
       default:
         return
@@ -144,19 +124,6 @@ function TipTable({ data, allData, setFiltering }) {
           setAllFilters([...allFilters, allFiltersObj])
         }
         break
-      case 'reporter':
-        if (reporterFilters.includes(filterValue)) {
-          temp = reporterFilters.filter((filters) => filters !== filterValue)
-          allFiltersTemp = allFilters.filter(
-            (filters) => filters.filterValue !== filterValue
-          )
-          setReporterFilters(temp)
-          setAllFilters(allFiltersTemp)
-        } else {
-          setReporterFilters([...reporterFilters, filterValue])
-          setAllFilters([...allFilters, allFiltersObj])
-        }
-        break
       default:
         return
     }
@@ -167,8 +134,6 @@ function TipTable({ data, allData, setFiltering }) {
     let symbols = []
     let chainFilter = false
     let chains = []
-    let reporterFilter = false
-    let reporters = []
     //
     let makesTheCut = []
 
@@ -186,35 +151,10 @@ function TipTable({ data, allData, setFiltering }) {
               if (!chains.includes(filter.filterValue)) {
                 chains.push(filter.filterValue)
               }
-            } else if (filter.filterType === 'reporter') {
-              reporterFilter = true
-              if (!reporters.includes(filter.filterValue)) {
-                reporters.push(filter.filterValue)
-              }
             }
 
             switch (true) {
               //For all 3 filterTypes
-              case symbolFilter && chainFilter && reporterFilter:
-                symbols.forEach((symbol) => {
-                  chains.forEach((chain) => {
-                    reporters.forEach((reporter) => {
-                      if (
-                        (filter.filterValue === event.decodedValue ||
-                          filter.filterValue === event.feedType) &&
-                        event.chain === chain &&
-                        event.decodedReporter === reporter
-                      ) {
-                        if (makesTheCut.includes(event)) {
-                        } else {
-                          makesTheCut.push(event)
-                        }
-                      }
-                    })
-                  })
-                })
-                break
-              //For 2 filterTypes
               case symbolFilter && chainFilter:
                 symbols.forEach((symbol) => {
                   chains.forEach((chain) => {
@@ -222,37 +162,6 @@ function TipTable({ data, allData, setFiltering }) {
                       (filter.filterValue === event.decodedValue ||
                         filter.filterValue === event.feedType) &&
                       event.chain === chain
-                    ) {
-                      if (makesTheCut.includes(event)) {
-                      } else {
-                        makesTheCut.push(event)
-                      }
-                    }
-                  })
-                })
-                break
-              case symbolFilter && reporterFilter:
-                symbols.forEach((symbol) => {
-                  reporters.forEach((reporter) => {
-                    if (
-                      (filter.filterValue === event.decodedValue ||
-                        filter.filterValue === event.feedType) &&
-                      event.decodedReporter === reporter
-                    ) {
-                      if (makesTheCut.includes(event)) {
-                      } else {
-                        makesTheCut.push(event)
-                      }
-                    }
-                  })
-                })
-                break
-              case chainFilter && reporterFilter:
-                chains.forEach((chain) => {
-                  reporters.forEach((reporter) => {
-                    if (
-                      event.chain === chain &&
-                      event.decodedReporter === reporter
                     ) {
                       if (makesTheCut.includes(event)) {
                       } else {
@@ -273,11 +182,6 @@ function TipTable({ data, allData, setFiltering }) {
                 break
               case chainFilter:
                 if (filter.filterValue === event.chain) {
-                  filteredData.push(event)
-                }
-                break
-              case reporterFilter:
-                if (filter.filterValue === event.decodedReporter) {
                   filteredData.push(event)
                 }
                 break
@@ -310,35 +214,10 @@ function TipTable({ data, allData, setFiltering }) {
               if (!chains.includes(filter.filterValue)) {
                 chains.push(filter.filterValue)
               }
-            } else if (filter.filterType === 'reporter') {
-              reporterFilter = true
-              if (!reporters.includes(filter.filterValue)) {
-                reporters.push(filter.filterValue)
-              }
             }
 
             switch (true) {
               //For all 3 filterTypes
-              case symbolFilter && chainFilter && reporterFilter:
-                symbols.forEach((symbol) => {
-                  chains.forEach((chain) => {
-                    reporters.forEach((reporter) => {
-                      if (
-                        (event.decodedValue === symbol ||
-                          event.feedType === symbol) &&
-                        event.chain === chain &&
-                        event.decodedReporter === reporter
-                      ) {
-                        if (makesTheCut.includes(event)) {
-                        } else {
-                          makesTheCut.push(event)
-                        }
-                      }
-                    })
-                  })
-                })
-                break
-              //For 2 filterTypes
               case symbolFilter && chainFilter:
                 symbols.forEach((symbol) => {
                   chains.forEach((chain) => {
@@ -346,37 +225,6 @@ function TipTable({ data, allData, setFiltering }) {
                       (event.decodedValue === symbol ||
                         event.feedType === symbol) &&
                       event.chain === chain
-                    ) {
-                      if (makesTheCut.includes(event)) {
-                      } else {
-                        makesTheCut.push(event)
-                      }
-                    }
-                  })
-                })
-                break
-              case symbolFilter && reporterFilter:
-                symbols.forEach((symbol) => {
-                  reporters.forEach((reporter) => {
-                    if (
-                      (event.decodedValue  === symbol ||
-                        event.feedType === symbol) &&
-                      event.decodedReporter === reporter
-                    ) {
-                      if (makesTheCut.includes(event)) {
-                      } else {
-                        makesTheCut.push(event)
-                      }
-                    }
-                  })
-                })
-                break
-              case chainFilter && reporterFilter:
-                chains.forEach((chain) => {
-                  reporters.forEach((reporter) => {
-                    if (
-                      event.chain === chain &&
-                      event.decodedReporter === reporter
                     ) {
                       if (makesTheCut.includes(event)) {
                       } else {
@@ -397,11 +245,6 @@ function TipTable({ data, allData, setFiltering }) {
                 break
               case chainFilter:
                 if (filter.filterValue === event.chain) {
-                  filteredData.push(event)
-                }
-                break
-              case reporterFilter:
-                if (filter.filterValue === event.decodedReporter) {
                   filteredData.push(event)
                 }
                 break
@@ -429,9 +272,6 @@ function TipTable({ data, allData, setFiltering }) {
       case 'chain':
         handleClose('chain')
         break
-      case 'reporter':
-        handleClose('reporter')
-        break
       default:
         return
     }
@@ -454,14 +294,6 @@ function TipTable({ data, allData, setFiltering }) {
         setAllFilters(cleared)
         handleFilterApply('chain', cleared)
         setChainFilters([])
-        break
-      case 'reporter':
-        cleared = allFilters.filter(
-          (filters) => filters.filterType !== filterType
-        )
-        setAllFilters(cleared)
-        handleFilterApply('reporter', cleared)
-        setReporterFilters([])
         break
       default:
         return
@@ -698,7 +530,9 @@ function TipTable({ data, allData, setFiltering }) {
           ))
         ) : (
           <tr className="TableBodyNoMatches">
-            <LinearIndeterminate />
+            <td colSpan="5">
+              <LinearIndeterminate />
+            </td>
           </tr>
         )}
       </tbody>
