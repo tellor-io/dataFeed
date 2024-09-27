@@ -2,7 +2,7 @@ import React, { useState, createContext, useEffect } from 'react'
 //The Graph
 import { ApolloClient, InMemoryCache, useQuery } from '@apollo/client'
 //Utils
-import { autopayQuery, divaPayQuery, divaPayAdaptorQuery } from '../utils/queries'
+import { autopayQuery } from '../utils/queries'
 import { decodingAutopayMiddleware, sortDataByProperty  } from '../utils/helpers'
 //Sort
 

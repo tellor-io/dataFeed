@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useContext } from 'react'
+import React, { useEffect, useRef, useState, useContext, useCallback } from 'react'
 import '../styles/Table.css'
 import { ReactComponent as FilterIcon } from '../assets/filter_outline.svg'
 import { ReactComponent as FilterIconFilled } from '../assets/filter.svg'
@@ -41,57 +41,73 @@ function Table({ data, allData, setFiltering }) {
   //Contexts
   const mode = useContext(ModeContext)
 
-  //useEffect for tableData
+  // Memoize the filter application function
+  const applyFilters = useCallback(() => {
+    if (!allData || !allData.decodedData) return;
+
+    let filteredData = allData.decodedData.filter(event => {
+      const symbolMatch = symbolFilters.length === 0 || symbolFilters.includes(event.decodedValueName);
+      const chainMatch = chainFilters.length === 0 || chainFilters.includes(event.chain);
+      const reporterMatch = reporterFilters.length === 0 || reporterFilters.includes(event.decodedReporter);
+      
+      let startDate = new Date(startDateSearchTerm);
+      let endDate = new Date(endDateSearchTerm);
+      let eventDate = new Date(event.decodedTime.split(',')[0].trim().split('/').reverse().join('-'));
+
+      const dateMatch = startDateSearchTerm && endDateSearchTerm ? (eventDate >= startDate && eventDate <= endDate) : dateFilters.length === 0 || dateFilters.some(filterDate => event.decodedTime.startsWith(filterDate));
+  
+      return symbolMatch && chainMatch && reporterMatch && dateMatch;
+    });
+
+    const areFiltersApplied = symbolFilters.length > 0 || chainFilters.length > 0 || reporterFilters.length > 0 || dateFilters.length > 0 || (startDateSearchTerm && endDateSearchTerm);
+  
+    setTableData(areFiltersApplied ? filteredData : filteredData.slice(0, 6));
+    setFiltering(filteredData.length > 0);
+  }, [allData, symbolFilters, chainFilters, reporterFilters, dateFilters, startDateSearchTerm, endDateSearchTerm, setFiltering]);
+
+  // Effect for initial data load and updates
   useEffect(() => {
     if (!data) return;
-    setTableData(prevData => {
-      const newData = data.slice(prevData.length);
-      if (JSON.stringify(newData) !== JSON.stringify([])) {
-        return [...prevData, ...newData]
-        
-      }
-      return prevData;
-    })
-  }, [data])
+    setTableData(data);
+  }, [data]);
 
-  //useEffect for populating
-  //table dropdown data
+  // Effect for populating filter options
   useEffect(() => {
-    if (!allData && !allData.decodedData) return
-    let symbols = []
-    let chains = []
-    let reporters = []
-    let dates = []
+    if (!allData || !allData.decodedData) return;
+    
+    const symbols = new Set();
+    const chains = new Set();
+    const reporters = new Set();
+    const dates = new Set();
+
     allData.decodedData.forEach((event) => {
-      if (!symbols.includes(event.decodedValueName) && event.decodedValueName) {
-        if (event.feedType === 'Snapshot' && !symbols.includes('Snapshot')) {
-          symbols.push('Snapshot')
+      if (event.decodedValueName) {
+        if (event.feedType === 'Snapshot') {
+          symbols.add('Snapshot');
         } else if (!event.feedType) {
-          symbols.push(event.decodedValueName)
+          symbols.add(event.decodedValueName);
         }
       }
-      if (!chains.includes(event.chain)) {
-        chains.push(event.chain)
-      }
-      if (!reporters.includes(event.decodedReporter) && event.decodedReporter) {
-        reporters.push(event.decodedReporter)
-      }
-      if (!dates.includes(event.decodedTime.split(',')[0].trim()) && event.decodedTime) {
-        dates.push(event.decodedTime.split(',')[0].trim())
-      }
-    })
-    setReportedSymbols(symbols)
-    setReportedChains(chains)
-    setReportedReporters(reporters)
-    setReportedDates(dates)
+      if (event.chain) chains.add(event.chain);
+      if (event.decodedReporter) reporters.add(event.decodedReporter);
+      if (event.decodedTime) dates.add(event.decodedTime.split(',')[0].trim());
+    });
 
-    return () => {
-      setReportedSymbols(null)
-      setReportedChains(null)
-      setReportedReporters(null)
-      setReportedDates(null)
-    }
-  }, [allData])
+    setReportedSymbols(Array.from(symbols));
+    setReportedChains(Array.from(chains));
+    setReportedReporters(Array.from(reporters));
+    setReportedDates(Array.from(dates));
+  }, [allData]);
+
+  // Effect to apply filters when they change
+  useEffect(() => {
+    applyFilters();
+  }, [applyFilters]);
+
+  // Modify handleFilterApply to use the memoized applyFilters function
+  const handleFilterApply = useCallback(() => {
+    applyFilters();
+  }, [applyFilters]);
 
   //Handlers
   const handleClick = (iconType) => {
@@ -200,39 +216,6 @@ function Table({ data, allData, setFiltering }) {
         return
     }
   }
-  const handleFilterApply = () => {
-    let filteredData = allData.decodedData.filter(event => {
-      const symbolMatch = symbolFilters.length === 0 || symbolFilters.includes(event.decodedValueName);
-      const chainMatch = chainFilters.length === 0 || chainFilters.includes(event.chain);
-      const reporterMatch = reporterFilters.length === 0 || reporterFilters.includes(event.decodedReporter);
-      
-      let startDate = new Date(startDateSearchTerm);
-      let endDate = new Date(endDateSearchTerm);
-      let eventDate = new Date(event.decodedTime.split(',')[0].trim().split('/').reverse().join('-'));
-
-      const dateMatch = startDateSearchTerm && endDateSearchTerm ? (eventDate >= startDate && eventDate <= endDate) : dateFilters.length === 0 || dateFilters.some(filterDate => event.decodedTime.startsWith(filterDate));
-  
-      return symbolMatch && chainMatch && reporterMatch && dateMatch;
-    });
-  
-    // Check if any filters are applied
-    const areFiltersApplied = symbolFilters.length > 0 || chainFilters.length > 0 || reporterFilters.length > 0 || dateFilters.length > 0 || (startDateSearchTerm && endDateSearchTerm);
-  
-    // If filters are applied, show all matching data, otherwise limit to first 6 items
-    if (areFiltersApplied) {
-      setTableData(filteredData); // Show all filtered items
-    } else {
-      setTableData(filteredData.slice(0, 6)); // Limit to first 6 items for initial load
-    }
-  
-    setFiltering(filteredData.length > 0);
-  };
-
-  // Effect hook to re-apply filters when any filter changes or the initial dataset updates
-  useEffect(() => {
-    handleFilterApply();
-  }, [symbolFilters, chainFilters, reporterFilters, dateFilters, allData, startDateSearchTerm, endDateSearchTerm]);
-
   const handleFilterClear = (filterType) => {
     let cleared
     switch (filterType) {

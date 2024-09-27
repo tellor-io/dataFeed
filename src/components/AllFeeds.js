@@ -19,24 +19,17 @@ function AllFeeds() {
   const [filtering, setFiltering] = useState(false)
 
   useEffect(() => {
-    if (!graphData.decodedData) return
-    const newData = graphData.decodedData.slice(0, 50);
+    if (!graphData.decodedData) return;
     setClippedData(prevData => {
-      if (JSON.stringify(newData) !== JSON.stringify(prevData)) {
-        return [...prevData, ...newData]
-      }
-      return prevData;
-    })
-  }, [graphData.decodedData])
+      const newData = graphData.decodedData.slice(0, 50);
+      return [...newData, ...prevData.filter(item => !newData.some(newItem => newItem.id === item.id))];
+    });
+  }, [graphData.decodedData]);
 
   useEffect(() => {
-    if (!clippedData) return
-    setViewing(clippedData.slice(0, 6))
-
-    return () => {
-      setViewing(null)
-    }
-  }, [clippedData]) //eslint-disable-line
+    if (!clippedData.length) return;
+    setViewing(clippedData.slice(0, 6));
+  }, [clippedData]);
 
   const handleLoadMore = () => {
     if (!loadMoreButton) return; // If the button is disabled, do nothing

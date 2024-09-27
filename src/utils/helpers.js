@@ -4,8 +4,6 @@ import { queryDataParsers } from './queryDataParsers'
 //Globals
 const web3 = new Web3(window.ethereum)
 
-const BN = require('bn.js');
-
 const tellorAddressMainnet = '0x88dF592F8eb5D7Bd38bFeF7dEb0fBc02cf3778a0'
 const tellorAddressPolygon = '0xE3322702BEdaaEd36CdDAb233360B939775ae5f1'
 const tellorAddressMumbai = '0xce4e32fe9d894f8185271aa990d2db425df3e6be'
@@ -192,7 +190,7 @@ export const decodingAutopayMiddleware = (autopayEvents) => {
     event.window = event._window
     event.symbols = event._queryData
     event.symbol = ''
-    event.floor = event.floor
+    event.floor = event.floor || 0; // Assign a default value of 0 if event.floor is falsy
     event.expiryTime = getDate(event.expiryTime)
     if (event.collateralToken){
       event.symbol = event.collateralToken.symbol
