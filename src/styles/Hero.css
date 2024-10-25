@@ -1,0 +1,52 @@
+.HeroInnerContainer {
+  margin: 0px 100px;
+  height: fit-content;
+}
+.HeroHeader {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 51px;
+  line-height: 60px;
+  margin-bottom: 20px;
+}
+.HeroMainText {
+  font-size: 18px;
+  line-height: 28px;
+  font-weight: 300;
+  margin-bottom: 30px;
+  padding-right: 200px;
+}
+.HeroNavLinks {
+  display: flex;
+  line-height: 28px;
+  transition: 0.3s;
+}
+.HeroNavLinksLight {
+  display: flex;
+  line-height: 28px;
+  transition: 0.3s;
+}
+.HeroNavLinks > a {
+  color: #ffffff;
+  margin-right: 35px;
+  transition: 0.3s;
+}
+.HeroNavLinksLight > a {
+  color: #262626;
+  margin-right: 35px;
+  transition: 0.3s;
+}
+.ActiveLink {
+  padding-bottom: 3px;
+  text-decoration: none;
+  border-bottom: 2px solid #20f092;
+}
+.InactiveLink {
+  padding-bottom: 3px;
+  text-decoration: none;
+  border-bottom: 2px solid #4b4b4b;
+  opacity: 80%;
+}
+.HeroSection {
+  margin-top: 10px;
+  height: fit-content;
+}
