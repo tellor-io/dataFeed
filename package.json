@@ -37,7 +37,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "graphql:coverage": "graphql coverage",
-    "graphql:validate": "graphql validate"
+    "graphql:validate": "graphql validate",
+    "heroku-postbuild": "npm run build && npm prune --production"
   },
   "eslintConfig": {
     "extends": [
@@ -61,6 +62,7 @@
     "@graphql-cli/coverage": "2.1.0",
     "@graphql-cli/validate": "2.1.0",
     "eslint": "^7.11.0",
-    "graphql-cli": "^3.0.14"
+    "graphql-cli": "^3.0.14",
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
   }
 }
