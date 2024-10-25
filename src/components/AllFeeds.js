@@ -1,22 +1,26 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState, useCallback } from 'react'
 import '../styles/AllFeeds.css'
 import Table from './Table'
-//Context
 import { GraphContext } from '../contexts/Graph'
 import { ModeContext } from '../contexts/Mode'
-//Components
 import LinearIndeterminate from './LinearIndeterminate'
 
 function AllFeeds() {
-  //Context State
   const graphData = useContext(GraphContext)
   const mode = useContext(ModeContext)
-  //Component State
   const [clippedData, setClippedData] = useState([])
   const [loadMoreClicks, setLoadMoreClicks] = useState(1)
   const [viewing, setViewing] = useState(null)
   const [loadMoreButton, setLoadMoreButton] = useState(true)
   const [filtering, setFiltering] = useState(false)
+  const [filters, setFilters] = useState({
+    symbolFilters: [],
+    chainFilters: [],
+    reporterFilters: [],
+    dateFilters: [],
+    startDateSearchTerm: "",
+    endDateSearchTerm: ""
+  })
 
   useEffect(() => {
     if (!graphData.decodedData) return;
@@ -26,32 +30,40 @@ function AllFeeds() {
     });
   }, [graphData.decodedData]);
 
+  const applyFilters = useCallback(() => {
+    if (!clippedData) return;
+
+    let filteredData = clippedData.filter(event => {
+      const symbolMatch = filters.symbolFilters.length === 0 || filters.symbolFilters.includes(event.decodedValueName);
+      const chainMatch = filters.chainFilters.length === 0 || filters.chainFilters.includes(event.chain);
+      const reporterMatch = filters.reporterFilters.length === 0 || filters.reporterFilters.includes(event.decodedReporter);
+      
+      let startDate = new Date(filters.startDateSearchTerm);
+      let endDate = new Date(filters.endDateSearchTerm);
+      let eventDate = new Date(event.decodedTime.split(',')[0].trim().split('/').reverse().join('-'));
+
+      const dateMatch = filters.startDateSearchTerm && filters.endDateSearchTerm ? (eventDate >= startDate && eventDate <= endDate) : filters.dateFilters.length === 0 || filters.dateFilters.some(filterDate => event.decodedTime.startsWith(filterDate));
+  
+      return symbolMatch && chainMatch && reporterMatch && dateMatch;
+    });
+
+    setViewing(filteredData.slice(0, 6 * loadMoreClicks));
+    setFiltering(filteredData.length < clippedData.length);
+    setLoadMoreButton(filteredData.length > 6 * loadMoreClicks);
+  }, [clippedData, filters, loadMoreClicks]);
+
   useEffect(() => {
-    if (!clippedData.length) return;
-    setViewing(clippedData.slice(0, 6));
-  }, [clippedData]);
+    applyFilters();
+  }, [applyFilters, clippedData]);
 
   const handleLoadMore = () => {
-    if (!loadMoreButton) return; // If the button is disabled, do nothing
-
-    const newLoadMoreClicks = loadMoreClicks + 1;
-    setLoadMoreClicks(newLoadMoreClicks); // Increment the number of times the button has been clicked
-
-    const totalItems = clippedData.length; // Total items available
-    const itemsPerLoad = 6; // Number of items to load per click, adjust as needed
-    const newLoadAmount = itemsPerLoad * newLoadMoreClicks; // Calculate new amount of items to display
-
-    if (newLoadAmount >= totalItems) {
-      // If the new load amount is greater than or equal to total items, show all items and disable the button
-      setViewing(clippedData);
-      setLoadMoreButton(false); // Disable the "load more" button as all items are now displayed
-    } else {
-      // If not all items are displayed, update the viewing state with the new slice of data
-      setViewing(clippedData.slice(0, newLoadAmount));
-    }
+    if (!loadMoreButton) return;
+    setLoadMoreClicks(prev => prev + 1);
   }
 
-  //console.log({ loadMoreButton, filtering, clippedDataLength: clippedData.length, viewingLength: viewing?.length });
+  const handleFilterChange = (newFilters) => {
+    setFilters(newFilters);
+  }
 
   return (
     <>
@@ -61,17 +73,19 @@ function AllFeeds() {
             data={viewing}
             allData={graphData}
             setFiltering={setFiltering}
+            onFilterChange={handleFilterChange}
+            filters={filters}
           />
           <button
-  className={mode.mode === 'dark' ? 'AllFeeds__Button' : 'AllFeeds__ButtonDark'}
-  onClick={handleLoadMore}
-  style={{
-    cursor: loadMoreButton ? 'pointer' : 'not-allowed',
-    display: 'flex', // Temporarily ignore the filtering condition
-  }}
->
-  load more
-</button>
+            className={mode.mode === 'dark' ? 'AllFeeds__Button' : 'AllFeeds__ButtonDark'}
+            onClick={handleLoadMore}
+            style={{
+              cursor: loadMoreButton ? 'pointer' : 'not-allowed',
+              display: 'flex',
+            }}
+          >
+            load more
+          </button>
         </div>
       ) : (
         <div className="Loading">

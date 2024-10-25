@@ -5,7 +5,7 @@ import { sortDataByProperty, decodingMiddleware } from '../utils/helpers'
 import { 
   clientMainnet, clientSepolia, clientMatic, clientAmoy, clientArbone, 
   clientGnosismain, clientOptMain, clientOptTest, clientLinea, clientLineaTest, 
-  clientPolygonzk, clientZksyncMain, clientZksyncTest, clientScroll 
+  clientPolygonzk, clientZksyncMain, clientZksyncTest, clientScroll, clientBase
 } from '../utils/apollo'
 
 export const GraphContext = createContext()
@@ -24,7 +24,8 @@ const explorerUrls = {
   polygonzk: 'https://zkevm.polygonscan.com/tx/',
   zksyncMain: 'https://explorer.zksync.io/tx/',
   zksyncTest: 'https://sepolia.explorer.zksync.io/tx/',
-  scroll: 'https://scrollscan.com/tx/'
+  scroll: 'https://scrollscan.com/tx/',
+  base: 'https://basescan.org/tx/'
 };
 
 const networkNames = {
@@ -41,7 +42,8 @@ const networkNames = {
   polygonzk: 'Polygon zkEVM Main',
   zksyncMain: 'ZkSync Mainnet',
   zksyncTest: 'ZkSync Sepolia',
-  scroll: 'Scroll Mainnet'
+  scroll: 'Scroll Mainnet',
+  base: 'Base Mainnet'
 };
 
 const Graph = ({ children }) => {
@@ -60,6 +62,7 @@ const Graph = ({ children }) => {
     zksyncMain: { data: null, loading: true, error: null },
     zksyncTest: { data: null, loading: true, error: null },
     scroll: { data: null, loading: true, error: null },
+    base: { data: null, loading: true, error: null }
   });
   const [allGraphData, setAllGraphData] = useState([]);
   const [decodedData, setDecodedData] = useState([]);
@@ -109,6 +112,7 @@ const Graph = ({ children }) => {
   useQueryWithTimeout(reporterQuery, clientZksyncMain, 'zksyncMain');
   useQueryWithTimeout(reporterQuery, clientZksyncTest, 'zksyncTest');
   useQueryWithTimeout(reporterQuery, clientScroll, 'scroll');
+  useQueryWithTimeout(reporterQuery, clientBase, 'base');
 
   useEffect(() => {
     const processNetworkData = (networkName, data) => {

@@ -38,6 +38,7 @@ function Table({ data, allData, setFiltering }) {
   const chainRef = useRef()
   const reporterRef = useRef()
   const dateRef = useRef()
+  const dropdownRef = useRef(null);
   //Contexts
   const mode = useContext(ModeContext)
 
@@ -261,6 +262,41 @@ function Table({ data, allData, setFiltering }) {
     window.open(txnLink, '_blank').focus()
   }
 
+  const formatSymbol = (symbol) => {
+    if (symbol === 'SUPEROETHB/ETH') {
+      return 'SUPER OETHb/ETH';
+    }
+    return symbol;
+  };
+
+  const formatValue = (value) => {
+    if (typeof value === 'string' && value.startsWith('ETH')) {
+      const numericPart = value.substring(3).trim(); // Remove 'ETH' and any leading space
+      return `${numericPart} ETH`;
+    }
+    return value;
+  };
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setSymbolClicked(false);
+        setChainClicked(false);
+        setReporterClicked(false);
+        setDateClicked(false);
+        symbolRef.current?.classList.remove('display');
+        chainRef.current?.classList.remove('display');
+        reporterRef.current?.classList.remove('display');
+        dateRef.current?.classList.remove('display');
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   return (
     <table className="Table">
       <thead className="TableHeaders">
@@ -273,33 +309,38 @@ function Table({ data, allData, setFiltering }) {
                   className={
                     mode.mode === 'dark' ? 'FilterIcon' : 'FilterIconDark'
                   }
-                  onClick={() => handleClose('symbol')}
+                  onClick={() => setSymbolClicked(!symbolClicked)}
                 />
               ) : (
                 <FilterIcon
                   className={
                     mode.mode === 'dark' ? 'FilterIcon' : 'FilterIconDark'
                   }
-                  onClick={() => handleClick('symbol')}
+                  onClick={() => setSymbolClicked(!symbolClicked)}
                 />
               )}
             </div>
             <div
-              className={
-                mode.mode === 'dark'
-                  ? 'TableFilterDropdown'
-                  : 'TableFilterDropdownDark'
-              }
-              ref={symbolRef}
+              className={`TableFilterDropdown ${mode.mode === 'dark' ? '' : 'TableFilterDropdownDark'}`}
+              ref={(el) => {
+                symbolRef.current = el;
+                if (symbolClicked) dropdownRef.current = el;
+              }}
+              style={{ 
+                display: symbolClicked ? 'flex' : 'none',
+                flexDirection: 'column',
+                maxHeight: '300px',
+                overflowY: 'auto'
+              }}
             >
               <h3>filter by symbol</h3>
               <input
-  type="text"
-  placeholder="Search..."
-  value={symbolSearchTerm}
-  onChange={(e) => setSymbolSearchTerm(e.target.value)}
-/>
-              <div className="DropdownResults">
+                type="text"
+                placeholder="Search..."
+                value={symbolSearchTerm}
+                onChange={(e) => setSymbolSearchTerm(e.target.value)}
+              />
+              <div className="DropdownResults" style={{ flexGrow: 1, overflowY: 'auto' }}>
                 {reportedSymbols &&
                   reportedSymbols.filter((symbol) => symbol.toLowerCase().includes(symbolSearchTerm.toLowerCase()))
                   .map((symbol) => (
@@ -356,14 +397,14 @@ function Table({ data, allData, setFiltering }) {
                   className={
                     mode.mode === 'dark' ? 'FilterIcon' : 'FilterIconDark'
                   }
-                  onClick={() => handleClose('chain')}
+                  onClick={() => setChainClicked(!chainClicked)}
                 />
               ) : (
                 <FilterIcon
                   className={
                     mode.mode === 'dark' ? 'FilterIcon' : 'FilterIconDark'
                   }
-                  onClick={() => handleClick('chain')}
+                  onClick={() => setChainClicked(!chainClicked)}
                 />
               )}
             </div>
@@ -373,7 +414,16 @@ function Table({ data, allData, setFiltering }) {
                   ? 'TableFilterDropdown'
                   : 'TableFilterDropdownDark'
               }
-              ref={chainRef}
+              ref={(el) => {
+                chainRef.current = el;
+                if (chainClicked) dropdownRef.current = el;
+              }}
+              style={{ 
+                display: chainClicked ? 'flex' : 'none',
+                flexDirection: 'column',
+                maxHeight: '300px',
+                overflowY: 'auto'
+              }}
             >
               <h3>filter by chain</h3>
               <div className="DropdownResults">
@@ -429,14 +479,14 @@ function Table({ data, allData, setFiltering }) {
                   className={
                     mode.mode === 'dark' ? 'FilterIcon' : 'FilterIconDark'
                   }
-                  onClick={() => handleClose('reporter')}
+                  onClick={() => setReporterClicked(!reporterClicked)}
                 />
               ) : (
                 <FilterIcon
                   className={
                     mode.mode === 'dark' ? 'FilterIcon' : 'FilterIconDark'
                   }
-                  onClick={() => handleClick('reporter')}
+                  onClick={() => setReporterClicked(!reporterClicked)}
                 />
               )}
             </div>
@@ -446,7 +496,16 @@ function Table({ data, allData, setFiltering }) {
                   ? 'TableFilterDropdown'
                   : 'TableFilterDropdownDark'
               }
-              ref={reporterRef}
+              ref={(el) => {
+                reporterRef.current = el;
+                if (reporterClicked) dropdownRef.current = el;
+              }}
+              style={{ 
+                display: reporterClicked ? 'flex' : 'none',
+                flexDirection: 'column',
+                maxHeight: '300px',
+                overflowY: 'auto'
+              }}
             >
               <h3>filter by reporter</h3>
               <input
@@ -511,14 +570,14 @@ function Table({ data, allData, setFiltering }) {
                   className={
                     mode.mode === 'dark' ? 'FilterIcon' : 'FilterIconDark'
                   }
-                  onClick={() => handleClose('date')}
+                  onClick={() => setDateClicked(!dateClicked)}
                 />
               ) : (
                 <FilterIcon
                   className={
                     mode.mode === 'dark' ? 'FilterIcon' : 'FilterIconDark'
                   }
-                  onClick={() => handleClick('date')}
+                  onClick={() => setDateClicked(!dateClicked)}
                 />
               )}
             </div>
@@ -528,7 +587,16 @@ function Table({ data, allData, setFiltering }) {
                   ? 'TableFilterDropdown'
                   : 'TableFilterDropdownDark'
               }
-              ref={dateRef}
+              ref={(el) => {
+                dateRef.current = el;
+                if (dateClicked) dropdownRef.current = el;
+              }}
+              style={{ 
+                display: dateClicked ? 'flex' : 'none',
+                flexDirection: 'column',
+                maxHeight: '300px',
+                overflowY: 'auto'
+              }}
             >
               <h3>filter by date</h3>
               <p>Start</p>
@@ -606,8 +674,8 @@ function Table({ data, allData, setFiltering }) {
               className={mode.mode === 'dark' ? 'TableBody' : 'TableBodyDark'}
               onClick={() => handleRowClick(event.txnLink)}
             >
-              <td className="TB__Symbols">{event.decodedValueName}</td>
-              <td className="TB__Value">{event.decodedValue}</td>
+              <td className="TB__Symbols">{formatSymbol(event.decodedValueName)}</td>
+              <td className="TB__Value">{formatValue(event.decodedValue)}</td>
               <td className="TB__Chain">{event.chain}</td>
               <td className="TB__Reporter">
                 <Jazzicon
