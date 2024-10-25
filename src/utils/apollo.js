@@ -19,4 +19,4 @@ export const clientPolygonzk = createClient('https://api.studio.thegraph.com/que
 export const clientZksyncMain = createClient('https://api.studio.thegraph.com/query/33329/tellor-oracle-zksync-main-subg/version/latest');
 export const clientZksyncTest = createClient('https://api.studio.thegraph.com/query/33329/tellor-oracle-zksync-test-subg/version/latest');
 export const clientScroll = createClient('https://api.studio.thegraph.com/query/33329/tellor-oracle-scroll/version/latest');
-
+export const clientBase = createClient('https://api.studio.thegraph.com/query/33329/tellor-oracle-base/version/latest');
