@@ -105,3 +105,6 @@ dist
 
 # Package-lock.json
 package-lock.json
+
+build/
+.env
