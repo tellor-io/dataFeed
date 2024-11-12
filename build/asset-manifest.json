@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/static/css/main.02287e23.chunk.css",
-    "main.js": "/static/js/main.f9513d1b.chunk.js",
-    "main.js.map": "/static/js/main.f9513d1b.chunk.js.map",
+    "main.css": "/static/css/main.4d593ff8.chunk.css",
+    "main.js": "/static/js/main.e0f74ce8.chunk.js",
+    "main.js.map": "/static/js/main.e0f74ce8.chunk.js.map",
     "runtime-main.js": "/static/js/runtime-main.405cb26a.js",
     "runtime-main.js.map": "/static/js/runtime-main.405cb26a.js.map",
-    "static/js/2.04644930.chunk.js": "/static/js/2.04644930.chunk.js",
-    "static/js/2.04644930.chunk.js.map": "/static/js/2.04644930.chunk.js.map",
+    "static/js/2.f379d94d.chunk.js": "/static/js/2.f379d94d.chunk.js",
+    "static/js/2.f379d94d.chunk.js.map": "/static/js/2.f379d94d.chunk.js.map",
     "index.html": "/index.html",
-    "static/css/main.02287e23.chunk.css.map": "/static/css/main.02287e23.chunk.css.map",
-    "static/js/2.04644930.chunk.js.LICENSE.txt": "/static/js/2.04644930.chunk.js.LICENSE.txt",
-    "static/media/index.css": "/static/media/Montserrat-Bold.a3f009a2.woff",
+    "static/css/main.4d593ff8.chunk.css.map": "/static/css/main.4d593ff8.chunk.css.map",
+    "static/js/2.f379d94d.chunk.js.LICENSE.txt": "/static/js/2.f379d94d.chunk.js.LICENSE.txt",
+    "static/media/index.css": "/static/media/PPNeueMontreal-Thin.8cea894f.woff2",
     "static/media/done.62fd101c.svg": "/static/media/done.62fd101c.svg",
     "static/media/filter.913fff00.svg": "/static/media/filter.913fff00.svg",
     "static/media/filter_outline.8b97acfd.svg": "/static/media/filter_outline.8b97acfd.svg",
@@ -19,8 +19,8 @@
   },
   "entrypoints": [
     "static/js/runtime-main.405cb26a.js",
-    "static/js/2.04644930.chunk.js",
-    "static/css/main.02287e23.chunk.css",
-    "static/js/main.f9513d1b.chunk.js"
+    "static/js/2.f379d94d.chunk.js",
+    "static/css/main.4d593ff8.chunk.css",
+    "static/js/main.e0f74ce8.chunk.js"
   ]
 }

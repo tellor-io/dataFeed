@@ -55,9 +55,9 @@ function Hero() {
               </Link> */}
             </div>
             <div className="HeroSection">
-              <h2 style={{marginTop: '1em'}}>Recent Reports</h2>
+              <h2 style={{marginTop: '1em', textDecoration: 'underline', fontFamily: 'PPNeueMontreal-Bold'}}>Recent Reports</h2>
               <AllFeeds />
-              <h2 style={{marginTop: '2em'}}>Tips</h2>
+              <h2 style={{marginTop: '2em', textDecoration: 'underline', fontFamily: 'PPNeueMontreal-Bold'}}>Tips</h2>
               <AllTips />
             </div>
         </GraphAutopay>
