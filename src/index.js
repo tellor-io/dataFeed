@@ -4,7 +4,6 @@ import './index.css'
 import App from './App'
 import User from './contexts/User'
 import Mode from './contexts/Mode'
-import { Fonts } from './assets/fonts/fonts';
 
 ReactDOM.render(
   <User>

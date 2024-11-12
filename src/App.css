@@ -8,7 +8,7 @@
   align-items: center;
   background-color: #262626;
   color: #ffffff;
-  font-family: 'PPNeueMontreal-Bold', sans-serif;
+  font-family: 'Inconsolata', monospace;
   transition: 0.3s;
 }
 .HeroContainer {
@@ -34,7 +34,7 @@
   align-items: center;
   background-color: #fafafa;
   color: #262626;
-  font-family: 'PPNeueMontreal-Medium', sans-serif;
+  font-family: 'Inconsolata', monospace;
   transition: 0.3s;
 }
 .HeroContainerLight {
