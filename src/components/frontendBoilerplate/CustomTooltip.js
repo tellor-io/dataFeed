@@ -17,6 +17,6 @@ export const CustomTooltip = styled(({ className, ...props }) => (
     border: '1px solid #ffffff', // Adds a border to make the tooltip stand out
     padding: '10px', // Increase padding for better spacing
     fontSize: '14px', // Adjust font size as needed
-    fontFamily: 'PPNeueMontreal-Medium', // Adjust font family as needed
+    fontFamily: 'Inconsolata', // Adjust font family as needed
   },
 }))

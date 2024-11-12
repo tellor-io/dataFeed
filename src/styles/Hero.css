@@ -3,6 +3,7 @@
   height: fit-content;
 }
 .HeroHeader {
+  font-family: 'Montserrat', sans-serif;
   font-size: 51px;
   line-height: 60px;
   margin-bottom: 20px;
