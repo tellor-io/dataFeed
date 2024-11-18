@@ -11,6 +11,7 @@
   text-align: left;
 }
 .TH__Header > th {
+  font-family: 'PPNeueMontreal-Bold', sans-serif;
   flex: 0.2;
   display: flex;
   align-items: center;
@@ -32,11 +33,13 @@
   align-items: center;
 }
 .TH__Header > th > h1 {
+  font-family: 'PPNeueMontreal-Bold', sans-serif;
   font-size: 12px;
   font-weight: 300;
   padding-right: 8px;
 }
 .TH__HeaderDiv > h1 {
+  font-family: 'PPNeueMontreal-Bold', sans-serif;
   font-size: 12px;
   font-weight: 300;
   padding-right: 8px;
@@ -137,13 +140,13 @@
 .DropdownButtons > button {
   flex: 0.45;
   height: 1.5rem;
-  font-family: 'Inconsolata';
+  font-family: 'PPNeueMontreal-Medium';
   cursor: pointer;
 }
 .DropdownButtonsDark > button {
   flex: 0.45;
   height: 1.5rem;
-  font-family: 'Inconsolata';
+  font-family: 'PPNeueMontreal-Medium';;
   cursor: pointer;
 }
 .DropdownApply {
