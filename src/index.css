@@ -1,11 +1,44 @@
-@import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@300;400;500;700&display=swap');
+:root {
+  --font-medium-woff2: var(--PPNeueMedium_woff2);
+  --font-medium-woff: var(--PPNeueMedium_woff);
+  --font-book-woff2: var(--PPNeueBook_woff2);
+  --font-book-woff: var(--PPNeueBook_woff);
+  --font-bold-woff2: var(--PPNeueBold_woff2);
+  --font-bold-woff: var(--PPNeueBold_woff);
+  --font-thin-woff2: var(--PPNeueThin_woff2);
+  --font-thin-otf: var(--PPNeueThin_otf);
+}
 
 @font-face {
-  font-family: 'Montserrat';
+  font-family: 'PPNeueMontreal-Medium';
+  src: url('./assets/fonts/PPNeueMontreal-Medium.woff2') format('woff2'),
+       url('./assets/fonts/PPNeueMontreal-Medium.woff') format('woff');
+  font-weight: 500;
   font-style: normal;
+}
+
+@font-face {
+  font-family: 'PPNeueMontreal-Book';
+  src: url('./assets/fonts/PPNeueMontreal-Book.woff2') format('woff2'),
+       url('./assets/fonts/PPNeueMontreal-Book.woff') format('woff');
   font-weight: normal;
-  src: local('Montserrat'),
-    url('./assets/Montserrat/Montserrat-Bold.woff') format('woff');
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'PPNeueMontreal-Bold';
+  src: url('./assets/fonts/PPNeueMontreal-Bold.woff2') format('woff2'),
+       url('./assets/fonts/PPNeueMontreal-Bold.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'PPNeueMontreal-Thin';
+  src: url('./assets/fonts/PPNeueMontreal-Thin.woff2') format('woff2'),
+       url('./assets/fonts/PPNeueMontreal-Thin.otf') format('opentype');
+  font-weight: 100;
+  font-style: normal;
 }
 
 /* http://meyerweb.com/eric/tools/css/reset/ 
@@ -97,7 +130,7 @@ video {
   margin: 0;
   padding: 0;
   border: 0;
-  font-family: 'Inconsolata', monospace;
+  font-family: 'PPNeueMontreal-Thin', monospace;
   vertical-align: baseline;
 }
 /* HTML5 display-role reset for older browsers */
@@ -147,3 +180,4 @@ body {
   box-sizing: border-box;
   overflow: auto;
 }
+
