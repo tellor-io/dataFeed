@@ -3,20 +3,20 @@
 }
 .AllFeeds__Button {
   width: fit-content;
-  border: 2px solid #ffffff;
-  border-radius: 20px; 
+  border: 2px solid #eefffb;
+  border-radius: 5px 15px 10px 15px; 
   background: transparent;
   margin: 20px 0px;
   padding: 8px 12px;
   font-family: 'PPNeueMontreal-Medium', monospace;
-  color: #ffffff;
+  color: #eefffb;
   font-size: 16px;
-  cursor: pointer;
+  cursor: pointer;  
 }
 .AllFeeds__ButtonDark {
   width: fit-content;
   border: 2px solid #262626;
-  border-radius: 20px; 
+  border-radius: 5px 15px 10px 15px; 
   background: transparent;
   margin: 20px 0px;
   padding: 8px 12px;

@@ -21,24 +21,20 @@ function AllTips() {
   const [filtering, setFiltering] = useState(false)
 
   useEffect(() => {
-    if (!autoPayData.decodedData) return
+    if (!autoPayData.decodedData) return;
     const newData = autoPayData.decodedData.slice(0, 50);
+    
+    // Update viewing first
+    setViewing(newData.slice(0, 6 * loadMoreClicks));
+    
+    // Then update clippedData
     setClippedData(prevData => {
       if (JSON.stringify(newData) !== JSON.stringify(prevData)) {
-        return [...prevData, ...newData]
+        return newData;
       }
       return prevData;
-    })
-  }, [autoPayData.decodedData])
-
-  useEffect(() => {
-    if (!clippedData) return
-    setViewing(clippedData.slice(0, 6))
-
-    return () => {
-      setViewing(null)
-    }
-  }, [clippedData]) //eslint-disable-line
+    });
+  }, [autoPayData.decodedData, loadMoreClicks]);
 
   const handleLoadMore = () => {
     if (!loadMoreButton) return
