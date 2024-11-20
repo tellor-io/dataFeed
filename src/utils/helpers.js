@@ -522,4 +522,44 @@ export const decodingMiddleware = (reportEvents) => {
 
 return decoded; // Or return filteredDecoded if you filtered the list
 }
+
+export const applyFilters = (data, filterState) => {
+  if (!data || !filterState) return [];
+
+  let filteredData = [...data];
+
+  // Apply symbol filters
+  if (filterState.symbolFilters.length > 0) {
+    filteredData = filteredData.filter(item => 
+      filterState.symbolFilters.includes(item.symbol)
+    );
+  }
+
+  // Apply chain filters
+  if (filterState.chainFilters.length > 0) {
+    filteredData = filteredData.filter(item => 
+      filterState.chainFilters.includes(item.chain)
+    );
+  }
+
+  // Apply reporter filters
+  if (filterState.reporterFilters.length > 0) {
+    filteredData = filteredData.filter(item => 
+      filterState.reporterFilters.includes(item.reporter)
+    );
+  }
+
+  // Apply date filters if both start and end dates are provided
+  if (filterState.startDateSearchTerm && filterState.endDateSearchTerm) {
+    const startDate = new Date(filterState.startDateSearchTerm);
+    const endDate = new Date(filterState.endDateSearchTerm);
+    
+    filteredData = filteredData.filter(item => {
+      const itemDate = new Date(item.timestamp);
+      return itemDate >= startDate && itemDate <= endDate;
+    });
+  }
+
+  return filteredData;
+};
  

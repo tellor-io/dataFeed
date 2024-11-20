@@ -6,8 +6,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #262626;
-  color: #ffffff;
+  background-color: #003734;
+  color: #eefffb;
   font-family: 'PPNeueMontreal-Bold', sans-serif;
   transition: 0.3s;
 }
@@ -17,7 +17,7 @@
   min-height: calc(80vh - 100px);
   display: flex;
   flex-direction: column;
-  background-color: #262626;
+  background-color: #003734;
   overflow-x: auto; /* Allow horizontal scrolling */
   margin-bottom: 100px;
   transition: 0.3s;
@@ -32,8 +32,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #fafafa;
-  color: #262626;
+  background-color: #eefffb;
+  color: #003734;
   font-family: 'PPNeueMontreal-Medium', sans-serif;
   transition: 0.3s;
 }
@@ -42,7 +42,7 @@
   min-height: calc(80vh - 100px);
   display: flex;
   flex-direction: column;
-  background-color: #fafafa;
+  background-color: #eefffb;
   overflow-x: auto; /* Allow horizontal scrolling */
 
   margin-bottom: 100px;

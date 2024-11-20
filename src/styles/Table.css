@@ -72,8 +72,10 @@
   padding: 8px;
   width: fit-content;
   height: 180px;
-  background: #fafafa;
-  border-bottom: 2px solid #20f092;
+  background: #eefffb;
+  border-bottom: 2px solid #33f5a7;
+  border-radius: 4px 12px 6px 12px; 
+
   color: #262626;
   z-index: 10;
   position: absolute;
@@ -85,9 +87,11 @@
   flex-direction: column;
   padding: 8px;
   width: fit-content;
+  border-radius: 4px 12px 6px 12px; 
+
   height: 180px;
-  background: #262626;
-  border-bottom: 2px solid #20f092;
+  background: #003734;
+  border-bottom: 2px solid #33f5a7;
   color: #fafafa;
   z-index: 10;
   position: absolute;
@@ -154,13 +158,16 @@
   border: 1px solid #20f092;
 }
 .DropdownClear {
-  background-color: transparent;
-  border: 1px solid #20f092;
+  background-color: #eefffb;
+  border: 1px solid #003734;
+  color: #003734;
+  border-radius: 4px 12px 6px 12px; 
 }
 .DropdownClearDark {
-  background-color: transparent;
-  border: 1px solid #20f092;
-  color: #fafafa;
+  background-color: #eefffb;
+  border: 1px solid #003734;
+  color: #003734;
+  border-radius: 4px 12px 6px 12px; 
 }
 .TableBody {
   width: 100%;
@@ -176,7 +183,7 @@
 
 }
 .TableBody:hover {
-  background-color: #363636;
+  background-color: #036c63;
   cursor: pointer;
 }
 .TableBodyDark {
@@ -191,7 +198,7 @@
   box-sizing: border-box; /* This line ensures padding is included in the element's dimensions */
 }
 .TableBodyDark:hover {
-  background-color: #ececec;
+  background-color: #c3fff5;
   cursor: pointer;
 }
 .TableBodyNoMatches {
@@ -281,4 +288,33 @@
   width: 120px; /* Example width for date inputs */
   height: 35px; /* Example height for date inputs */
   /* Add any other styling properties you need */
+}
+
+.TableFilterDropdown input,
+.TableFilterDropdownDark input {
+  background-color: #eefffb;  /* For light mode */
+  border-radius: 4px 12px 6px 12px; 
+  color: #003734;  /* Changed from #eefffb to make text visible */
+  border: 1px solid #003734;
+  padding: 5px;
+  width: 90%;
+  margin-bottom: 10px;
+  font-family: 'PPNeueMontreal-Medium', monospace;
+}
+
+.TableFilterDropdown input::placeholder {
+  color: #003734;  /* Light mode placeholder color */
+  opacity: 0.7;
+}
+
+.TableFilterDropdownDark input {
+  background-color: #003734;  /* For dark mode */
+  color: #fafafa;
+  border: 1px solid #fafafa;
+  border-radius: 4px 12px 6px 12px; 
+}
+
+.TableFilterDropdownDark input::placeholder {
+  color: #fafafa;  /* Dark mode placeholder color */
+  opacity: 0.7;
 }

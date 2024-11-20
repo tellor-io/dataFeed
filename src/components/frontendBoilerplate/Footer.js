@@ -11,7 +11,7 @@ const CustomSwitch = styled(Switch)(({ theme }) => ({
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#20f092',
+      main: '#33f5a7',
       secondary: 'rgba(32, 240, 146, 0.2)',
     },
   },
@@ -25,7 +25,7 @@ function Footer() {
 
   return (
     <div className="Footer">
-      <p className="FooterText">&copy; 2023 Tellor, Inc.</p>
+      <p className="FooterText">&copy; 2024 Tellor, Inc.</p>
       <div className="ModeSwitcher">
         <p className="ModeSwitcherText">
           {mode && mode.mode === 'dark'

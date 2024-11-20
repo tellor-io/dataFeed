@@ -10,7 +10,7 @@ import { truncateAddr } from '../utils/helpers'
 //Contexts
 import { ModeContext } from '../contexts/Mode'
 
-function Table({ data, allData, setFiltering }) {
+function Table({ data, allData, setFiltering, filterState, onFilterChange }) {
   //Component State
   const [tableData, setTableData] = useState([])
   //
@@ -18,15 +18,6 @@ function Table({ data, allData, setFiltering }) {
   const [chainClicked, setChainClicked] = useState(false)
   const [reporterClicked, setReporterClicked] = useState(false)
   const [dateClicked, setDateClicked] = useState(false)
-  //
-  const [reportedSymbols, setReportedSymbols] = useState(null)
-  const [reportedChains, setReportedChains] = useState(null)
-  const [reportedReporters, setReportedReporters] = useState(null)
-  const [reportedDates, setReportedDates] = useState(null)
-  const [symbolSearchTerm, setSymbolSearchTerm] = useState("");
-  const [reporterSearchTerm, setReporterSearchTerm] = useState("");
-  const [startDateSearchTerm, setStartDateSearchTerm] = useState("");
-  const [endDateSearchTerm, setEndDateSearchTerm] = useState("");
   //
   const [allFilters, setAllFilters] = useState([])
   const [symbolFilters, setSymbolFilters] = useState([])
@@ -42,11 +33,23 @@ function Table({ data, allData, setFiltering }) {
   //Contexts
   const mode = useContext(ModeContext)
 
+  // Filter state
+  const [reportedSymbols, setReportedSymbols] = useState([]);
+  const [reportedChains, setReportedChains] = useState([]);
+  const [reportedReporters, setReportedReporters] = useState([]);
+  const [reportedDates, setReportedDates] = useState([]);
+
+  // Search terms state
+  const [symbolSearchTerm, setSymbolSearchTerm] = useState('');
+  const [reporterSearchTerm, setReporterSearchTerm] = useState('');
+  const [startDateSearchTerm, setStartDateSearchTerm] = useState('');
+  const [endDateSearchTerm, setEndDateSearchTerm] = useState('');
+
   // Memoize the filter application function
   const applyFilters = useCallback(() => {
     if (!allData || !allData.decodedData) return;
 
-    let filteredData = allData.decodedData.filter(event => {
+    const filteredData = allData.decodedData.filter(event => {
       const symbolMatch = symbolFilters.length === 0 || symbolFilters.includes(event.decodedValueName);
       const chainMatch = chainFilters.length === 0 || chainFilters.includes(event.chain);
       const reporterMatch = reporterFilters.length === 0 || reporterFilters.includes(event.decodedReporter);
@@ -55,16 +58,16 @@ function Table({ data, allData, setFiltering }) {
       let endDate = new Date(endDateSearchTerm);
       let eventDate = new Date(event.decodedTime.split(',')[0].trim().split('/').reverse().join('-'));
 
-      const dateMatch = startDateSearchTerm && endDateSearchTerm ? (eventDate >= startDate && eventDate <= endDate) : dateFilters.length === 0 || dateFilters.some(filterDate => event.decodedTime.startsWith(filterDate));
-  
+      const dateMatch = startDateSearchTerm && endDateSearchTerm ? 
+        (eventDate >= startDate && eventDate <= endDate) : 
+        dateFilters.length === 0 || dateFilters.some(filterDate => event.decodedTime.startsWith(filterDate));
+
       return symbolMatch && chainMatch && reporterMatch && dateMatch;
     });
 
-    const areFiltersApplied = symbolFilters.length > 0 || chainFilters.length > 0 || reporterFilters.length > 0 || dateFilters.length > 0 || (startDateSearchTerm && endDateSearchTerm);
-  
-    setTableData(areFiltersApplied ? filteredData : filteredData.slice(0, 6));
-    setFiltering(filteredData.length > 0);
-  }, [allData, symbolFilters, chainFilters, reporterFilters, dateFilters, startDateSearchTerm, endDateSearchTerm, setFiltering]);
+    setTableData(filteredData.slice(0, 6));
+    setFiltering(filteredData.length < allData.decodedData.length);
+  }, [allData, symbolFilters, chainFilters, reporterFilters, dateFilters, startDateSearchTerm, endDateSearchTerm]);
 
   // Effect for initial data load and updates
   useEffect(() => {
@@ -156,66 +159,43 @@ function Table({ data, allData, setFiltering }) {
     }
   }
   const handleFilter = (filterType, filterValue) => {
-    let temp
-    let allFiltersTemp
-    let allFiltersObj = { filterType: filterType, filterValue: filterValue }
-
+    const newFilters = {...filterState};
+    let temp;
+    
     switch (filterType) {
       case 'symbol':
-        if (symbolFilters.includes(filterValue)) {
-          temp = symbolFilters.filter((filters) => filters !== filterValue)
-          allFiltersTemp = allFilters.filter(
-            (filters) => filters.filterValue !== filterValue
-          )
-          setSymbolFilters(temp)
-          setAllFilters(allFiltersTemp)
-        } else {
-          setSymbolFilters([...symbolFilters, filterValue])
-          setAllFilters([...allFilters, allFiltersObj])
-        }
-        break
+        temp = symbolFilters.includes(filterValue) 
+          ? symbolFilters.filter(f => f !== filterValue)
+          : [...symbolFilters, filterValue];
+        setSymbolFilters(temp);
+        newFilters.symbolFilters = temp;
+        break;
       case 'chain':
-        if (chainFilters.includes(filterValue)) {
-          temp = chainFilters.filter((filters) => filters !== filterValue)
-          allFiltersTemp = allFilters.filter(
-            (filters) => filters.filterValue !== filterValue
-          )
-          setChainFilters(temp)
-          setAllFilters(allFiltersTemp)
-        } else {
-          setChainFilters([...chainFilters, filterValue])
-          setAllFilters([...allFilters, allFiltersObj])
-        }
-        break
+        temp = chainFilters.includes(filterValue) 
+          ? chainFilters.filter(f => f !== filterValue)
+          : [...chainFilters, filterValue];
+        setChainFilters(temp);
+        newFilters.chainFilters = temp;
+        break;
       case 'reporter':
-        if (reporterFilters.includes(filterValue)) {
-          temp = reporterFilters.filter((filters) => filters !== filterValue)
-          allFiltersTemp = allFilters.filter(
-            (filters) => filters.filterValue !== filterValue
-          )
-          setReporterFilters(temp)
-          setAllFilters(allFiltersTemp)
-        } else {
-          setReporterFilters([...reporterFilters, filterValue])
-          setAllFilters([...allFilters, allFiltersObj])
-        }
-        break
+        temp = reporterFilters.includes(filterValue) 
+          ? reporterFilters.filter(f => f !== filterValue)
+          : [...reporterFilters, filterValue];
+        setReporterFilters(temp);
+        newFilters.reporterFilters = temp;
+        break;
       case 'date':
-        if (dateFilters.includes(filterValue)) {
-          temp = dateFilters.filter((filters) => filters !== filterValue)
-          allFiltersTemp = allFilters.filter(
-            (filters) => filters.filterValue !== filterValue
-          )
-          setDateFilters(temp)
-          setAllFilters(allFiltersTemp)
-        } else {
-          setDateFilters([...dateFilters, filterValue])
-          setAllFilters([...allFilters, allFiltersObj])
-        }
-        break
+        temp = dateFilters.includes(filterValue) 
+          ? dateFilters.filter(f => f !== filterValue)
+          : [...dateFilters, filterValue];
+        setDateFilters(temp);
+        newFilters.dateFilters = temp;
+        break;
       default:
-        return
+        return;
     }
+    
+    onFilterChange(newFilters);
   }
   const handleFilterClear = (filterType) => {
     let cleared

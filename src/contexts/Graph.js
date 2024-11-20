@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect } from 'react'
+import React, { createContext, useState, useEffect, useCallback } from 'react'
 import { useQuery } from '@apollo/client'
 import { reporterQuery } from '../utils/queries'
 import { sortDataByProperty, decodingMiddleware } from '../utils/helpers'
@@ -66,6 +66,15 @@ const Graph = ({ children }) => {
   });
   const [allGraphData, setAllGraphData] = useState([]);
   const [decodedData, setDecodedData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [filterState, setFilterState] = useState({
+    symbolFilters: [],
+    chainFilters: [],
+    reporterFilters: [],
+    dateFilters: [],
+    startDateSearchTerm: "",
+    endDateSearchTerm: ""
+  });
 
   const useQueryWithTimeout = (query, client, networkName, timeout = 10000) => {
     const { data, loading, error } = useQuery(query, {
@@ -145,8 +154,36 @@ const Graph = ({ children }) => {
     }
   }, [allGraphData]);
 
+  // Add filter function at context level
+  const applyFilters = useCallback((data, filters) => {
+    if (!data) return [];
+
+    return data.filter(event => {
+      const symbolMatch = filters.symbolFilters.length === 0 || filters.symbolFilters.includes(event.decodedValueName);
+      const chainMatch = filters.chainFilters.length === 0 || filters.chainFilters.includes(event.chain);
+      const reporterMatch = filters.reporterFilters.length === 0 || filters.reporterFilters.includes(event.decodedReporter);
+      
+      let startDate = new Date(filters.startDateSearchTerm);
+      let endDate = new Date(filters.endDateSearchTerm);
+      let eventDate = new Date(event.decodedTime.split(',')[0].trim().split('/').reverse().join('-'));
+
+      const dateMatch = filters.startDateSearchTerm && filters.endDateSearchTerm ? 
+        (eventDate >= startDate && eventDate <= endDate) : 
+        filters.dateFilters.length === 0 || filters.dateFilters.some(filterDate => event.decodedTime.startsWith(filterDate));
+  
+      return symbolMatch && chainMatch && reporterMatch && dateMatch;
+    });
+  }, []);
+
+  // Apply filters whenever data or filter state changes
+  useEffect(() => {
+    if (!decodedData.length) return;
+    const filtered = applyFilters(decodedData, filterState);
+    setFilteredData(filtered);
+  }, [decodedData, filterState, applyFilters]);
+
   return (
-    <GraphContext.Provider value={{ allGraphData, decodedData, networkData }}>
+    <GraphContext.Provider value={{ allGraphData, decodedData, networkData, filteredData, filterState }}>
       {children}
     </GraphContext.Provider>
   )

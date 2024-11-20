@@ -10,7 +10,7 @@ const CustomLinearProgress = styled(LinearProgress)(({ theme }) => ({
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#20f092',
+      main: '#33f5a7',
       secondary: 'rgba(32, 240, 146, 0.2)',
     },
   },

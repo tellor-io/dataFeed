@@ -1,91 +1,100 @@
-import React, { useContext, useEffect, useState, useCallback } from 'react'
+import React, { useContext, useEffect, useState, useCallback, useRef } from 'react'
 import '../styles/AllFeeds.css'
 import Table from './Table'
 import { GraphContext } from '../contexts/Graph'
 import { ModeContext } from '../contexts/Mode'
 import LinearIndeterminate from './LinearIndeterminate'
+import { applyFilters } from '../utils/helpers'
 
 function AllFeeds() {
-  const graphData = useContext(GraphContext)
-  const mode = useContext(ModeContext)
-  const [clippedData, setClippedData] = useState([])
-  const [loadMoreClicks, setLoadMoreClicks] = useState(1)
-  const [viewing, setViewing] = useState(null)
-  const [loadMoreButton, setLoadMoreButton] = useState(true)
-  const [filtering, setFiltering] = useState(false)
-  const [filters, setFilters] = useState({
+  const graphContext = useContext(GraphContext);
+  const mode = useContext(ModeContext);
+  const [clippedData, setClippedData] = useState([]);
+  const [viewing, setViewing] = useState(null);
+  const [loadMoreButton, setLoadMoreButton] = useState(true);
+  const [filtering, setFiltering] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [filterState, setFilterState] = useState({
     symbolFilters: [],
     chainFilters: [],
     reporterFilters: [],
     dateFilters: [],
     startDateSearchTerm: "",
     endDateSearchTerm: ""
-  })
+  });
 
+  // Handle initial data loading
   useEffect(() => {
-    if (!graphData.decodedData) return;
+    if (!graphContext.decodedData) return;
     setClippedData(prevData => {
-      const newData = graphData.decodedData.slice(0, 50);
-      return [...newData, ...prevData.filter(item => !newData.some(newItem => newItem.id === item.id))];
+      const newData = graphContext.decodedData.slice(0, 50);
+      return [...newData, ...prevData.filter(item => 
+        !newData.some(newItem => newItem.id === item.id))];
     });
-  }, [graphData.decodedData]);
+  }, [graphContext.decodedData]);
 
+  // Apply filters
   const applyFilters = useCallback(() => {
     if (!clippedData) return;
 
     let filteredData = clippedData.filter(event => {
-      const symbolMatch = filters.symbolFilters.length === 0 || filters.symbolFilters.includes(event.decodedValueName);
-      const chainMatch = filters.chainFilters.length === 0 || filters.chainFilters.includes(event.chain);
-      const reporterMatch = filters.reporterFilters.length === 0 || filters.reporterFilters.includes(event.decodedReporter);
+      const symbolMatch = filterState.symbolFilters.length === 0 || 
+                         filterState.symbolFilters.includes(event.decodedValueName);
+      const chainMatch = filterState.chainFilters.length === 0 || 
+                        filterState.chainFilters.includes(event.chain);
+      const reporterMatch = filterState.reporterFilters.length === 0 || 
+                           filterState.reporterFilters.includes(event.decodedReporter);
       
-      let startDate = new Date(filters.startDateSearchTerm);
-      let endDate = new Date(filters.endDateSearchTerm);
-      let eventDate = new Date(event.decodedTime.split(',')[0].trim().split('/').reverse().join('-'));
-
-      const dateMatch = filters.startDateSearchTerm && filters.endDateSearchTerm ? (eventDate >= startDate && eventDate <= endDate) : filters.dateFilters.length === 0 || filters.dateFilters.some(filterDate => event.decodedTime.startsWith(filterDate));
+      let dateMatch = true;
+      if (filterState.startDateSearchTerm && filterState.endDateSearchTerm) {
+        let startDate = new Date(filterState.startDateSearchTerm);
+        let endDate = new Date(filterState.endDateSearchTerm);
+        let eventDate = new Date(event.decodedTime.split(',')[0].trim().split('/').reverse().join('-'));
+        dateMatch = eventDate >= startDate && eventDate <= endDate;
+      }
   
       return symbolMatch && chainMatch && reporterMatch && dateMatch;
     });
 
-    setViewing(filteredData.slice(0, 6 * loadMoreClicks));
+    setViewing(filteredData.slice(0, 6 * currentPage));
     setFiltering(filteredData.length < clippedData.length);
-    setLoadMoreButton(filteredData.length > 6 * loadMoreClicks);
-  }, [clippedData, filters, loadMoreClicks]);
+    setLoadMoreButton(filteredData.length > 6 * currentPage);
+  }, [clippedData, filterState, currentPage]);
 
   useEffect(() => {
     applyFilters();
-  }, [applyFilters, clippedData]);
+  }, [applyFilters]);
 
-  const handleLoadMore = () => {
+  const handleLoadMore = useCallback(() => {
     if (!loadMoreButton) return;
-    setLoadMoreClicks(prev => prev + 1);
-  }
+    setCurrentPage(prev => prev + 1);
+  }, [loadMoreButton]);
 
-  const handleFilterChange = (newFilters) => {
-    setFilters(newFilters);
-  }
+  const handleFilterChange = useCallback((newFilters) => {
+    setFilterState(newFilters);
+    setCurrentPage(1); // Reset pagination when filters change
+  }, []);
 
   return (
     <>
-      {graphData && graphData.decodedData ? (
+      {graphContext?.decodedData ? (
         <div className="AllFeedsView">
           <Table
             data={viewing}
-            allData={graphData}
+            allData={graphContext}
             setFiltering={setFiltering}
+            filterState={filterState}
             onFilterChange={handleFilterChange}
-            filters={filters}
           />
-          <button
-            className={mode.mode === 'dark' ? 'AllFeeds__Button' : 'AllFeeds__ButtonDark'}
-            onClick={handleLoadMore}
-            style={{
-              cursor: loadMoreButton ? 'pointer' : 'not-allowed',
-              display: 'flex',
-            }}
-          >
-            load more
-          </button>
+          {loadMoreButton && (
+            <button
+              className={mode.mode === 'dark' ? 'AllFeeds__Button' : 'AllFeeds__ButtonDark'}
+              onClick={handleLoadMore}
+              style={{ cursor: 'pointer' }}
+            >
+              load more
+            </button>
+          )}
         </div>
       ) : (
         <div className="Loading">
@@ -93,7 +102,7 @@ function AllFeeds() {
         </div>
       )}
     </>
-  )
+  );
 }
 
 export default AllFeeds
