@@ -10,10 +10,13 @@ function AllFeeds() {
   const graphContext = useContext(GraphContext);
   const mode = useContext(ModeContext);
   const [clippedData, setClippedData] = useState([]);
-  const [viewing, setViewing] = useState(null);
+  const [viewing, setViewing] = useState([]);
   const [loadMoreButton, setLoadMoreButton] = useState(true);
   const [filtering, setFiltering] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [isDataMerged, setIsDataMerged] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isFilterLoading, setIsFilterLoading] = useState(false);
   const [filterState, setFilterState] = useState({
     symbolFilters: [],
     chainFilters: [],
@@ -25,45 +28,68 @@ function AllFeeds() {
 
   // Handle initial data loading
   useEffect(() => {
-    if (!graphContext.decodedData) return;
-    setClippedData(prevData => {
-      const newData = graphContext.decodedData.slice(0, 50);
-      return [...newData, ...prevData.filter(item => 
-        !newData.some(newItem => newItem.id === item.id))];
-    });
+    if (!graphContext.decodedData) {
+      setIsLoading(true);
+      return;
+    }
+
+    const initialData = graphContext.decodedData;
+    setClippedData(initialData);
+    setViewing(initialData.slice(0, 6));
+    setIsDataMerged(true);
+    setIsLoading(false);
   }, [graphContext.decodedData]);
 
   // Apply filters
   const applyFilters = useCallback(() => {
-    if (!clippedData) return;
+    if (!clippedData || !isDataMerged) return;
+    
+    setIsFilterLoading(true);
 
-    let filteredData = clippedData.filter(event => {
-      const symbolMatch = filterState.symbolFilters.length === 0 || 
-                         filterState.symbolFilters.includes(event.decodedValueName);
-      const chainMatch = filterState.chainFilters.length === 0 || 
-                        filterState.chainFilters.includes(event.chain);
-      const reporterMatch = filterState.reporterFilters.length === 0 || 
-                           filterState.reporterFilters.includes(event.decodedReporter);
+    let filteredData = clippedData;
+    
+    if (filterState.symbolFilters.length > 0 || 
+        filterState.chainFilters.length > 0 || 
+        filterState.reporterFilters.length > 0 ||
+        (filterState.startDateSearchTerm && filterState.endDateSearchTerm)) {
       
-      let dateMatch = true;
-      if (filterState.startDateSearchTerm && filterState.endDateSearchTerm) {
-        let startDate = new Date(filterState.startDateSearchTerm);
-        let endDate = new Date(filterState.endDateSearchTerm);
-        let eventDate = new Date(event.decodedTime.split(',')[0].trim().split('/').reverse().join('-'));
-        dateMatch = eventDate >= startDate && eventDate <= endDate;
-      }
-  
-      return symbolMatch && chainMatch && reporterMatch && dateMatch;
-    });
+      filteredData = clippedData.filter(event => {
+        const symbolMatch = filterState.symbolFilters.length === 0 || 
+                           filterState.symbolFilters.includes(event.decodedValueName);
+        const chainMatch = filterState.chainFilters.length === 0 || 
+                          filterState.chainFilters.includes(event.chain);
+        const reporterMatch = filterState.reporterFilters.length === 0 || 
+                             filterState.reporterFilters.includes(event.decodedReporter);
+        
+        let dateMatch = true;
+        if (filterState.startDateSearchTerm && filterState.endDateSearchTerm) {
+          let startDate = new Date(filterState.startDateSearchTerm);
+          let endDate = new Date(filterState.endDateSearchTerm);
+          let eventDate = new Date(event.decodedTime.split(',')[0].trim().split('/').reverse().join('-'));
+          dateMatch = eventDate >= startDate && eventDate <= endDate;
+        }
+    
+        return symbolMatch && chainMatch && reporterMatch && dateMatch;
+      });
+    }
 
-    setViewing(filteredData.slice(0, 6 * currentPage));
+    const itemsPerPage = 6;
+    const startIndex = 0;
+    const endIndex = Math.max(itemsPerPage * currentPage, itemsPerPage);
+    
+    const paginatedData = filteredData.slice(startIndex, endIndex);
+    
+    setViewing(paginatedData);
     setFiltering(filteredData.length < clippedData.length);
-    setLoadMoreButton(filteredData.length > 6 * currentPage);
-  }, [clippedData, filterState, currentPage]);
+    setLoadMoreButton(filteredData.length > endIndex);
+    setIsFilterLoading(false);
+  }, [clippedData, filterState, currentPage, isDataMerged]);
 
   useEffect(() => {
-    applyFilters();
-  }, [applyFilters]);
+    if (isDataMerged) {
+      applyFilters();
+    }
+  }, [applyFilters, isDataMerged]);
 
   const handleLoadMore = useCallback(() => {
     if (!loadMoreButton) return;
@@ -71,13 +97,18 @@ function AllFeeds() {
   }, [loadMoreButton]);
 
   const handleFilterChange = useCallback((newFilters) => {
+    setIsFilterLoading(true);
     setFilterState(newFilters);
-    setCurrentPage(1); // Reset pagination when filters change
+    setCurrentPage(1);
   }, []);
 
   return (
     <>
-      {graphContext?.decodedData ? (
+      {isLoading ? (
+        <div className="Loading">
+          <LinearIndeterminate />
+        </div>
+      ) : (
         <div className="AllFeedsView">
           <Table
             data={viewing}
@@ -85,6 +116,7 @@ function AllFeeds() {
             setFiltering={setFiltering}
             filterState={filterState}
             onFilterChange={handleFilterChange}
+            isFilterLoading={isFilterLoading}
           />
           {loadMoreButton && (
             <button
@@ -95,10 +127,6 @@ function AllFeeds() {
               load more
             </button>
           )}
-        </div>
-      ) : (
-        <div className="Loading">
-          <LinearIndeterminate />
         </div>
       )}
     </>
