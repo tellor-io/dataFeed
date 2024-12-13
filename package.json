@@ -22,10 +22,11 @@
     "react-dom": "^17.0.2",
     "react-router-dom": "^6.2.2",
     "web3": "^1.7.1",
-    "web3modal": "^1.9.12"
+    "web3modal": "^1.9.12",
+    "react-scripts": "^4.0.3"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "node server.js",
     "build": "react-scripts build",
     "serve": "node server.js",
     "heroku-postbuild": "npm run build"
@@ -55,7 +56,6 @@
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.3",
     "@testing-library/user-event": "^13.5.0",
-    "eslint": "^7.11.0",
-    "react-scripts": "^4.0.3"
+    "eslint": "^7.11.0"
   }
 }
