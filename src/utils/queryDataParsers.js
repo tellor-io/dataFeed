@@ -368,6 +368,19 @@ export const queryDataParsers = {
               currency: queryData[1].toUpperCase(),
             }).format(Number(event._value) / eighteenDecimals)
         }
+        case 'cult':
+        if (event.queryDataObj[1] === 'usd') {
+            event.decodedValueName = `${event.queryDataObj[0].toUpperCase()}/${event.queryDataObj[1].toUpperCase()}`
+            const value = parseInt(Number(event._value), 10) / eighteenDecimals
+            const options = {
+              style: 'currency',
+              currency: 'USD',
+            }
+              options.minimumFractionDigits = 6
+              options.maximumFractionDigits = 6
+              event.decodedValue = new Intl.NumberFormat('en-EN', options).format(value)
+
+            }
         return event
 
           

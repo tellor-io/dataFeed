@@ -3,6 +3,7 @@ import '../styles/Table.css'
 import { ReactComponent as FilterIcon } from '../assets/filter_outline.svg'
 import { ReactComponent as FilterIconFilled } from '../assets/filter.svg'
 import { ReactComponent as Checked } from '../assets/done.svg'
+import LinearIndeterminate from './LinearIndeterminate'
 //Icons
 import { Jazzicon } from '@ukstv/jazzicon-react'
 //Utils
@@ -10,7 +11,7 @@ import { truncateAddr } from '../utils/helpers'
 //Contexts
 import { ModeContext } from '../contexts/Mode'
 
-function Table({ data, allData, setFiltering, filterState, onFilterChange }) {
+function Table({ data, allData, setFiltering, filterState, onFilterChange, isFilterLoading }) {
   //Component State
   const [tableData, setTableData] = useState([])
   //
@@ -647,8 +648,14 @@ function Table({ data, allData, setFiltering, filterState, onFilterChange }) {
         </tr>
       </thead>
       <tbody>
-        {tableData && tableData.length > 0 ? (
-          tableData.map((event) => (
+        {isFilterLoading ? (
+          <tr>
+            <td colSpan="5" className="Loading">
+              <LinearIndeterminate />
+            </td>
+          </tr>
+        ) : data && data.length > 0 ? (
+          data.map((event) => (
             <tr
               key={event.id}
               className={mode.mode === 'dark' ? 'TableBody' : 'TableBodyDark'}
@@ -669,7 +676,7 @@ function Table({ data, allData, setFiltering, filterState, onFilterChange }) {
           ))
         ) : (
           <tr className="TableBodyNoMatches">
-            <td>Data Doesn't Match Entries</td>
+            <td colSpan="5">No matching entries found</td>
           </tr>
         )}
       </tbody>
