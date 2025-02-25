@@ -348,27 +348,21 @@ export const queryDataParsers = {
               }
               return event
       case 'wsteth':
-        if (event.queryDataObj[1] === 'eth') {
-            event.decodedValueName = `${event.queryDataObj[0].toUpperCase()}/${event.queryDataObj[1].toUpperCase()}`
-            const value = parseInt(Number(event._value), 10) / eighteenDecimals
-            const options = {
-              style: 'currency',
-              currency: 'ETH',
-            }
-              options.minimumFractionDigits = 6
-              options.maximumFractionDigits = 6
-              event.decodedValue = new Intl.NumberFormat('en-EN', options).format(value)
-
-            }
         if (event.queryDataObj[1] === 'usd') {
-            let queryData = web3.eth.abi.decodeParameters(['string', 'string'], web3.eth.abi.decodeParameters(['string', 'bytes'], event._queryData)[1])
-            event.decodedValueName = `${queryData[0].toUpperCase()}/${queryData[1].toUpperCase()}`
-            event.decodedValue = new Intl.NumberFormat('en-EN', {
-              style: 'currency',
-              currency: queryData[1].toUpperCase(),
-            }).format(Number(event._value) / eighteenDecimals)
+          let queryData = web3.eth.abi.decodeParameters(['string', 'string'], web3.eth.abi.decodeParameters(['string', 'bytes'], event._queryData)[1]);
+          event.decodedValueName = `${queryData[0].toUpperCase()}/${queryData[1].toUpperCase()}`;
+          
+          event.decodedValue = new Intl.NumberFormat('en-EN', {
+            style: 'currency',
+            currency: queryData[1].toUpperCase(),
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          }).format(Number(event._value) / eighteenDecimals);
+          
+          return event;
         }
-        case 'cult':
+        return event;
+      case 'cult':
         if (event.queryDataObj[1] === 'usd') {
             event.decodedValueName = `${event.queryDataObj[0].toUpperCase()}/${event.queryDataObj[1].toUpperCase()}`
             const value = parseInt(Number(event._value), 10) / eighteenDecimals
