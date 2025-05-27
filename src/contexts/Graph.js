@@ -4,8 +4,8 @@ import { reporterQuery } from '../utils/queries'
 import { sortDataByProperty, decodingMiddleware } from '../utils/helpers'
 import { 
   clientMainnet, clientSepolia, clientMatic, clientAmoy, clientArbone, 
-  clientGnosismain, clientOptMain, clientOptTest, clientLinea, clientLineaTest, 
-  clientPolygonzk, clientZksyncMain, clientZksyncTest, clientScroll, clientBase
+  clientGnosismain, clientOptMain, clientLinea, clientPolygonzk, 
+  clientZksyncMain, clientScroll, clientBase
 } from '../utils/apollo'
 
 export const GraphContext = createContext()
@@ -18,12 +18,9 @@ const explorerUrls = {
   arbone: 'https://arbiscan.io/tx/',
   gnosismain: 'https://gnosisscan.io/tx/',
   optMain: 'https://optimistic.etherscan.io/tx/',
-  optTest: 'https://sepolia-optimism.etherscan.io/tx/',
   linea: 'https://lineascan.build/tx/',
-  lineaTest: 'https://sepolia.lineascan.build/tx/',
   polygonzk: 'https://zkevm.polygonscan.com/tx/',
   zksyncMain: 'https://explorer.zksync.io/tx/',
-  zksyncTest: 'https://sepolia.explorer.zksync.io/tx/',
   scroll: 'https://scrollscan.com/tx/',
   base: 'https://basescan.org/tx/'
 };
@@ -36,12 +33,9 @@ const networkNames = {
   arbone: 'Arbitrum Mainnet',
   gnosismain: 'Gnosis Mainnet',
   optMain: 'Optimism Mainnet',
-  optTest: 'Optimism Testnet',
   linea: 'Linea Mainnet',
-  lineaTest: 'Linea Testnet',
   polygonzk: 'Polygon zkEVM Main',
   zksyncMain: 'ZkSync Mainnet',
-  zksyncTest: 'ZkSync Sepolia',
   scroll: 'Scroll Mainnet',
   base: 'Base Mainnet'
 };
@@ -55,12 +49,9 @@ const Graph = ({ children }) => {
     arbone: { data: null, loading: true, error: null },
     gnosismain: { data: null, loading: true, error: null },
     optMain: { data: null, loading: true, error: null },
-    optTest: { data: null, loading: true, error: null },
     linea: { data: null, loading: true, error: null },
-    lineaTest: { data: null, loading: true, error: null },
     polygonzk: { data: null, loading: true, error: null },
     zksyncMain: { data: null, loading: true, error: null },
-    zksyncTest: { data: null, loading: true, error: null },
     scroll: { data: null, loading: true, error: null },
     base: { data: null, loading: true, error: null }
   });
@@ -76,11 +67,11 @@ const Graph = ({ children }) => {
     endDateSearchTerm: ""
   });
 
-  const useQueryWithTimeout = (query, client, networkName, timeout = 10000) => {
+  const useQueryWithTimeout = (query, client, networkName, timeout = 10000, pollInterval = 60000) => {
     const { data, loading, error } = useQuery(query, {
       client,
       fetchPolicy: 'network-only',
-      pollInterval: 5000,
+      pollInterval,
     });
 
     useEffect(() => {
@@ -94,7 +85,7 @@ const Graph = ({ children }) => {
       }, timeout);
 
       return () => clearTimeout(timer);
-    }, [loading, networkName, timeout]); // Added timeout to the dependency array
+    }, [loading, networkName, timeout]);
 
     useEffect(() => {
       setNetworkData(prev => ({
@@ -107,21 +98,18 @@ const Graph = ({ children }) => {
   };
 
   // Instead, directly call useQueryWithTimeout for each network
-  useQueryWithTimeout(reporterQuery, clientMainnet, 'mainnet');
-  useQueryWithTimeout(reporterQuery, clientSepolia, 'sepolia');
-  useQueryWithTimeout(reporterQuery, clientMatic, 'matic');
-  useQueryWithTimeout(reporterQuery, clientAmoy, 'amoy');
-  useQueryWithTimeout(reporterQuery, clientArbone, 'arbone');
-  useQueryWithTimeout(reporterQuery, clientGnosismain, 'gnosismain');
-  useQueryWithTimeout(reporterQuery, clientOptMain, 'optMain');
-  useQueryWithTimeout(reporterQuery, clientOptTest, 'optTest');
-  useQueryWithTimeout(reporterQuery, clientLinea, 'linea');
-  useQueryWithTimeout(reporterQuery, clientLineaTest, 'lineaTest');
-  useQueryWithTimeout(reporterQuery, clientPolygonzk, 'polygonzk');
-  useQueryWithTimeout(reporterQuery, clientZksyncMain, 'zksyncMain');
-  useQueryWithTimeout(reporterQuery, clientZksyncTest, 'zksyncTest');
-  useQueryWithTimeout(reporterQuery, clientScroll, 'scroll');
-  useQueryWithTimeout(reporterQuery, clientBase, 'base');
+  useQueryWithTimeout(reporterQuery, clientMainnet, 'mainnet', 10000, 5000); // 5 second polling for mainnet
+  useQueryWithTimeout(reporterQuery, clientSepolia, 'sepolia', 10000, 60000); // 1 minute polling for others
+  useQueryWithTimeout(reporterQuery, clientMatic, 'matic', 10000, 60000);
+  useQueryWithTimeout(reporterQuery, clientAmoy, 'amoy', 10000, 60000);
+  useQueryWithTimeout(reporterQuery, clientArbone, 'arbone', 10000, 60000);
+  useQueryWithTimeout(reporterQuery, clientGnosismain, 'gnosismain', 10000, 60000);
+  useQueryWithTimeout(reporterQuery, clientOptMain, 'optMain', 10000, 60000);
+  useQueryWithTimeout(reporterQuery, clientLinea, 'linea', 10000, 60000);
+  useQueryWithTimeout(reporterQuery, clientPolygonzk, 'polygonzk', 10000, 60000);
+  useQueryWithTimeout(reporterQuery, clientZksyncMain, 'zksyncMain', 10000, 60000);
+  useQueryWithTimeout(reporterQuery, clientScroll, 'scroll', 10000, 60000);
+  useQueryWithTimeout(reporterQuery, clientBase, 'base', 10000, 60000);
 
   useEffect(() => {
     const processNetworkData = (networkName, data) => {
