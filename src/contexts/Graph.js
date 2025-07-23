@@ -68,6 +68,7 @@ const Graph = ({ children }) => {
   });
 
   const useQueryWithTimeout = (query, client, networkName, timeout = 10000, pollInterval = 60000) => {
+    console.log(`Setting up query for ${networkName} with client:`, client);
     const { data, loading, error } = useQuery(query, {
       client,
       fetchPolicy: 'network-only',
@@ -88,6 +89,9 @@ const Graph = ({ children }) => {
     }, [loading, networkName, timeout]);
 
     useEffect(() => {
+      if (networkName === 'mainnet') {
+        console.log('Mainnet query state:', { data, loading, error });
+      }
       setNetworkData(prev => ({
         ...prev,
         [networkName]: { data, loading, error }
@@ -98,6 +102,7 @@ const Graph = ({ children }) => {
   };
 
   // Instead, directly call useQueryWithTimeout for each network
+  console.log('Setting up mainnet client:', clientMainnet);
   useQueryWithTimeout(reporterQuery, clientMainnet, 'mainnet', 10000, 5000); // 5 second polling for mainnet
   useQueryWithTimeout(reporterQuery, clientSepolia, 'sepolia', 10000, 60000); // 1 minute polling for others
   useQueryWithTimeout(reporterQuery, clientMatic, 'matic', 10000, 60000);
@@ -123,9 +128,22 @@ const Graph = ({ children }) => {
       }));
     };
 
+    // Debug: Log mainnet data specifically
+    if (networkData.mainnet && networkData.mainnet.data) {
+      console.log('Mainnet data received:', networkData.mainnet.data);
+      console.log('Mainnet newReportEntities count:', networkData.mainnet.data.newReportEntities?.length || 0);
+    }
+
     const newData = Object.entries(networkData).flatMap(([networkName, { data }]) => 
       processNetworkData(networkName, data)
     );
+
+    console.log('Total newData processed:', newData.length);
+    console.log('Data by network:', Object.entries(networkData).map(([name, { data }]) => ({
+      network: name,
+      hasData: !!data,
+      count: data?.newReportEntities?.length || 0
+    })));
 
     setAllGraphData(prev => {
       const combined = [...prev, ...newData];
