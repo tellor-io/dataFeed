@@ -29,9 +29,11 @@ function TipTable({ data, allData, setFiltering }) {
 
   useEffect(() => {
     if (!data) return;
+    console.log('TipTable received data:', data);
     setTableData(prevData => {
       const newData = data.slice(prevData.length);
       if (JSON.stringify(newData) !== JSON.stringify([])) {
+        console.log('TipTable newData:', newData);
         return [...prevData, ...newData]
       }
       return prevData;
@@ -301,7 +303,25 @@ function TipTable({ data, allData, setFiltering }) {
   }
 
   const handleRowClick = (txnLink) => {
-    window.open(txnLink, '_blank').focus()
+    console.log('TipTable handleRowClick called with txnLink:', txnLink);
+    console.log('About to open URL:', txnLink);
+    
+    // Try different approaches to open the URL
+    try {
+      const newWindow = window.open(txnLink, '_blank');
+      if (newWindow) {
+        newWindow.focus();
+        console.log('Window opened successfully');
+      } else {
+        console.log('Window.open returned null, trying alternative method');
+        // Fallback: try using location.href
+        window.location.href = txnLink;
+      }
+    } catch (error) {
+      console.error('Error opening URL:', error);
+      // Fallback: try using location.href
+      window.location.href = txnLink;
+    }
   }
 
   

@@ -1,11 +1,24 @@
 import { ApolloClient, InMemoryCache } from '@apollo/client';
 
-const createClient = (uri) => new ApolloClient({
-  uri,
-  cache: new InMemoryCache()
-});
+const createClient = (uri, headers = {}) => {
+  return new ApolloClient({
+    uri,
+    cache: new InMemoryCache(),
+    defaultOptions: {
+      watchQuery: {
+        fetchPolicy: 'network-only',
+      },
+      query: {
+        fetchPolicy: 'network-only',
+      },
+    },
+    headers
+  });
+};
 
-export const clientMainnet = createClient('https://api.studio.thegraph.com/query/33329/tellororaclemainhgraph/version/latest');
+export const clientMainnet = createClient('https://gateway.thegraph.com/api/subgraphs/id/5vJKyvzkSDv6kc5vCbyohvXq1KgCczsSVr58jUaPih6S', {
+  'Authorization': 'Bearer 95e299ffff2fab2572025a89a1243cbc'
+});
 export const clientSepolia = createClient('https://api.studio.thegraph.com/query/33329/tellor-oracle-sepolia-graph/version/latest');
 export const clientMatic = createClient('https://api.studio.thegraph.com/query/33329/tellor-flex-matic-graph2/version/latest');
 export const clientAmoy = createClient('https://api.studio.thegraph.com/query/33329/tellor-oracle-amoy-test-subgr/version/latest');

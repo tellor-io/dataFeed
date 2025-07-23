@@ -7,12 +7,10 @@ import Mode from './contexts/Mode'
 import ErrorBoundary from './components/ErrorBoundary'
 
 ReactDOM.render(
-  <ErrorBoundary>
-    <User>
-      <Mode>
-        <App />
-      </Mode>
-    </User>
-  </ErrorBoundary>,
+  <User>
+    <Mode>
+      <App />
+    </Mode>
+  </User>,
   document.getElementById('root')
 );
